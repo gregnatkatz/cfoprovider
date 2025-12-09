@@ -145,11 +145,6 @@ A knowledge graph built with NetworkX stores payer policies, contract terms, and
 
 ## Deployment
 
-### Live URLs
-
-- **Frontend**: https://environmental-data-app-nrjttyyx.devinapps.com
-- **Backend**: https://app-gvmsuvtn.fly.dev
-
 ### Local Development
 
 To run the frontend locally:
