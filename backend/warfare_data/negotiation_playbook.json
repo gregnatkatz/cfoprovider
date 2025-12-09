@@ -1,0 +1,102 @@
+{
+  "payer_id": "uhc",
+  "payer_name": "UnitedHealthcare",
+  "contract_id": "CTR-UHC-2024-FL-001",
+  "expiration_date": "2025-03-31",
+  "generated_date": "2024-12-09",
+  "executive_summary": "UnitedHealthcare contract expires March 31, 2025. You have strong leverage (72/100) due to documented contract violations worth $3.34M and your position as their #2 provider in Orlando. Market analysis shows you're being paid 18% below median rates, representing $8.2M annual gap. Recommended strategy: Lead with violation resolution, then pivot to rate increases.",
+  "leverage_analysis": {
+    "score": 72,
+    "rating": "Strong",
+    "key_points": [
+      "Two active contract violations totaling $3.34M in documented damages",
+      "Interest owed of $1.24M under Section 4.2",
+      "You are their #2 provider in Orlando market (18% of their network)",
+      "12,400 annual admits generating $523M in revenue for them"
+    ]
+  },
+  "rate_analysis": {
+    "total_annual_gap": 8200000,
+    "key_gaps": [
+      {
+        "service": "Cardiac DRG",
+        "gap": "-18%",
+        "annual_impact": 2160000
+      },
+      {
+        "service": "Joint Replacement",
+        "gap": "-20%",
+        "annual_impact": 1800000
+      },
+      {
+        "service": "Observation",
+        "gap": "-14%",
+        "annual_impact": 750000
+      }
+    ]
+  },
+  "negotiation_strategy": {
+    "phase_1": {
+      "name": "Violation Resolution",
+      "timing": "Weeks 1-2",
+      "actions": [
+        "Send interest demand letter ($1.24M)",
+        "Send contract violation notice (Section 7.1)",
+        "Request executive meeting to discuss resolution"
+      ],
+      "objective": "Establish leverage and recover immediate damages"
+    },
+    "phase_2": {
+      "name": "Rate Negotiation",
+      "timing": "Weeks 3-6",
+      "actions": [
+        "Present market benchmark analysis",
+        "Propose 15% rate increase across all service lines",
+        "Offer violation settlement as part of package"
+      ],
+      "objective": "Secure rate increases using violation leverage"
+    },
+    "phase_3": {
+      "name": "Final Terms",
+      "timing": "Weeks 7-10",
+      "actions": [
+        "Negotiate final rate structure",
+        "Secure payment velocity improvements",
+        "Document criteria notification requirements"
+      ],
+      "objective": "Lock in improved terms before expiration"
+    }
+  },
+  "positions": {
+    "opening": {
+      "rate_increase": "15%",
+      "violation_settlement": "$3.34M",
+      "payment_terms": "25 days",
+      "criteria_notice": "90 days"
+    },
+    "target": {
+      "rate_increase": "12%",
+      "violation_settlement": "$2.5M",
+      "payment_terms": "28 days",
+      "criteria_notice": "60 days"
+    },
+    "walk_away": {
+      "rate_increase": "8%",
+      "violation_settlement": "$1.5M",
+      "payment_terms": "30 days",
+      "criteria_notice": "45 days"
+    }
+  },
+  "batna": {
+    "description": "Terminate contract and redirect patients to Humana MA plans",
+    "feasibility": "Moderate - would require patient communication and referral network adjustments",
+    "financial_impact": "Short-term revenue loss of ~$120M, offset by improved rates with other payers",
+    "timeline": "90-day notice required per Section 8.3"
+  },
+  "talking_points": [
+    "We've documented $3.34M in contract violations that we're prepared to pursue through regulatory channels",
+    "Our market analysis shows we're being paid 18% below median rates for cardiac services",
+    "As your #2 provider in Orlando, we're essential to your network adequacy",
+    "We're prepared to work collaboratively, but we need to see meaningful improvement in rates and compliance"
+  ]
+}

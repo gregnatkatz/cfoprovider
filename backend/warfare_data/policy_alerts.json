@@ -1,0 +1,50 @@
+[
+  {
+    "alert_id": "ALT-001",
+    "payer_id": "humana",
+    "payer_name": "Humana",
+    "alert_type": "prior_auth_expansion",
+    "title": "Humana Prior Auth Expansion - Advanced Imaging",
+    "severity": "critical",
+    "confidence": 0.82,
+    "predicted_date": "2025-01-15",
+    "days_until": 37,
+    "potential_impact": 1500000,
+    "signals": [
+      "SIG-001",
+      "SIG-002"
+    ],
+    "description": "High probability Humana will expand prior authorization requirements to all outpatient MRI and CT scans",
+    "recommended_actions": [
+      "Update radiology order templates with prior auth fields",
+      "Train schedulers on new requirements",
+      "Prepare appeal templates for expected denials",
+      "Pre-authorize high-volume imaging procedures"
+    ],
+    "status": "active"
+  },
+  {
+    "alert_id": "ALT-002",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "alert_type": "documentation_change",
+    "title": "UHC Observation Documentation Requirements",
+    "severity": "elevated",
+    "confidence": 0.75,
+    "predicted_date": "2025-01-01",
+    "days_until": 23,
+    "potential_impact": 800000,
+    "signals": [
+      "SIG-003",
+      "SIG-004"
+    ],
+    "description": "UHC likely to enforce stricter documentation requirements for observation services including 4-hour attestation",
+    "recommended_actions": [
+      "Update observation documentation templates",
+      "Train case managers on 4-hour attestation requirement",
+      "Implement automated documentation reminders",
+      "Prepare contract violation notice if applied retroactively"
+    ],
+    "status": "active"
+  }
+]

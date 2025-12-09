@@ -1,0 +1,66 @@
+{
+  "by_carc": {
+    "CO-16": {
+      "rate": 0.78,
+      "description": "Missing/incomplete information",
+      "recommendation": "High priority - easy fix"
+    },
+    "CO-197": {
+      "rate": 0.68,
+      "description": "Prior authorization required",
+      "recommendation": "Medium priority - document auth"
+    },
+    "CO-97": {
+      "rate": 0.62,
+      "description": "Benefit maximum reached",
+      "recommendation": "Medium priority - verify benefits"
+    },
+    "OA-23": {
+      "rate": 0.52,
+      "description": "Medical necessity",
+      "recommendation": "Selective - strong documentation needed"
+    },
+    "CO-50": {
+      "rate": 0.45,
+      "description": "Non-covered service",
+      "recommendation": "Low priority - policy review needed"
+    },
+    "CO-4": {
+      "rate": 0.35,
+      "description": "Not covered by plan",
+      "recommendation": "Low priority - benefit verification"
+    },
+    "PR-2": {
+      "rate": 0.3,
+      "description": "Coinsurance",
+      "recommendation": "Skip - patient responsibility"
+    },
+    "PR-1": {
+      "rate": 0.25,
+      "description": "Deductible",
+      "recommendation": "Skip - patient responsibility"
+    }
+  },
+  "by_payer": {
+    "uhc": {
+      "overall_rate": 0.58,
+      "avg_days_to_resolution": 32
+    },
+    "humana": {
+      "overall_rate": 0.55,
+      "avg_days_to_resolution": 38
+    },
+    "bcbs": {
+      "overall_rate": 0.62,
+      "avg_days_to_resolution": 28
+    },
+    "aetna": {
+      "overall_rate": 0.54,
+      "avg_days_to_resolution": 35
+    },
+    "cigna": {
+      "overall_rate": 0.51,
+      "avg_days_to_resolution": 40
+    }
+  }
+}

@@ -1,0 +1,89 @@
+[
+  {
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "contract_expiration": "2025-03-31",
+    "days_until_expiration": 112,
+    "leverage_score": 72,
+    "leverage_rating": "Strong",
+    "your_advantages": [
+      {
+        "factor": "Active contract violations",
+        "value": "$3.34M documented",
+        "weight": 25
+      },
+      {
+        "factor": "Market position",
+        "value": "#2 provider in Orlando (18% of network)",
+        "weight": 20
+      },
+      {
+        "factor": "Volume",
+        "value": "12,400 annual admits ($523M revenue)",
+        "weight": 15
+      },
+      {
+        "factor": "Interest owed",
+        "value": "$1.24M documented",
+        "weight": 12
+      }
+    ],
+    "their_advantages": [
+      {
+        "factor": "Revenue dependency",
+        "value": "23% of your MA revenue",
+        "weight": -15
+      },
+      {
+        "factor": "Market share",
+        "value": "34% local MA market share",
+        "weight": -10
+      }
+    ],
+    "rate_gap_annual": 8200000,
+    "recommended_opening": 0.15,
+    "walk_away_point": 0.08,
+    "batna": "Terminate and redirect patients to Humana MA plans"
+  },
+  {
+    "payer_id": "humana",
+    "payer_name": "Humana",
+    "contract_expiration": "2025-12-31",
+    "days_until_expiration": 387,
+    "leverage_score": 58,
+    "leverage_rating": "Moderate",
+    "your_advantages": [
+      {
+        "factor": "Payment velocity violations",
+        "value": "$890K interest owed",
+        "weight": 15
+      },
+      {
+        "factor": "Bundling violations",
+        "value": "$845K improper denials",
+        "weight": 12
+      },
+      {
+        "factor": "Market position",
+        "value": "#3 provider in Orlando",
+        "weight": 10
+      }
+    ],
+    "their_advantages": [
+      {
+        "factor": "Revenue dependency",
+        "value": "18% of your MA revenue",
+        "weight": -12
+      },
+      {
+        "factor": "Alternative providers",
+        "value": "Multiple alternatives available",
+        "weight": -8
+      }
+    ],
+    "rate_gap_annual": 4100000,
+    "recommended_opening": 0.12,
+    "walk_away_point": 0.06,
+    "batna": "Reduce to out-of-network, maintain emergency access"
+  }
+]

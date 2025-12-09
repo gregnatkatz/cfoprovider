@@ -1,0 +1,62 @@
+[
+  {
+    "reg_violation_id": "REG-UHC-001",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "regulation": "CMS Medicare Advantage Medical Necessity Guidelines",
+    "regulation_code": "42 CFR 422.101",
+    "violation_type": "medical_necessity_criteria",
+    "description": "Application of stricter medical necessity criteria than permitted under Medicare Advantage regulations",
+    "evidence": [
+      "847 observation denials using non-contracted InterQual version",
+      "Denial rate 34% higher than Medicare FFS for same services",
+      "No advance notice of criteria change as required"
+    ],
+    "affected_claims": 847,
+    "financial_impact": 2100000,
+    "detection_date": "2024-11-20",
+    "status": "documented",
+    "recommended_action": "File CMS complaint",
+    "complaint_id": "CMP-CMS-001"
+  },
+  {
+    "reg_violation_id": "REG-UHC-002",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "regulation": "Florida Insurance Code - Prompt Payment",
+    "regulation_code": "FL Statute 627.6131",
+    "violation_type": "payment_timing",
+    "description": "Systematic failure to pay clean claims within statutory timeframe",
+    "evidence": [
+      "Average payment time 38 days (statute requires 30 days)",
+      "4,247 claims paid late",
+      "Pattern of delay across multiple months"
+    ],
+    "affected_claims": 4247,
+    "financial_impact": 1240000,
+    "detection_date": "2024-11-15",
+    "status": "documented",
+    "recommended_action": "File Florida OIR complaint",
+    "complaint_id": "CMP-FL-001"
+  },
+  {
+    "reg_violation_id": "REG-HUM-001",
+    "payer_id": "humana",
+    "payer_name": "Humana",
+    "regulation": "Florida Insurance Code - Prompt Payment",
+    "regulation_code": "FL Statute 627.6131",
+    "violation_type": "payment_timing",
+    "description": "Systematic failure to pay clean claims within statutory timeframe",
+    "evidence": [
+      "Average payment time 42 days (statute requires 30 days)",
+      "2,891 claims paid late",
+      "Consistent pattern over 6 months"
+    ],
+    "affected_claims": 2891,
+    "financial_impact": 890000,
+    "detection_date": "2024-11-10",
+    "status": "documented",
+    "recommended_action": "File Florida OIR complaint",
+    "complaint_id": "CMP-FL-002"
+  }
+]

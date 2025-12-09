@@ -1,0 +1,142 @@
+[
+  {
+    "service_line": "Cardiac DRG",
+    "drg_codes": [
+      "280",
+      "281",
+      "282"
+    ],
+    "your_rate": 42000,
+    "market_p25": 45000,
+    "market_p50": 51000,
+    "market_p75": 58000,
+    "gap_to_p50": -0.18,
+    "annual_volume": 1200,
+    "annual_gap": 10800000
+  },
+  {
+    "service_line": "Joint Replacement",
+    "drg_codes": [
+      "469",
+      "470"
+    ],
+    "your_rate": 35000,
+    "market_p25": 38000,
+    "market_p50": 44000,
+    "market_p75": 52000,
+    "gap_to_p50": -0.2,
+    "annual_volume": 800,
+    "annual_gap": 7200000
+  },
+  {
+    "service_line": "Observation",
+    "cpt_codes": [
+      "99218",
+      "99219",
+      "99220"
+    ],
+    "your_rate": 1800,
+    "market_p25": 1900,
+    "market_p50": 2100,
+    "market_p75": 2400,
+    "gap_to_p50": -0.14,
+    "annual_volume": 5000,
+    "annual_gap": 1500000
+  },
+  {
+    "service_line": "ED Level 5",
+    "cpt_codes": [
+      "99285"
+    ],
+    "your_rate": 850,
+    "market_p25": 900,
+    "market_p50": 1050,
+    "market_p75": 1200,
+    "gap_to_p50": -0.19,
+    "annual_volume": 8000,
+    "annual_gap": 1600000
+  },
+  {
+    "service_line": "CT Abdomen w/Contrast",
+    "cpt_codes": [
+      "74177"
+    ],
+    "your_rate": 450,
+    "market_p25": 480,
+    "market_p50": 520,
+    "market_p75": 580,
+    "gap_to_p50": -0.13,
+    "annual_volume": 12000,
+    "annual_gap": 840000
+  },
+  {
+    "service_line": "MRI Brain w/Contrast",
+    "cpt_codes": [
+      "70553"
+    ],
+    "your_rate": 680,
+    "market_p25": 720,
+    "market_p50": 800,
+    "market_p75": 900,
+    "gap_to_p50": -0.15,
+    "annual_volume": 6000,
+    "annual_gap": 720000
+  },
+  {
+    "service_line": "Spine Surgery",
+    "drg_codes": [
+      "453",
+      "454",
+      "455"
+    ],
+    "your_rate": 48000,
+    "market_p25": 52000,
+    "market_p50": 58000,
+    "market_p75": 68000,
+    "gap_to_p50": -0.17,
+    "annual_volume": 400,
+    "annual_gap": 4000000
+  },
+  {
+    "service_line": "Bariatric Surgery",
+    "cpt_codes": [
+      "43644",
+      "43775"
+    ],
+    "your_rate": 22000,
+    "market_p25": 24000,
+    "market_p50": 28000,
+    "market_p75": 34000,
+    "gap_to_p50": -0.21,
+    "annual_volume": 300,
+    "annual_gap": 1800000
+  },
+  {
+    "service_line": "Chemotherapy Admin",
+    "cpt_codes": [
+      "96413",
+      "96415"
+    ],
+    "your_rate": 280,
+    "market_p25": 300,
+    "market_p50": 340,
+    "market_p75": 400,
+    "gap_to_p50": -0.18,
+    "annual_volume": 15000,
+    "annual_gap": 900000
+  },
+  {
+    "service_line": "Cardiac Cath",
+    "cpt_codes": [
+      "93458",
+      "93459"
+    ],
+    "your_rate": 3200,
+    "market_p25": 3500,
+    "market_p50": 4000,
+    "market_p75": 4800,
+    "gap_to_p50": -0.2,
+    "annual_volume": 2000,
+    "annual_gap": 1600000
+  }
+]

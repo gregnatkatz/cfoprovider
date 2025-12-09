@@ -1,0 +1,52 @@
+[
+  {
+    "signal_id": "SIG-001",
+    "payer_id": "humana",
+    "signal_type": "earnings_call",
+    "source": "Humana Q3 2024 Earnings Call",
+    "date": "2024-10-15",
+    "content": "CFO mentioned 'enhanced prior authorization for advanced imaging' as cost management initiative",
+    "relevance_score": 0.85,
+    "related_policy_area": "prior_authorization"
+  },
+  {
+    "signal_id": "SIG-002",
+    "payer_id": "aetna",
+    "signal_type": "competitor_action",
+    "source": "Aetna Provider Bulletin",
+    "date": "2024-09-20",
+    "content": "Aetna expanded prior auth to all outpatient MRI/CT - Humana typically follows within 45 days",
+    "relevance_score": 0.78,
+    "related_policy_area": "prior_authorization"
+  },
+  {
+    "signal_id": "SIG-003",
+    "payer_id": "uhc",
+    "signal_type": "earnings_call",
+    "source": "UHC Q3 2024 Earnings Call",
+    "date": "2024-10-18",
+    "content": "CEO referenced 'documentation integrity initiatives' and 'medical cost management'",
+    "relevance_score": 0.72,
+    "related_policy_area": "medical_necessity"
+  },
+  {
+    "signal_id": "SIG-004",
+    "payer_id": "uhc",
+    "signal_type": "provider_bulletin",
+    "source": "UHC Provider Bulletin 2024-42",
+    "date": "2024-10-25",
+    "content": "New 4-hour attestation requirement for observation services effective Jan 1, 2025",
+    "relevance_score": 0.9,
+    "related_policy_area": "observation"
+  },
+  {
+    "signal_id": "SIG-005",
+    "payer_id": "uhc",
+    "signal_type": "criteria_update",
+    "source": "InterQual Release Notes",
+    "date": "2024-09-15",
+    "content": "InterQual 2024.2 released - UHC historically adopts within 60 days",
+    "relevance_score": 0.88,
+    "related_policy_area": "medical_necessity"
+  }
+]

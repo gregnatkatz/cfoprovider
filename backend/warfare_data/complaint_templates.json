@@ -1,0 +1,44 @@
+[
+  {
+    "complaint_id": "CMP-CMS-001",
+    "reg_violation_id": "REG-UHC-001",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "complaint_type": "CMS Medicare Advantage",
+    "agency": "Centers for Medicare & Medicaid Services",
+    "filing_address": "CMS Regional Office, Atlanta, GA",
+    "subject": "Complaint Regarding Medicare Advantage Medical Necessity Determinations",
+    "body": "COMPLAINT TO CENTERS FOR MEDICARE & MEDICAID SERVICES\n\nComplainant: AdventHealth Orlando\nAddress: 601 E Rollins St, Orlando, FL 32803\nContact: [CFO Name], Chief Financial Officer\n\nRespondent: UnitedHealthcare Insurance Company\nMedicare Advantage Contract: H0028\n\nNATURE OF COMPLAINT:\n\nUnitedHealthcare is applying medical necessity criteria that are more restrictive than those permitted under Medicare Advantage regulations, resulting in improper denials of medically necessary services.\n\nFACTUAL BACKGROUND:\n\n1. Our provider agreement (CTR-UHC-2024-FL-001) specifies that medical necessity determinations shall be made using InterQual criteria version 2023.1.\n\n2. Beginning November 1, 2024, UnitedHealthcare began applying InterQual 2024.2 criteria without providing the required 60-day advance notice.\n\n3. The 2024.2 criteria are more restrictive than the contracted 2023.1 version, resulting in denials that would have been approved under the contracted criteria.\n\nIMPACT:\n\n- Affected Claims: 847 observation service claims\n- Improper Denials: $2,100,000\n- Affected Period: November 1, 2024 to present\n- Denial Rate Increase: 34% higher than Medicare FFS for same services\n\nREGULATORY VIOLATIONS:\n\n1. 42 CFR 422.101 - Coverage of Medicare Advantage benefits\n2. 42 CFR 422.504 - Contract provisions requiring compliance with Medicare coverage rules\n3. Medicare Managed Care Manual, Chapter 4 - Medical necessity determination requirements\n\nREQUESTED RELIEF:\n\n1. Investigation of UnitedHealthcare's medical necessity determination practices\n2. Order requiring reprocessing of all affected claims using contracted criteria\n3. Civil monetary penalties for pattern of improper denials\n4. Corrective action plan to prevent future violations\n\nATTACHMENTS:\n\n1. List of affected claims (847 claims)\n2. Sample denial letters citing InterQual 2024.2\n3. Provider agreement excerpt (Section 5.1)\n4. Comparison of 2023.1 vs 2024.2 criteria for observation services\n\nRespectfully submitted,\n\n[CFO Name]\nChief Financial Officer\nAdventHealth Orlando",
+    "attachments": [
+      "List of affected claims",
+      "Sample denial letters",
+      "Provider agreement excerpt",
+      "Criteria comparison analysis"
+    ],
+    "status": "ready",
+    "estimated_resolution_days": 90,
+    "expected_outcome": "Settlement or corrective action",
+    "success_probability": 0.65
+  },
+  {
+    "complaint_id": "CMP-FL-001",
+    "reg_violation_id": "REG-UHC-002",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "complaint_type": "Florida OIR",
+    "agency": "Florida Office of Insurance Regulation",
+    "filing_address": "200 E Gaines St, Tallahassee, FL 32399",
+    "subject": "Complaint Regarding Violation of Prompt Payment Requirements",
+    "body": "COMPLAINT TO FLORIDA OFFICE OF INSURANCE REGULATION\n\nComplainant: AdventHealth Orlando\nAddress: 601 E Rollins St, Orlando, FL 32803\nLicense Number: [Hospital License]\n\nRespondent: UnitedHealthcare Insurance Company\nFlorida License Number: [UHC License]\n\nNATURE OF COMPLAINT:\n\nUnitedHealthcare has systematically failed to comply with Florida's prompt payment requirements under Florida Statute 627.6131, resulting in significant financial harm to our facility.\n\nFACTUAL BACKGROUND:\n\n1. Florida Statute 627.6131 requires health insurers to pay clean claims within 30 days of receipt.\n\n2. Our analysis of claims submitted between September 1, 2024 and November 30, 2024 shows:\n   - Average payment time: 38 days\n   - Claims paid after 30 days: 4,247\n   - Total principal paid late: $12,400,000\n\n3. This pattern of late payment has been consistent across multiple months, indicating a systematic compliance failure.\n\nSTATUTORY VIOLATIONS:\n\nFlorida Statute 627.6131(2)(a): \"A health insurer shall pay or deny a claim... within 30 days after receipt of the claim.\"\n\nFlorida Statute 627.6131(4): Provides for interest on late-paid claims.\n\nFINANCIAL IMPACT:\n\n- Late-Paid Claims: 4,247\n- Total Principal: $12,400,000\n- Interest Owed (12% annually): $1,240,000\n- Period: September 1, 2024 - November 30, 2024\n\nREQUESTED RELIEF:\n\n1. Investigation of UnitedHealthcare's claims payment practices\n2. Order requiring payment of accrued interest ($1,240,000)\n3. Administrative penalties for pattern of violations\n4. Corrective action plan with monitoring\n\nATTACHMENTS:\n\n1. Claims analysis spreadsheet (4,247 claims)\n2. Interest calculation detail\n3. Provider agreement excerpt (Sections 4.1, 4.2)\n4. Sample remittance advices showing late payment\n\nRespectfully submitted,\n\n[CFO Name]\nChief Financial Officer\nAdventHealth Orlando",
+    "attachments": [
+      "Claims analysis spreadsheet",
+      "Interest calculation detail",
+      "Provider agreement excerpt",
+      "Sample remittance advices"
+    ],
+    "status": "ready",
+    "estimated_resolution_days": 60,
+    "expected_outcome": "Interest payment and corrective action",
+    "success_probability": 0.75
+  }
+]

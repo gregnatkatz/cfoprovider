@@ -1,0 +1,48 @@
+[
+  {
+    "letter_id": "LTR-UHC-INT-001",
+    "violation_id": "VIO-UHC-PAY-001",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "letter_type": "interest_demand",
+    "subject": "Demand for Payment of Accrued Interest - Section 4.2",
+    "recipient": {
+      "name": "UnitedHealthcare Claims Department",
+      "address": "P.O. Box 740800, Atlanta, GA 30374-0800",
+      "attention": "Provider Dispute Resolution"
+    },
+    "body": "Dear Claims Administrator:\n\nPursuant to Section 4.2 of our Provider Agreement (Contract ID: CTR-UHC-2024-FL-001) and Florida Statute 627.6131, we hereby demand payment of accrued interest on late-paid claims.\n\nSUMMARY OF VIOLATION:\n\nContract Requirement (Section 4.1): Payment of clean claims within 30 calendar days of receipt.\n\nActual Performance: Average payment time of 38 calendar days.\n\nAffected Period: September 1, 2024 through November 30, 2024\n\nAffected Claims: 4,247 claims\n\nTotal Principal Paid Late: $12,400,000\n\nInterest Rate: 1% per month (12% annually) as specified in Section 4.2\n\nInterest Owed: $1,240,000\n\nDEMAND:\n\nWe demand payment of $1,240,000 in accrued interest within thirty (30) days of receipt of this letter.\n\nFailure to remit payment will result in:\n1. Formal complaint to the Florida Office of Insurance Regulation\n2. Complaint to the Centers for Medicare & Medicaid Services\n3. Pursuit of all available legal remedies\n\nA detailed spreadsheet of affected claims with interest calculations is attached.\n\nSincerely,\n\n[CFO Name]\nChief Financial Officer\nAdventHealth Orlando",
+    "attachments": [
+      "Claims analysis spreadsheet (4,247 claims)",
+      "Interest calculation detail by claim",
+      "Contract excerpt (Sections 4.1, 4.2)"
+    ],
+    "status": "ready",
+    "created_date": "2024-12-09",
+    "expected_recovery": 1054000,
+    "success_probability": 0.85
+  },
+  {
+    "letter_id": "LTR-UHC-VIO-001",
+    "violation_id": "VIO-UHC-MN-001",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "letter_type": "violation_notice",
+    "subject": "Notice of Material Contract Breach - Section 7.1 Medical Necessity Criteria",
+    "recipient": {
+      "name": "UnitedHealthcare Provider Relations",
+      "address": "P.O. Box 740800, Atlanta, GA 30374-0800",
+      "attention": "Contract Compliance Department"
+    },
+    "body": "Dear Contract Administrator:\n\nThis letter serves as formal notice of material breach of our Provider Agreement (Contract ID: CTR-UHC-2024-FL-001) pursuant to Section 12.1.\n\nNATURE OF BREACH:\n\nSection 5.1 of our Agreement specifies that medical necessity determinations shall be made using InterQual criteria version 2023.1. Any updates to criteria require 60 days advance notice to the Facility.\n\nBeginning November 1, 2024, UnitedHealthcare has applied InterQual 2024.2 criteria to observation service determinations without providing the required 60-day notice.\n\nIMPACT:\n\nAffected Claims: 847 observation service claims\nImproper Denials: $2,100,000\nPeriod: November 1, 2024 to present\n\nDEMAND:\n\n1. Immediate reprocessing of all 847 affected claims using InterQual 2023.1 criteria\n2. Payment of all improperly denied claims within 30 days\n3. Written confirmation of criteria version to be used going forward\n4. Compliance with 60-day notice requirement for any future criteria changes\n\nPursuant to Section 12.2, failure to cure this breach within 30 days will result in pursuit of all available remedies, including contract termination and regulatory complaints.\n\nSincerely,\n\n[CFO Name]\nChief Financial Officer\nAdventHealth Orlando",
+    "attachments": [
+      "List of affected claims (847 claims)",
+      "Denial letters citing InterQual 2024.2",
+      "Contract excerpt (Sections 5.1, 7.1, 12.1)"
+    ],
+    "status": "ready",
+    "created_date": "2024-12-09",
+    "expected_recovery": 1512000,
+    "success_probability": 0.72
+  }
+]
