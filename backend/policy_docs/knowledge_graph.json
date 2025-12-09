@@ -1,0 +1,2050 @@
+{
+  "entities": [
+    {
+      "entity_id": "PAYER_UHC",
+      "entity_type": "Payer",
+      "name": "UnitedHealthcare",
+      "attributes": {
+        "legal_name": "UnitedHealthcare Insurance Company",
+        "edi_payer_id": "87726",
+        "plan_types": [
+          "Medicare Advantage",
+          "Commercial",
+          "Medicaid"
+        ],
+        "region": "Florida",
+        "portal": "https://www.uhcprovider.com"
+      }
+    },
+    {
+      "entity_id": "PAYER_HUMANA",
+      "entity_type": "Payer",
+      "name": "Humana",
+      "attributes": {
+        "legal_name": "Humana Insurance Company",
+        "edi_payer_id": "61101",
+        "plan_types": [
+          "Medicare Advantage",
+          "Commercial"
+        ],
+        "region": "Florida",
+        "portal": "https://www.humana.com/provider"
+      }
+    },
+    {
+      "entity_id": "PAYER_BCBS",
+      "entity_type": "Payer",
+      "name": "Florida Blue",
+      "attributes": {
+        "legal_name": "Blue Cross and Blue Shield of Florida, Inc.",
+        "edi_payer_id": "00590",
+        "plan_types": [
+          "Commercial",
+          "Medicare Advantage",
+          "ACA"
+        ],
+        "region": "Florida",
+        "portal": "https://www.floridablue.com/providers"
+      }
+    },
+    {
+      "entity_id": "PAYER_AETNA",
+      "entity_type": "Payer",
+      "name": "Aetna",
+      "attributes": {
+        "legal_name": "Aetna Life Insurance Company",
+        "edi_payer_id": "60054",
+        "plan_types": [
+          "Commercial",
+          "Medicare Advantage"
+        ],
+        "region": "National",
+        "portal": "https://www.availity.com"
+      }
+    },
+    {
+      "entity_id": "PAYER_CIGNA",
+      "entity_type": "Payer",
+      "name": "Cigna",
+      "attributes": {
+        "legal_name": "Cigna Health and Life Insurance Company",
+        "edi_payer_id": "62308",
+        "plan_types": [
+          "Commercial",
+          "Medicare Advantage"
+        ],
+        "region": "National",
+        "portal": "https://www.cignaforhcp.com"
+      }
+    },
+    {
+      "entity_id": "PAYER_MEDICARE",
+      "entity_type": "Payer",
+      "name": "Medicare",
+      "attributes": {
+        "legal_name": "Centers for Medicare & Medicaid Services",
+        "edi_payer_id": "00308",
+        "plan_types": [
+          "Medicare FFS"
+        ],
+        "region": "National",
+        "portal": "https://www.cms.gov"
+      }
+    },
+    {
+      "entity_id": "UHC-OBS-2024-001",
+      "entity_type": "Policy",
+      "name": "Observation Services Medical Necessity Criteria",
+      "attributes": {
+        "policy_type": "Medical Necessity",
+        "effective_date": "2024-11-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "2024.2",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99218",
+      "entity_type": "CPT_Code",
+      "name": "99218",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99219",
+      "entity_type": "CPT_Code",
+      "name": "99219",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99220",
+      "entity_type": "CPT_Code",
+      "name": "99220",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99224",
+      "entity_type": "CPT_Code",
+      "name": "99224",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99225",
+      "entity_type": "CPT_Code",
+      "name": "99225",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99226",
+      "entity_type": "CPT_Code",
+      "name": "99226",
+      "attributes": {}
+    },
+    {
+      "entity_id": "UHC-PA-2024-001",
+      "entity_type": "Policy",
+      "name": "Advanced Imaging Prior Authorization Requirements",
+      "attributes": {
+        "policy_type": "Prior Authorization",
+        "effective_date": "2024-10-15",
+        "version": "2024.4",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": true
+      }
+    },
+    {
+      "entity_id": "CPT_70450",
+      "entity_type": "CPT_Code",
+      "name": "70450",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_70553",
+      "entity_type": "CPT_Code",
+      "name": "70553",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_71250",
+      "entity_type": "CPT_Code",
+      "name": "71250",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_71260",
+      "entity_type": "CPT_Code",
+      "name": "71260",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_74177",
+      "entity_type": "CPT_Code",
+      "name": "74177",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_78815",
+      "entity_type": "CPT_Code",
+      "name": "78815",
+      "attributes": {}
+    },
+    {
+      "entity_id": "UHC-PAY-2024-001",
+      "entity_type": "Policy",
+      "name": "Clean Claim Payment Terms",
+      "attributes": {
+        "policy_type": "Payment Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "UHC-INP-2024-001",
+      "entity_type": "Policy",
+      "name": "Inpatient Admission Criteria - Acute Care",
+      "attributes": {
+        "policy_type": "Medical Necessity",
+        "effective_date": "2024-01-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "2024.2",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99221",
+      "entity_type": "CPT_Code",
+      "name": "99221",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99222",
+      "entity_type": "CPT_Code",
+      "name": "99222",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99223",
+      "entity_type": "CPT_Code",
+      "name": "99223",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99231",
+      "entity_type": "CPT_Code",
+      "name": "99231",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99232",
+      "entity_type": "CPT_Code",
+      "name": "99232",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99233",
+      "entity_type": "CPT_Code",
+      "name": "99233",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99238",
+      "entity_type": "CPT_Code",
+      "name": "99238",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99239",
+      "entity_type": "CPT_Code",
+      "name": "99239",
+      "attributes": {}
+    },
+    {
+      "entity_id": "UHC-SURG-2024-001",
+      "entity_type": "Policy",
+      "name": "Elective Surgery Prior Authorization Requirements",
+      "attributes": {
+        "policy_type": "Prior Authorization",
+        "effective_date": "2024-01-01",
+        "version": "2024.3",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": true
+      }
+    },
+    {
+      "entity_id": "CPT_27447",
+      "entity_type": "CPT_Code",
+      "name": "27447",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_27130",
+      "entity_type": "CPT_Code",
+      "name": "27130",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_23472",
+      "entity_type": "CPT_Code",
+      "name": "23472",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_22612",
+      "entity_type": "CPT_Code",
+      "name": "22612",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_33533",
+      "entity_type": "CPT_Code",
+      "name": "33533",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_43644",
+      "entity_type": "CPT_Code",
+      "name": "43644",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_43775",
+      "entity_type": "CPT_Code",
+      "name": "43775",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_22551",
+      "entity_type": "CPT_Code",
+      "name": "22551",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_63030",
+      "entity_type": "CPT_Code",
+      "name": "63030",
+      "attributes": {}
+    },
+    {
+      "entity_id": "UHC-DME-2024-001",
+      "entity_type": "Policy",
+      "name": "Durable Medical Equipment Coverage and Authorization",
+      "attributes": {
+        "policy_type": "Coverage Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": true
+      }
+    },
+    {
+      "entity_id": "HUM-BUND-2024-001",
+      "entity_type": "Policy",
+      "name": "Emergency Department and Observation Bundling Policy",
+      "attributes": {
+        "policy_type": "Billing Policy",
+        "effective_date": "2024-09-01",
+        "version": "2024.3",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99281",
+      "entity_type": "CPT_Code",
+      "name": "99281",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99282",
+      "entity_type": "CPT_Code",
+      "name": "99282",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99283",
+      "entity_type": "CPT_Code",
+      "name": "99283",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99284",
+      "entity_type": "CPT_Code",
+      "name": "99284",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99285",
+      "entity_type": "CPT_Code",
+      "name": "99285",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99218",
+      "entity_type": "CPT_Code",
+      "name": "99218",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99219",
+      "entity_type": "CPT_Code",
+      "name": "99219",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99220",
+      "entity_type": "CPT_Code",
+      "name": "99220",
+      "attributes": {}
+    },
+    {
+      "entity_id": "HUM-PAY-2024-001",
+      "entity_type": "Policy",
+      "name": "Payment Terms and Timely Filing",
+      "attributes": {
+        "policy_type": "Payment Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "HUM-OBS-2024-001",
+      "entity_type": "Policy",
+      "name": "Observation Services Medical Necessity Guidelines",
+      "attributes": {
+        "policy_type": "Medical Necessity",
+        "effective_date": "2024-01-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "2023.2",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99218",
+      "entity_type": "CPT_Code",
+      "name": "99218",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99219",
+      "entity_type": "CPT_Code",
+      "name": "99219",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99220",
+      "entity_type": "CPT_Code",
+      "name": "99220",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99224",
+      "entity_type": "CPT_Code",
+      "name": "99224",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99225",
+      "entity_type": "CPT_Code",
+      "name": "99225",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99226",
+      "entity_type": "CPT_Code",
+      "name": "99226",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_G0378",
+      "entity_type": "CPT_Code",
+      "name": "G0378",
+      "attributes": {}
+    },
+    {
+      "entity_id": "HUM-CARD-2024-001",
+      "entity_type": "Policy",
+      "name": "Cardiac Procedures Prior Authorization",
+      "attributes": {
+        "policy_type": "Prior Authorization",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": true
+      }
+    },
+    {
+      "entity_id": "CPT_93458",
+      "entity_type": "CPT_Code",
+      "name": "93458",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_93459",
+      "entity_type": "CPT_Code",
+      "name": "93459",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_93350",
+      "entity_type": "CPT_Code",
+      "name": "93350",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_78452",
+      "entity_type": "CPT_Code",
+      "name": "78452",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_92928",
+      "entity_type": "CPT_Code",
+      "name": "92928",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_92937",
+      "entity_type": "CPT_Code",
+      "name": "92937",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_33533",
+      "entity_type": "CPT_Code",
+      "name": "33533",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_33405",
+      "entity_type": "CPT_Code",
+      "name": "33405",
+      "attributes": {}
+    },
+    {
+      "entity_id": "HUM-ONCO-2024-001",
+      "entity_type": "Policy",
+      "name": "Oncology Services Coverage and Prior Authorization",
+      "attributes": {
+        "policy_type": "Coverage Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": true
+      }
+    },
+    {
+      "entity_id": "CPT_96413",
+      "entity_type": "CPT_Code",
+      "name": "96413",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_96415",
+      "entity_type": "CPT_Code",
+      "name": "96415",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_77385",
+      "entity_type": "CPT_Code",
+      "name": "77385",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_77386",
+      "entity_type": "CPT_Code",
+      "name": "77386",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_77520",
+      "entity_type": "CPT_Code",
+      "name": "77520",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_0537T",
+      "entity_type": "CPT_Code",
+      "name": "0537T",
+      "attributes": {}
+    },
+    {
+      "entity_id": "FLB-MN-2024-001",
+      "entity_type": "Policy",
+      "name": "Inpatient Admission Medical Necessity Criteria",
+      "attributes": {
+        "policy_type": "Medical Necessity",
+        "effective_date": "2024-01-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "2023.1",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99221",
+      "entity_type": "CPT_Code",
+      "name": "99221",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99222",
+      "entity_type": "CPT_Code",
+      "name": "99222",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99223",
+      "entity_type": "CPT_Code",
+      "name": "99223",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99231",
+      "entity_type": "CPT_Code",
+      "name": "99231",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99232",
+      "entity_type": "CPT_Code",
+      "name": "99232",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99233",
+      "entity_type": "CPT_Code",
+      "name": "99233",
+      "attributes": {}
+    },
+    {
+      "entity_id": "FLB-ED-2024-001",
+      "entity_type": "Policy",
+      "name": "Emergency Department Services Coverage",
+      "attributes": {
+        "policy_type": "Coverage Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99281",
+      "entity_type": "CPT_Code",
+      "name": "99281",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99282",
+      "entity_type": "CPT_Code",
+      "name": "99282",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99283",
+      "entity_type": "CPT_Code",
+      "name": "99283",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99284",
+      "entity_type": "CPT_Code",
+      "name": "99284",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99285",
+      "entity_type": "CPT_Code",
+      "name": "99285",
+      "attributes": {}
+    },
+    {
+      "entity_id": "FLB-REHAB-2024-001",
+      "entity_type": "Policy",
+      "name": "Inpatient Rehabilitation Facility (IRF) Criteria",
+      "attributes": {
+        "policy_type": "Medical Necessity",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "2023.1",
+        "prior_auth_required": true
+      }
+    },
+    {
+      "entity_id": "CPT_97110",
+      "entity_type": "CPT_Code",
+      "name": "97110",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_97140",
+      "entity_type": "CPT_Code",
+      "name": "97140",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_97530",
+      "entity_type": "CPT_Code",
+      "name": "97530",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_97542",
+      "entity_type": "CPT_Code",
+      "name": "97542",
+      "attributes": {}
+    },
+    {
+      "entity_id": "FLB-PAY-2024-001",
+      "entity_type": "Policy",
+      "name": "Clean Claim Processing and Payment Terms",
+      "attributes": {
+        "policy_type": "Payment Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "AET-MN-2024-001",
+      "entity_type": "Policy",
+      "name": "Inpatient and Observation Medical Necessity Criteria",
+      "attributes": {
+        "policy_type": "Medical Necessity",
+        "effective_date": "2024-01-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "N/A - Uses MCG",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99221",
+      "entity_type": "CPT_Code",
+      "name": "99221",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99222",
+      "entity_type": "CPT_Code",
+      "name": "99222",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99223",
+      "entity_type": "CPT_Code",
+      "name": "99223",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99218",
+      "entity_type": "CPT_Code",
+      "name": "99218",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99219",
+      "entity_type": "CPT_Code",
+      "name": "99219",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99220",
+      "entity_type": "CPT_Code",
+      "name": "99220",
+      "attributes": {}
+    },
+    {
+      "entity_id": "AET-IMG-2024-001",
+      "entity_type": "Policy",
+      "name": "Advanced Imaging Prior Authorization (via EviCore)",
+      "attributes": {
+        "policy_type": "Prior Authorization",
+        "effective_date": "2024-01-01",
+        "version": "2024.3",
+        "status": "Active",
+        "interqual_version": "N/A - EviCore criteria",
+        "prior_auth_required": true
+      }
+    },
+    {
+      "entity_id": "CPT_70450",
+      "entity_type": "CPT_Code",
+      "name": "70450",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_70553",
+      "entity_type": "CPT_Code",
+      "name": "70553",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_71250",
+      "entity_type": "CPT_Code",
+      "name": "71250",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_74177",
+      "entity_type": "CPT_Code",
+      "name": "74177",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_78452",
+      "entity_type": "CPT_Code",
+      "name": "78452",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_78815",
+      "entity_type": "CPT_Code",
+      "name": "78815",
+      "attributes": {}
+    },
+    {
+      "entity_id": "AET-PAY-2024-001",
+      "entity_type": "Policy",
+      "name": "Payment Terms and Claim Filing Requirements",
+      "attributes": {
+        "policy_type": "Payment Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CIG-MN-2024-001",
+      "entity_type": "Policy",
+      "name": "Utilization Management Medical Necessity Criteria",
+      "attributes": {
+        "policy_type": "Medical Necessity",
+        "effective_date": "2024-01-01",
+        "version": "2024.2",
+        "status": "Active",
+        "interqual_version": "N/A - Uses MCG",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99221",
+      "entity_type": "CPT_Code",
+      "name": "99221",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99222",
+      "entity_type": "CPT_Code",
+      "name": "99222",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99223",
+      "entity_type": "CPT_Code",
+      "name": "99223",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99218",
+      "entity_type": "CPT_Code",
+      "name": "99218",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99219",
+      "entity_type": "CPT_Code",
+      "name": "99219",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99220",
+      "entity_type": "CPT_Code",
+      "name": "99220",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CIG-PAY-2024-001",
+      "entity_type": "Policy",
+      "name": "Payment Terms and Requirements",
+      "attributes": {
+        "policy_type": "Payment Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CMS-OBS-2024-001",
+      "entity_type": "Policy",
+      "name": "Outpatient Observation Services Coverage",
+      "attributes": {
+        "policy_type": "Coverage Determination",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99218",
+      "entity_type": "CPT_Code",
+      "name": "99218",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99219",
+      "entity_type": "CPT_Code",
+      "name": "99219",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99220",
+      "entity_type": "CPT_Code",
+      "name": "99220",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99224",
+      "entity_type": "CPT_Code",
+      "name": "99224",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99225",
+      "entity_type": "CPT_Code",
+      "name": "99225",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99226",
+      "entity_type": "CPT_Code",
+      "name": "99226",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_G0378",
+      "entity_type": "CPT_Code",
+      "name": "G0378",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CMS-INP-2024-001",
+      "entity_type": "Policy",
+      "name": "Inpatient Hospital Admission Requirements",
+      "attributes": {
+        "policy_type": "Coverage Determination",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CPT_99221",
+      "entity_type": "CPT_Code",
+      "name": "99221",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99222",
+      "entity_type": "CPT_Code",
+      "name": "99222",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99223",
+      "entity_type": "CPT_Code",
+      "name": "99223",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99231",
+      "entity_type": "CPT_Code",
+      "name": "99231",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99232",
+      "entity_type": "CPT_Code",
+      "name": "99232",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CPT_99233",
+      "entity_type": "CPT_Code",
+      "name": "99233",
+      "attributes": {}
+    },
+    {
+      "entity_id": "CMS-TIMELY-2024-001",
+      "entity_type": "Policy",
+      "name": "Medicare Timely Filing Requirements",
+      "attributes": {
+        "policy_type": "Billing Policy",
+        "effective_date": "2024-01-01",
+        "version": "2024.1",
+        "status": "Active",
+        "interqual_version": "N/A",
+        "prior_auth_required": false
+      }
+    },
+    {
+      "entity_id": "CARC_CO_4",
+      "entity_type": "CARC_Code",
+      "name": "CO-4",
+      "attributes": {
+        "description": "Procedure code inconsistent with modifier or diagnosis",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_16",
+      "entity_type": "CARC_Code",
+      "name": "CO-16",
+      "attributes": {
+        "description": "Missing/incomplete claim information",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_18",
+      "entity_type": "CARC_Code",
+      "name": "CO-18",
+      "attributes": {
+        "description": "Duplicate claim/service",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_29",
+      "entity_type": "CARC_Code",
+      "name": "CO-29",
+      "attributes": {
+        "description": "Time limit for filing has expired",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_45",
+      "entity_type": "CARC_Code",
+      "name": "CO-45",
+      "attributes": {
+        "description": "Charges exceed fee schedule/maximum allowable",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_50",
+      "entity_type": "CARC_Code",
+      "name": "CO-50",
+      "attributes": {
+        "description": "Non-covered service",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_96",
+      "entity_type": "CARC_Code",
+      "name": "CO-96",
+      "attributes": {
+        "description": "Non-covered charge(s)",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_97",
+      "entity_type": "CARC_Code",
+      "name": "CO-97",
+      "attributes": {
+        "description": "Payment adjusted - already adjudicated",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_197",
+      "entity_type": "CARC_Code",
+      "name": "CO-197",
+      "attributes": {
+        "description": "Precertification/authorization/notification absent",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_CO_204",
+      "entity_type": "CARC_Code",
+      "name": "CO-204",
+      "attributes": {
+        "description": "Service not authorized on this date of service",
+        "category": "CO"
+      }
+    },
+    {
+      "entity_id": "CARC_OA_23",
+      "entity_type": "CARC_Code",
+      "name": "OA-23",
+      "attributes": {
+        "description": "Payment adjusted - medical necessity",
+        "category": "OA"
+      }
+    },
+    {
+      "entity_id": "SERVICE_OBSERVATION",
+      "entity_type": "Service_Category",
+      "name": "Observation Services (99218-99226)",
+      "attributes": {}
+    },
+    {
+      "entity_id": "SERVICE_EMERGENCY",
+      "entity_type": "Service_Category",
+      "name": "Emergency Department (99281-99285)",
+      "attributes": {}
+    },
+    {
+      "entity_id": "SERVICE_INPATIENT",
+      "entity_type": "Service_Category",
+      "name": "Inpatient Hospital (99221-99239)",
+      "attributes": {}
+    },
+    {
+      "entity_id": "SERVICE_IMAGING",
+      "entity_type": "Service_Category",
+      "name": "Advanced Imaging (CT/MRI/PET)",
+      "attributes": {}
+    },
+    {
+      "entity_id": "SERVICE_SURGERY",
+      "entity_type": "Service_Category",
+      "name": "Surgical Procedures",
+      "attributes": {}
+    },
+    {
+      "entity_id": "SERVICE_LABORATORY",
+      "entity_type": "Service_Category",
+      "name": "Laboratory Services",
+      "attributes": {}
+    },
+    {
+      "entity_id": "SERVICE_CARDIOLOGY",
+      "entity_type": "Service_Category",
+      "name": "Cardiology Services",
+      "attributes": {}
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_id": "REL_UHC-OBS-2024-001_PAYER",
+      "source_entity": "PAYER_UHC",
+      "target_entity": "UHC-OBS-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-OBS-2024-001_CPT_99218",
+      "source_entity": "UHC-OBS-2024-001",
+      "target_entity": "CPT_99218",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-OBS-2024-001_CPT_99219",
+      "source_entity": "UHC-OBS-2024-001",
+      "target_entity": "CPT_99219",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-OBS-2024-001_CPT_99220",
+      "source_entity": "UHC-OBS-2024-001",
+      "target_entity": "CPT_99220",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-OBS-2024-001_CPT_99224",
+      "source_entity": "UHC-OBS-2024-001",
+      "target_entity": "CPT_99224",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-OBS-2024-001_CPT_99225",
+      "source_entity": "UHC-OBS-2024-001",
+      "target_entity": "CPT_99225",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-OBS-2024-001_CPT_99226",
+      "source_entity": "UHC-OBS-2024-001",
+      "target_entity": "CPT_99226",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PA-2024-001_PAYER",
+      "source_entity": "PAYER_UHC",
+      "target_entity": "UHC-PA-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PA-2024-001_CPT_70450",
+      "source_entity": "UHC-PA-2024-001",
+      "target_entity": "CPT_70450",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PA-2024-001_CPT_70553",
+      "source_entity": "UHC-PA-2024-001",
+      "target_entity": "CPT_70553",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PA-2024-001_CPT_71250",
+      "source_entity": "UHC-PA-2024-001",
+      "target_entity": "CPT_71250",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PA-2024-001_CPT_71260",
+      "source_entity": "UHC-PA-2024-001",
+      "target_entity": "CPT_71260",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PA-2024-001_CPT_74177",
+      "source_entity": "UHC-PA-2024-001",
+      "target_entity": "CPT_74177",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PA-2024-001_CPT_78815",
+      "source_entity": "UHC-PA-2024-001",
+      "target_entity": "CPT_78815",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-PAY-2024-001_PAYER",
+      "source_entity": "PAYER_UHC",
+      "target_entity": "UHC-PAY-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_PAYER",
+      "source_entity": "PAYER_UHC",
+      "target_entity": "UHC-INP-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99221",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99221",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99222",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99222",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99223",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99223",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99231",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99231",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99232",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99232",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99233",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99233",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99238",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99238",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-INP-2024-001_CPT_99239",
+      "source_entity": "UHC-INP-2024-001",
+      "target_entity": "CPT_99239",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_PAYER",
+      "source_entity": "PAYER_UHC",
+      "target_entity": "UHC-SURG-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_27447",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_27447",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_27130",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_27130",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_23472",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_23472",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_22612",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_22612",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_33533",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_33533",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_43644",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_43644",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_43775",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_43775",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_22551",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_22551",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-SURG-2024-001_CPT_63030",
+      "source_entity": "UHC-SURG-2024-001",
+      "target_entity": "CPT_63030",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_UHC-DME-2024-001_PAYER",
+      "source_entity": "PAYER_UHC",
+      "target_entity": "UHC-DME-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_PAYER",
+      "source_entity": "PAYER_HUMANA",
+      "target_entity": "HUM-BUND-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99281",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99281",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99282",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99282",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99283",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99283",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99284",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99284",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99285",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99285",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99218",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99218",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99219",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99219",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-BUND-2024-001_CPT_99220",
+      "source_entity": "HUM-BUND-2024-001",
+      "target_entity": "CPT_99220",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-PAY-2024-001_PAYER",
+      "source_entity": "PAYER_HUMANA",
+      "target_entity": "HUM-PAY-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_PAYER",
+      "source_entity": "PAYER_HUMANA",
+      "target_entity": "HUM-OBS-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_CPT_99218",
+      "source_entity": "HUM-OBS-2024-001",
+      "target_entity": "CPT_99218",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_CPT_99219",
+      "source_entity": "HUM-OBS-2024-001",
+      "target_entity": "CPT_99219",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_CPT_99220",
+      "source_entity": "HUM-OBS-2024-001",
+      "target_entity": "CPT_99220",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_CPT_99224",
+      "source_entity": "HUM-OBS-2024-001",
+      "target_entity": "CPT_99224",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_CPT_99225",
+      "source_entity": "HUM-OBS-2024-001",
+      "target_entity": "CPT_99225",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_CPT_99226",
+      "source_entity": "HUM-OBS-2024-001",
+      "target_entity": "CPT_99226",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-OBS-2024-001_CPT_G0378",
+      "source_entity": "HUM-OBS-2024-001",
+      "target_entity": "CPT_G0378",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_PAYER",
+      "source_entity": "PAYER_HUMANA",
+      "target_entity": "HUM-CARD-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_93458",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_93458",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_93459",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_93459",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_93350",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_93350",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_78452",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_78452",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_92928",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_92928",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_92937",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_92937",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_33533",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_33533",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-CARD-2024-001_CPT_33405",
+      "source_entity": "HUM-CARD-2024-001",
+      "target_entity": "CPT_33405",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-ONCO-2024-001_PAYER",
+      "source_entity": "PAYER_HUMANA",
+      "target_entity": "HUM-ONCO-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-ONCO-2024-001_CPT_96413",
+      "source_entity": "HUM-ONCO-2024-001",
+      "target_entity": "CPT_96413",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-ONCO-2024-001_CPT_96415",
+      "source_entity": "HUM-ONCO-2024-001",
+      "target_entity": "CPT_96415",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-ONCO-2024-001_CPT_77385",
+      "source_entity": "HUM-ONCO-2024-001",
+      "target_entity": "CPT_77385",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-ONCO-2024-001_CPT_77386",
+      "source_entity": "HUM-ONCO-2024-001",
+      "target_entity": "CPT_77386",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-ONCO-2024-001_CPT_77520",
+      "source_entity": "HUM-ONCO-2024-001",
+      "target_entity": "CPT_77520",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_HUM-ONCO-2024-001_CPT_0537T",
+      "source_entity": "HUM-ONCO-2024-001",
+      "target_entity": "CPT_0537T",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-MN-2024-001_PAYER",
+      "source_entity": "PAYER_BCBS",
+      "target_entity": "FLB-MN-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-MN-2024-001_CPT_99221",
+      "source_entity": "FLB-MN-2024-001",
+      "target_entity": "CPT_99221",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-MN-2024-001_CPT_99222",
+      "source_entity": "FLB-MN-2024-001",
+      "target_entity": "CPT_99222",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-MN-2024-001_CPT_99223",
+      "source_entity": "FLB-MN-2024-001",
+      "target_entity": "CPT_99223",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-MN-2024-001_CPT_99231",
+      "source_entity": "FLB-MN-2024-001",
+      "target_entity": "CPT_99231",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-MN-2024-001_CPT_99232",
+      "source_entity": "FLB-MN-2024-001",
+      "target_entity": "CPT_99232",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-MN-2024-001_CPT_99233",
+      "source_entity": "FLB-MN-2024-001",
+      "target_entity": "CPT_99233",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-ED-2024-001_PAYER",
+      "source_entity": "PAYER_BCBS",
+      "target_entity": "FLB-ED-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-ED-2024-001_CPT_99281",
+      "source_entity": "FLB-ED-2024-001",
+      "target_entity": "CPT_99281",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-ED-2024-001_CPT_99282",
+      "source_entity": "FLB-ED-2024-001",
+      "target_entity": "CPT_99282",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-ED-2024-001_CPT_99283",
+      "source_entity": "FLB-ED-2024-001",
+      "target_entity": "CPT_99283",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-ED-2024-001_CPT_99284",
+      "source_entity": "FLB-ED-2024-001",
+      "target_entity": "CPT_99284",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-ED-2024-001_CPT_99285",
+      "source_entity": "FLB-ED-2024-001",
+      "target_entity": "CPT_99285",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-REHAB-2024-001_PAYER",
+      "source_entity": "PAYER_BCBS",
+      "target_entity": "FLB-REHAB-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-REHAB-2024-001_CPT_97110",
+      "source_entity": "FLB-REHAB-2024-001",
+      "target_entity": "CPT_97110",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-REHAB-2024-001_CPT_97140",
+      "source_entity": "FLB-REHAB-2024-001",
+      "target_entity": "CPT_97140",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-REHAB-2024-001_CPT_97530",
+      "source_entity": "FLB-REHAB-2024-001",
+      "target_entity": "CPT_97530",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-REHAB-2024-001_CPT_97542",
+      "source_entity": "FLB-REHAB-2024-001",
+      "target_entity": "CPT_97542",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_FLB-PAY-2024-001_PAYER",
+      "source_entity": "PAYER_BCBS",
+      "target_entity": "FLB-PAY-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-MN-2024-001_PAYER",
+      "source_entity": "PAYER_AETNA",
+      "target_entity": "AET-MN-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-MN-2024-001_CPT_99221",
+      "source_entity": "AET-MN-2024-001",
+      "target_entity": "CPT_99221",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-MN-2024-001_CPT_99222",
+      "source_entity": "AET-MN-2024-001",
+      "target_entity": "CPT_99222",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-MN-2024-001_CPT_99223",
+      "source_entity": "AET-MN-2024-001",
+      "target_entity": "CPT_99223",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-MN-2024-001_CPT_99218",
+      "source_entity": "AET-MN-2024-001",
+      "target_entity": "CPT_99218",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-MN-2024-001_CPT_99219",
+      "source_entity": "AET-MN-2024-001",
+      "target_entity": "CPT_99219",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-MN-2024-001_CPT_99220",
+      "source_entity": "AET-MN-2024-001",
+      "target_entity": "CPT_99220",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-IMG-2024-001_PAYER",
+      "source_entity": "PAYER_AETNA",
+      "target_entity": "AET-IMG-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-IMG-2024-001_CPT_70450",
+      "source_entity": "AET-IMG-2024-001",
+      "target_entity": "CPT_70450",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-IMG-2024-001_CPT_70553",
+      "source_entity": "AET-IMG-2024-001",
+      "target_entity": "CPT_70553",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-IMG-2024-001_CPT_71250",
+      "source_entity": "AET-IMG-2024-001",
+      "target_entity": "CPT_71250",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-IMG-2024-001_CPT_74177",
+      "source_entity": "AET-IMG-2024-001",
+      "target_entity": "CPT_74177",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-IMG-2024-001_CPT_78452",
+      "source_entity": "AET-IMG-2024-001",
+      "target_entity": "CPT_78452",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-IMG-2024-001_CPT_78815",
+      "source_entity": "AET-IMG-2024-001",
+      "target_entity": "CPT_78815",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_AET-PAY-2024-001_PAYER",
+      "source_entity": "PAYER_AETNA",
+      "target_entity": "AET-PAY-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-MN-2024-001_PAYER",
+      "source_entity": "PAYER_CIGNA",
+      "target_entity": "CIG-MN-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-MN-2024-001_CPT_99221",
+      "source_entity": "CIG-MN-2024-001",
+      "target_entity": "CPT_99221",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-MN-2024-001_CPT_99222",
+      "source_entity": "CIG-MN-2024-001",
+      "target_entity": "CPT_99222",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-MN-2024-001_CPT_99223",
+      "source_entity": "CIG-MN-2024-001",
+      "target_entity": "CPT_99223",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-MN-2024-001_CPT_99218",
+      "source_entity": "CIG-MN-2024-001",
+      "target_entity": "CPT_99218",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-MN-2024-001_CPT_99219",
+      "source_entity": "CIG-MN-2024-001",
+      "target_entity": "CPT_99219",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-MN-2024-001_CPT_99220",
+      "source_entity": "CIG-MN-2024-001",
+      "target_entity": "CPT_99220",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CIG-PAY-2024-001_PAYER",
+      "source_entity": "PAYER_CIGNA",
+      "target_entity": "CIG-PAY-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_PAYER",
+      "source_entity": "PAYER_MEDICARE",
+      "target_entity": "CMS-OBS-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_CPT_99218",
+      "source_entity": "CMS-OBS-2024-001",
+      "target_entity": "CPT_99218",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_CPT_99219",
+      "source_entity": "CMS-OBS-2024-001",
+      "target_entity": "CPT_99219",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_CPT_99220",
+      "source_entity": "CMS-OBS-2024-001",
+      "target_entity": "CPT_99220",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_CPT_99224",
+      "source_entity": "CMS-OBS-2024-001",
+      "target_entity": "CPT_99224",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_CPT_99225",
+      "source_entity": "CMS-OBS-2024-001",
+      "target_entity": "CPT_99225",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_CPT_99226",
+      "source_entity": "CMS-OBS-2024-001",
+      "target_entity": "CPT_99226",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-OBS-2024-001_CPT_G0378",
+      "source_entity": "CMS-OBS-2024-001",
+      "target_entity": "CPT_G0378",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-INP-2024-001_PAYER",
+      "source_entity": "PAYER_MEDICARE",
+      "target_entity": "CMS-INP-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-INP-2024-001_CPT_99221",
+      "source_entity": "CMS-INP-2024-001",
+      "target_entity": "CPT_99221",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-INP-2024-001_CPT_99222",
+      "source_entity": "CMS-INP-2024-001",
+      "target_entity": "CPT_99222",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-INP-2024-001_CPT_99223",
+      "source_entity": "CMS-INP-2024-001",
+      "target_entity": "CPT_99223",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-INP-2024-001_CPT_99231",
+      "source_entity": "CMS-INP-2024-001",
+      "target_entity": "CPT_99231",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-INP-2024-001_CPT_99232",
+      "source_entity": "CMS-INP-2024-001",
+      "target_entity": "CPT_99232",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-INP-2024-001_CPT_99233",
+      "source_entity": "CMS-INP-2024-001",
+      "target_entity": "CPT_99233",
+      "relationship_type": "APPLIES_TO",
+      "attributes": {}
+    },
+    {
+      "relationship_id": "REL_CMS-TIMELY-2024-001_PAYER",
+      "source_entity": "PAYER_MEDICARE",
+      "target_entity": "CMS-TIMELY-2024-001",
+      "relationship_type": "HAS_POLICY",
+      "attributes": {}
+    }
+  ]
+}

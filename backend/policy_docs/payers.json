@@ -1,0 +1,105 @@
+{
+  "uhc": {
+    "name": "UnitedHealthcare",
+    "legal_name": "UnitedHealthcare Insurance Company",
+    "plan_types": [
+      "Medicare Advantage",
+      "Commercial",
+      "Medicaid"
+    ],
+    "region": "Florida",
+    "contact": {
+      "provider_services": "1-877-842-3210",
+      "claims": "1-800-624-8822",
+      "prior_auth": "1-866-752-7021",
+      "appeals": "1-888-936-7246"
+    },
+    "portal": "https://www.uhcprovider.com",
+    "edi_payer_id": "87726"
+  },
+  "humana": {
+    "name": "Humana",
+    "legal_name": "Humana Insurance Company",
+    "plan_types": [
+      "Medicare Advantage",
+      "Commercial"
+    ],
+    "region": "Florida",
+    "contact": {
+      "provider_services": "1-800-448-6262",
+      "claims": "1-800-457-4708",
+      "prior_auth": "1-800-523-0023",
+      "appeals": "1-800-457-4708"
+    },
+    "portal": "https://www.humana.com/provider",
+    "edi_payer_id": "61101"
+  },
+  "bcbs": {
+    "name": "Florida Blue",
+    "legal_name": "Blue Cross and Blue Shield of Florida, Inc.",
+    "plan_types": [
+      "Commercial",
+      "Medicare Advantage",
+      "ACA"
+    ],
+    "region": "Florida",
+    "contact": {
+      "provider_services": "1-800-727-2227",
+      "claims": "1-800-727-2227",
+      "prior_auth": "1-800-727-2227",
+      "appeals": "1-800-727-2227"
+    },
+    "portal": "https://www.floridablue.com/providers",
+    "edi_payer_id": "00590"
+  },
+  "aetna": {
+    "name": "Aetna",
+    "legal_name": "Aetna Life Insurance Company",
+    "plan_types": [
+      "Commercial",
+      "Medicare Advantage"
+    ],
+    "region": "National",
+    "contact": {
+      "provider_services": "1-800-624-0756",
+      "claims": "1-888-632-3862",
+      "prior_auth": "1-800-624-0756",
+      "appeals": "1-888-632-3862"
+    },
+    "portal": "https://www.availity.com",
+    "edi_payer_id": "60054"
+  },
+  "cigna": {
+    "name": "Cigna",
+    "legal_name": "Cigna Health and Life Insurance Company",
+    "plan_types": [
+      "Commercial",
+      "Medicare Advantage"
+    ],
+    "region": "National",
+    "contact": {
+      "provider_services": "1-800-244-6224",
+      "claims": "1-800-244-6224",
+      "prior_auth": "1-800-244-6224",
+      "appeals": "1-800-244-6224"
+    },
+    "portal": "https://www.cignaforhcp.com",
+    "edi_payer_id": "62308"
+  },
+  "medicare": {
+    "name": "Medicare",
+    "legal_name": "Centers for Medicare & Medicaid Services",
+    "plan_types": [
+      "Medicare FFS"
+    ],
+    "region": "National",
+    "contact": {
+      "provider_services": "1-800-633-4227",
+      "claims": "1-800-633-4227",
+      "prior_auth": "N/A",
+      "appeals": "1-800-633-4227"
+    },
+    "portal": "https://www.cms.gov",
+    "edi_payer_id": "00308"
+  }
+}

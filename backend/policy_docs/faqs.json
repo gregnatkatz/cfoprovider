@@ -1,0 +1,76 @@
+[
+  {
+    "faq_id": "FAQ-001",
+    "question": "Why is UHC denying observation cases?",
+    "answer": "UnitedHealthcare updated their observation policy (UHC-OBS-2024-001) effective November 1, 2024. Key changes include:\n\n1. **InterQual Version Update**: Now using InterQual 2024.2 instead of 2023.1\n2. **Physician Attestation**: Must be documented within 4 hours (previously 8 hours)\n3. **24-Hour Threshold**: Documentation required if observation exceeds 24 hours\n4. **Reassessment Frequency**: Every 8 hours (previously 12 hours)\n\n**Impact**: We're seeing a 15% increase in observation denials since November 15.\n\n**Contract Violation**: This may violate Section 7.1 of our contract which specifies InterQual 2023.1 criteria.\n\n**Recommended Actions**:\n- Request peer-to-peer reviews for pending denials\n- Send formal contract violation notice\n- Schedule executive meeting with UHC regional VP",
+    "payers": [
+      "uhc"
+    ],
+    "categories": [
+      "observation",
+      "denials",
+      "policy change"
+    ],
+    "confidence": 0.94
+  },
+  {
+    "faq_id": "FAQ-002",
+    "question": "What is our payment velocity violation with UHC?",
+    "answer": "Our contract with UHC (Section 4.1) specifies 30-day payment terms for clean claims. Current performance:\n\n**Contract**: 30 days\n**Actual**: 38 days average\n**Violation**: 8 days over contract\n\n**Financial Impact**:\n- Delayed cash flow: ~$12.4M\n- Interest owed (per Section 4.2): ~$124K at 1% monthly\n\n**Evidence**:\n- 835 remittance data shows consistent 35-42 day payment cycles\n- Pattern began September 2024\n\n**Recommended Actions**:\n1. Send formal interest claim per contract Section 4.2\n2. Document pattern for potential material breach claim (Section 12.1)\n3. Include in next JOC meeting agenda",
+    "payers": [
+      "uhc"
+    ],
+    "categories": [
+      "payment",
+      "contract violation",
+      "cash velocity"
+    ],
+    "confidence": 0.96
+  },
+  {
+    "faq_id": "FAQ-003",
+    "question": "Should we terminate the Humana contract?",
+    "answer": "Based on Monte Carlo simulation analysis (1,000 scenarios):\n\n**Termination Analysis Summary**:\n| Scenario | Net Impact | Retention | Break-Even |\n|----------|-----------|-----------|------------|\n| P10 (Pessimistic) | -$12.4M | 78% | 18 months |\n| P50 (Expected) | +$8.2M | 86% | 6 months |\n| P90 (Optimistic) | +$24.6M | 92% | Immediate |\n\n**Favorable Outcome Probability**: 73%\n\n**Key Factors**:\n- Current yield: 71.8% (worst in portfolio)\n- Denial rate: 28.2%\n- Payment velocity: 42 days (12 over contract)\n- Annual revenue at risk: $412M\n\n**Recommendation**: Consider termination with 90-day notice period per contract Section 8.3. Expected net positive outcome with 6-month break-even in most scenarios.\n\n**Required Steps**:\n1. Board approval required\n2. 90-day notice to Humana\n3. Patient transition plan\n4. Alternative payer negotiations",
+    "payers": [
+      "humana"
+    ],
+    "categories": [
+      "termination",
+      "contract",
+      "strategic"
+    ],
+    "confidence": 0.89
+  },
+  {
+    "faq_id": "FAQ-004",
+    "question": "What are the top denial reasons for UHC?",
+    "answer": "Top 5 CARC codes for UnitedHealthcare (last 30 days):\n\n| Rank | CARC | Description | Amount | % of Denials |\n|------|------|-------------|--------|--------------|\n| 1 | CO-4 | Procedure/diagnosis mismatch | $3.2M | 18% |\n| 2 | CO-197 | Prior auth not obtained | $2.8M | 15% |\n| 3 | OA-23 | Medical necessity | $2.1M | 12% |\n| 4 | CO-50 | Non-covered service | $1.4M | 8% |\n| 5 | CO-29 | Timely filing | $0.7M | 4% |\n\n**Root Causes**:\n1. **CO-4**: Often related to observation downgrades\n2. **CO-197**: New prior auth requirements for imaging (Oct 2024)\n3. **OA-23**: InterQual criteria changes\n\n**Trending**: OA-23 denials increased 45% since November (observation policy change)",
+    "payers": [
+      "uhc"
+    ],
+    "categories": [
+      "denials",
+      "CARC codes",
+      "analysis"
+    ],
+    "confidence": 0.92
+  },
+  {
+    "faq_id": "FAQ-005",
+    "question": "How do I appeal a medical necessity denial?",
+    "answer": "Medical necessity appeal process:\n\n**Step 1: Peer-to-Peer Review** (within 10 business days)\n- Call payer's clinical review line\n- Have attending physician available\n- Reference specific InterQual criteria\n\n**Step 2: Written Appeal** (within 60 days)\nRequired elements:\n- Member information\n- Claim number and DOS\n- Clinical summary\n- Specific criteria met\n- Supporting documentation\n- Physician attestation\n\n**Step 3: External Review** (Medicare Advantage)\n- Available if internal appeal denied\n- Independent review organization\n- 45-day timeline\n\n**Documentation Checklist**:\n\u2610 H&P with admission criteria\n\u2610 Progress notes showing clinical status\n\u2610 Test results supporting severity\n\u2610 Physician attestation statement\n\u2610 InterQual criteria reference\n\n**Contact Numbers**:\n- UHC Appeals: 1-888-936-7246\n- Humana Appeals: 1-800-457-4708\n- Florida Blue Appeals: 1-800-727-2227",
+    "payers": [
+      "uhc",
+      "humana",
+      "bcbs",
+      "aetna",
+      "cigna"
+    ],
+    "categories": [
+      "appeals",
+      "medical necessity",
+      "process"
+    ],
+    "confidence": 0.95
+  }
+]

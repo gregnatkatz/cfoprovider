@@ -1,0 +1,83 @@
+[
+  {
+    "contract_id": "CTR-UHC-2024-FL-001",
+    "payer_id": "uhc",
+    "payer_name": "UnitedHealthcare",
+    "contract_type": "Medicare Advantage Facility Agreement",
+    "effective_date": "2024-01-01",
+    "expiration_date": "2025-12-31",
+    "auto_renewal": true,
+    "termination_notice_days": 90,
+    "full_text": "\n# FACILITY PARTICIPATION AGREEMENT\n\n## Between: UnitedHealthcare Insurance Company (\"Plan\")\n## And: AdventHealth Orlando (\"Facility\")\n## Contract ID: CTR-UHC-2024-FL-001\n\n### ARTICLE 1: DEFINITIONS\n\n1.1 \"Clean Claim\" means a claim submitted on the appropriate form with all required information.\n\n1.2 \"Covered Services\" means medically necessary services covered under a Member's benefit plan.\n\n1.3 \"Medical Necessity\" shall be determined using InterQual\u00ae criteria version 2023.1 unless otherwise specified.\n\n### ARTICLE 2: FACILITY OBLIGATIONS\n\n2.1 Facility agrees to provide Covered Services to Members in accordance with accepted medical standards.\n\n2.2 Facility shall submit claims electronically via EDI 837I within 90 days of date of service.\n\n2.3 Facility shall obtain prior authorization for services listed in Exhibit A.\n\n### ARTICLE 3: PLAN OBLIGATIONS\n\n3.1 Plan agrees to reimburse Facility for Covered Services in accordance with the Fee Schedule (Exhibit B).\n\n3.2 Plan shall process Clean Claims within 30 calendar days of receipt.\n\n3.3 Plan shall provide reason codes for any claim adjustment or denial.\n\n### ARTICLE 4: PAYMENT TERMS\n\n4.1 **Payment Timeframe**: Plan shall pay Clean Claims within thirty (30) calendar days of receipt.\n\n4.2 **Interest**: For claims not paid within the timeframe specified in Section 4.1, Plan shall pay interest at the rate of one percent (1%) per month, calculated from day 31.\n\n4.3 **Contractual Adjustments**: Facility agrees to accept Plan's allowed amount as payment in full for Covered Services. Facility may not balance bill Members except for applicable copayments, deductibles, and coinsurance.\n\n4.4 **Coordination of Benefits**: When Plan is secondary, payment shall be made within 30 days of receipt of primary carrier's explanation of benefits.\n\n### ARTICLE 5: MEDICAL NECESSITY AND UTILIZATION REVIEW\n\n5.1 **Criteria**: Plan utilizes InterQual\u00ae criteria version 2023.1 for medical necessity determinations. Any updates to criteria shall be communicated to Facility with 60 days notice.\n\n5.2 **Concurrent Review**: Facility shall notify Plan within 24 hours of any inpatient admission. Plan reserves the right to conduct concurrent review.\n\n5.3 **Retrospective Review**: Plan may conduct retrospective review of claims for medical necessity, appropriate level of care, and coding accuracy.\n\n### ARTICLE 6: CLAIMS AND BILLING\n\n6.1 **Timely Filing**: Claims must be submitted within 90 days of date of service or 90 days from date of denial by primary payer for secondary claims.\n\n6.2 **Corrected Claims**: Corrected claims must be submitted within 90 days of initial claim denial.\n\n6.3 **Appeals**: Facility may appeal claim denials within 60 days of denial notification.\n\n### ARTICLE 7: MEDICAL NECESSITY DISPUTES\n\n7.1 Facility may request peer-to-peer review within 10 business days of adverse determination.\n\n7.2 Written appeals must include clinical documentation supporting medical necessity.\n\n7.3 Plan shall respond to appeals within 30 days.\n\n### ARTICLE 8: TERM AND TERMINATION\n\n8.1 **Initial Term**: This Agreement shall be effective from January 1, 2024 through December 31, 2025.\n\n8.2 **Auto-Renewal**: This Agreement shall automatically renew for successive one-year terms unless terminated.\n\n8.3 **Termination Without Cause**: Either party may terminate with 90 days written notice.\n\n8.4 **Termination for Cause**: Either party may terminate immediately for material breach with 30 days to cure.\n\n### ARTICLE 9: DISPUTE RESOLUTION\n\n9.1 Disputes shall first be addressed through informal negotiation.\n\n9.2 If not resolved within 30 days, parties agree to mediation.\n\n9.3 Venue for any legal action shall be Orange County, Florida.\n\n### ARTICLE 10: COMPLIANCE\n\n10.1 Both parties shall comply with all applicable federal and state laws.\n\n10.2 Facility shall maintain all required licenses and accreditations.\n\n10.3 Plan shall comply with CMS Medicare Advantage regulations.\n\n### ARTICLE 11: AMENDMENTS\n\n11.1 Plan may amend fee schedules with 60 days notice.\n\n11.2 Plan may update medical policies with 30 days notice.\n\n11.3 Material amendments require written agreement of both parties.\n\n### ARTICLE 12: MATERIAL BREACH\n\n12.1 The following constitute material breach:\n    a) Failure to pay claims within contractual timeframes for more than 60 consecutive days\n    b) Pattern of inappropriate medical necessity denials\n    c) Unilateral modification of contracted rates\n    d) Failure to maintain required credentials\n\n12.2 Upon material breach, non-breaching party may seek all available remedies including contract termination.\n\n---\n\n**SIGNATURES**\n\n_________________________  Date: ____________\nUnitedHealthcare Insurance Company\n\n_________________________  Date: ____________\nAdventHealth Orlando\n\n---\n\n### EXHIBIT A: PRIOR AUTHORIZATION REQUIREMENTS\n[See separate document UHC-PA-2024-001]\n\n### EXHIBIT B: FEE SCHEDULE\n[Confidential - See separate attachment]\n\n### EXHIBIT C: MEDICAL POLICIES\n[See UHCProvider.com/policies]\n",
+    "key_terms": {
+      "payment_days": 30,
+      "interest_rate": "1% per month (12% annually)",
+      "timely_filing_days": 90,
+      "appeal_days": 60,
+      "termination_notice_days": 90,
+      "interqual_version": "2023.1",
+      "auto_renewal": true
+    },
+    "sections": [
+      {
+        "number": "4.1",
+        "title": "Payment Timeframe",
+        "summary": "30 calendar days for clean claims"
+      },
+      {
+        "number": "4.2",
+        "title": "Interest",
+        "summary": "1% per month from day 31"
+      },
+      {
+        "number": "5.1",
+        "title": "Medical Necessity Criteria",
+        "summary": "InterQual 2023.1"
+      },
+      {
+        "number": "7.1",
+        "title": "Medical Necessity Disputes",
+        "summary": "Peer-to-peer within 10 days"
+      },
+      {
+        "number": "12.1",
+        "title": "Material Breach",
+        "summary": "Payment delays >60 days, inappropriate denials"
+      }
+    ],
+    "tags": [
+      "contract",
+      "UHC",
+      "payment terms",
+      "medical necessity",
+      "termination"
+    ]
+  },
+  {
+    "contract_id": "CTR-HUM-2024-FL-001",
+    "payer_id": "humana",
+    "payer_name": "Humana",
+    "contract_type": "Medicare Advantage Facility Agreement",
+    "effective_date": "2024-01-01",
+    "expiration_date": "2025-12-31",
+    "auto_renewal": true,
+    "termination_notice_days": 90,
+    "full_text": "\n# HUMANA FACILITY PARTICIPATION AGREEMENT\n\n## Contract ID: CTR-HUM-2024-FL-001\n## Facility: AdventHealth Orlando\n\n### KEY CONTRACT TERMS\n\n**Payment Terms (Section 4)**\n- Clean claim payment: 30 calendar days\n- Interest on late payment: 12% annually (Florida law)\n- Electronic submission required\n\n**Medical Necessity (Section 5)**\n- InterQual criteria version 2023.2\n- Concurrent review notification: 24 hours\n- Prior authorization per Exhibit A\n\n**Filing Requirements (Section 6)**\n- Initial claims: 90 days\n- Corrected claims: 120 days\n- Appeals: 60 days\n\n**Termination (Section 8)**\n- Without cause: 90 days notice\n- For cause: 30 days to cure\n- Material breach: immediate with notice\n\n### MATERIAL BREACH PROVISIONS\n\nSection 12.1 defines material breach as:\na) Systematic claim payment delays exceeding 45 days\nb) Denial rate exceeding 25% without clinical justification\nc) Unilateral policy changes without notice\nd) Failure to provide required member notices\n\n---\n[Abbreviated version - full contract on file]\n",
+    "key_terms": {
+      "payment_days": 30,
+      "interest_rate": "12% annually",
+      "timely_filing_days": 90,
+      "appeal_days": 60,
+      "termination_notice_days": 90,
+      "interqual_version": "2023.2",
+      "auto_renewal": true
+    },
+    "sections": [],
+    "tags": [
+      "contract",
+      "Humana",
+      "payment terms",
+      "termination"
+    ]
+  }
+]
