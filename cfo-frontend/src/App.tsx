@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AlertTriangle, FileText, Sparkles, Send, X, Loader2, Download, Building2, Zap, Target, Brain, Bot, Radar, Scale, Gavel, CheckCircle, Eye, ArrowUpRight, ArrowDownRight, Users, Copy, BarChart3, Heart, DollarSign, Search, Database, ChevronDown, ChevronUp } from 'lucide-react';
 
 // TypeScript interfaces
@@ -67,6 +67,50 @@ interface ChatMessage {
   a?: string;
   r?: string;
   data?: ChatResponse;
+}
+
+// API URL
+const API_URL = 'https://app-gvmsuvtn.fly.dev';
+
+// Payer data interfaces for dynamic charts
+interface PayerData {
+  id: string;
+  name: string;
+  shortName: string;
+  type: string;
+  annualRevenue: number;
+  yieldGap: number;
+  cashVelocity: number;
+  contractedVelocity: number;
+  riskTier: string;
+  recommendation: string;
+  hasAlert: boolean;
+  contractExpiration: string;
+}
+
+interface DenialBreakdown {
+  name: string;
+  rate: number;
+  amount: number;
+  color: string;
+}
+
+interface YieldTrend {
+  month: string;
+  yield: number;
+}
+
+interface PayerAnalysis {
+  payer: PayerData;
+  yield_analysis: {
+    current: number;
+    contracted: number;
+    gap: number;
+    lost_revenue: number;
+  };
+  denial_breakdown: DenialBreakdown[];
+  yield_trend: YieldTrend[];
+  cash_forecast: { month: string; projected: number; actual: number }[];
 }
 
 // DATA
@@ -265,6 +309,232 @@ export default function App() {
 }
 
 // SUMMARY TAB
+// Dynamic Payer Charts Component
+function PayerCharts() {
+  const [payers, setPayers] = useState<PayerData[]>([]);
+  const [selectedPayer, setSelectedPayer] = useState<string>('all');
+  const [analysis, setAnalysis] = useState<PayerAnalysis | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [denialBreakdown, setDenialBreakdown] = useState<DenialBreakdown[]>([]);
+  const [yieldTrend, setYieldTrend] = useState<YieldTrend[]>([]);
+
+  // Fetch payers list on mount
+  useEffect(() => {
+    fetch(`${API_URL}/api/payers`)
+      .then(res => res.json())
+      .then(data => {
+        setPayers(data);
+        // Fetch overall denial breakdown
+        fetch(`${API_URL}/api/analysis/denial-breakdown`)
+          .then(res => res.json())
+          .then(setDenialBreakdown);
+        fetch(`${API_URL}/api/analysis/yield-trend`)
+          .then(res => res.json())
+          .then(setYieldTrend);
+      })
+      .catch(console.error);
+  }, []);
+
+  // Fetch payer-specific data when selection changes
+  useEffect(() => {
+    if (selectedPayer === 'all') {
+      setAnalysis(null);
+      fetch(`${API_URL}/api/analysis/denial-breakdown`)
+        .then(res => res.json())
+        .then(setDenialBreakdown);
+      fetch(`${API_URL}/api/analysis/yield-trend`)
+        .then(res => res.json())
+        .then(setYieldTrend);
+      return;
+    }
+    setLoading(true);
+    fetch(`${API_URL}/api/analysis/payer/${selectedPayer}`)
+      .then(res => res.json())
+      .then(data => {
+        setAnalysis(data);
+        setDenialBreakdown(data.denial_breakdown || []);
+        setYieldTrend(data.yield_trend || []);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [selectedPayer]);
+
+  const maxDenialRate = Math.max(...denialBreakdown.map(d => d.rate), 1);
+  const maxYield = Math.max(...yieldTrend.map(y => y.yield), 100);
+  const minYield = Math.min(...yieldTrend.map(y => y.yield), 0);
+
+  return (
+    <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-cyan-400" />
+          Dynamic Payer Analytics
+          <span className="text-xs text-slate-500 ml-2">(SQLite Data)</span>
+        </h2>
+        <select
+          value={selectedPayer}
+          onChange={(e) => setSelectedPayer(e.target.value)}
+          className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 outline-none"
+        >
+          <option value="all">All Payers</option>
+          {payers.map(p => (
+            <option key={p.id} value={p.id}>{p.shortName}</option>
+          ))}
+        </select>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+          <span className="ml-3 text-slate-400">Loading payer data...</span>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-6">
+          {/* Yield Trend Chart */}
+          <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
+            <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+              <ArrowUpRight className="w-4 h-4 text-emerald-400" />
+              Yield Trend (6 Months)
+              {analysis && <span className="text-xs text-slate-500">• {analysis.payer.shortName}</span>}
+            </h3>
+            <div className="h-40 flex items-end gap-1">
+              {yieldTrend.map((point, i) => {
+                const height = ((point.yield - minYield + 10) / (maxYield - minYield + 20)) * 100;
+                const isLow = point.yield < 70;
+                return (
+                  <div key={i} className="flex-1 flex flex-col items-center">
+                    <div 
+                      className={`w-full rounded-t transition-all ${isLow ? 'bg-red-500' : 'bg-cyan-500'}`}
+                      style={{ height: `${height}%` }}
+                      title={`${point.month}: ${point.yield.toFixed(1)}%`}
+                    />
+                    <span className="text-xs text-slate-500 mt-1">{point.month}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex justify-between mt-2 text-xs text-slate-500">
+              <span>Min: {minYield.toFixed(1)}%</span>
+              <span>Max: {maxYield.toFixed(1)}%</span>
+            </div>
+          </div>
+
+          {/* Denial Breakdown Chart */}
+          <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
+            <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
+              Denial Breakdown
+              {analysis && <span className="text-xs text-slate-500">• {analysis.payer.shortName}</span>}
+            </h3>
+            <div className="space-y-2">
+              {denialBreakdown.slice(0, 5).map((d, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400 w-28 truncate">{d.name}</span>
+                  <div className="flex-1 h-4 bg-slate-800 rounded overflow-hidden">
+                    <div 
+                      className="h-full rounded transition-all"
+                      style={{ 
+                        width: `${(d.rate / maxDenialRate) * 100}%`,
+                        backgroundColor: d.color 
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs font-semibold w-12 text-right">{d.rate.toFixed(1)}%</span>
+                </div>
+              ))}
+            </div>
+            {denialBreakdown.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-slate-700/50 text-xs text-slate-500">
+                Total: {fmt(denialBreakdown.reduce((s, d) => s + d.amount, 0))} in denials
+              </div>
+            )}
+          </div>
+
+          {/* Payer Summary Card */}
+          {analysis && (
+            <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
+              <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                <Building2 className="w-4 h-4 text-purple-400" />
+                {analysis.payer.name}
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-800/50 rounded p-2">
+                  <div className="text-lg font-bold text-emerald-400">{fmt(analysis.payer.annualRevenue)}</div>
+                  <div className="text-xs text-slate-500">Annual Revenue</div>
+                </div>
+                <div className="bg-slate-800/50 rounded p-2">
+                  <div className={`text-lg font-bold ${analysis.payer.yieldGap < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                    {analysis.payer.yieldGap.toFixed(1)}%
+                  </div>
+                  <div className="text-xs text-slate-500">Yield Gap</div>
+                </div>
+                <div className="bg-slate-800/50 rounded p-2">
+                  <div className={`text-lg font-bold ${analysis.payer.cashVelocity > analysis.payer.contractedVelocity ? 'text-red-400' : 'text-emerald-400'}`}>
+                    {analysis.payer.cashVelocity} days
+                  </div>
+                  <div className="text-xs text-slate-500">Cash Velocity</div>
+                </div>
+                <div className="bg-slate-800/50 rounded p-2">
+                  <div className="text-lg font-bold text-amber-400">{fmt(analysis.yield_analysis.lost_revenue)}</div>
+                  <div className="text-xs text-slate-500">Lost Revenue</div>
+                </div>
+              </div>
+              <div className="mt-3 flex items-center gap-2">
+                <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                  analysis.payer.riskTier === 'critical' ? 'bg-red-500/20 text-red-400' :
+                  analysis.payer.riskTier === 'high' ? 'bg-amber-500/20 text-amber-400' :
+                  'bg-emerald-500/20 text-emerald-400'
+                }`}>
+                  {analysis.payer.riskTier.toUpperCase()}
+                </span>
+                <span className="text-xs text-slate-500">Contract expires: {analysis.payer.contractExpiration}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Cash Forecast Chart */}
+          {analysis && analysis.cash_forecast && (
+            <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
+              <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-emerald-400" />
+                Cash Forecast
+              </h3>
+              <div className="h-32 flex items-end gap-1">
+                {analysis.cash_forecast.slice(0, 6).map((point, i) => {
+                  const maxVal = Math.max(...analysis.cash_forecast.map(p => Math.max(p.projected, p.actual)));
+                  const projHeight = (point.projected / maxVal) * 100;
+                  const actHeight = (point.actual / maxVal) * 100;
+                  return (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                      <div className="w-full flex gap-0.5 items-end h-24">
+                        <div 
+                          className="flex-1 bg-cyan-500/50 rounded-t"
+                          style={{ height: `${projHeight}%` }}
+                          title={`Projected: ${fmt(point.projected)}`}
+                        />
+                        <div 
+                          className="flex-1 bg-emerald-500 rounded-t"
+                          style={{ height: `${actHeight}%` }}
+                          title={`Actual: ${fmt(point.actual)}`}
+                        />
+                      </div>
+                      <span className="text-xs text-slate-500">{point.month}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex gap-4 mt-2 text-xs">
+                <span className="flex items-center gap-1"><span className="w-3 h-3 bg-cyan-500/50 rounded" />Projected</span>
+                <span className="flex items-center gap-1"><span className="w-3 h-3 bg-emerald-500 rounded" />Actual</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SummaryTab({ total, onNav, open }: { total: number; onNav: (tab: string) => void; open: (type: string, data: Violation) => void }) {
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -284,6 +554,9 @@ function SummaryTab({ total, onNav, open }: { total: number; onNav: (tab: string
           </button>
         </div>
       </div>
+
+      {/* Dynamic Payer Charts */}
+      <PayerCharts />
 
       <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
         <h2 className="text-lg font-semibold flex items-center gap-2 mb-4"><Zap className="w-5 h-5 text-amber-400" />Priority Actions</h2>
