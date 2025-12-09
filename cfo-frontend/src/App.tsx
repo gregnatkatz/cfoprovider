@@ -364,17 +364,17 @@ function PayerCharts() {
   const minYield = Math.min(...yieldTrend.map(y => y.yield), 0);
 
   return (
-    <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-cyan-400" />
-          Dynamic Payer Analytics
-          <span className="text-xs text-slate-500 ml-2">(SQLite Data)</span>
+    <div className="bg-slate-800/50 rounded-lg border border-slate-700/50 p-3">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="text-sm font-semibold flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-cyan-400" />
+          Payer Analytics
+          <span className="text-xs text-slate-500">(SQLite)</span>
         </h2>
         <select
           value={selectedPayer}
           onChange={(e) => setSelectedPayer(e.target.value)}
-          className="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 outline-none"
+          className="bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs focus:border-cyan-500 outline-none"
         >
           <option value="all">All Payers</option>
           {payers.map(p => (
@@ -384,20 +384,20 @@ function PayerCharts() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
-          <span className="ml-3 text-slate-400">Loading payer data...</span>
+        <div className="flex items-center justify-center py-6">
+          <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
+          <span className="ml-2 text-slate-400 text-sm">Loading...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-4 gap-3">
           {/* Yield Trend Chart */}
-          <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
-            <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-              <ArrowUpRight className="w-4 h-4 text-emerald-400" />
-              Yield Trend (6 Months)
+          <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
+            <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
+              <ArrowUpRight className="w-3 h-3 text-emerald-400" />
+              Yield Trend
               {analysis && <span className="text-xs text-slate-500">• {analysis.payer.shortName}</span>}
             </h3>
-            <div className="h-40 flex items-end gap-1">
+            <div className="h-16 flex items-end gap-0.5">
               {yieldTrend.map((point, i) => {
                 const height = ((point.yield - minYield + 10) / (maxYield - minYield + 20)) * 100;
                 const isLow = point.yield < 70;
@@ -408,125 +408,113 @@ function PayerCharts() {
                       style={{ height: `${height}%` }}
                       title={`${point.month}: ${point.yield.toFixed(1)}%`}
                     />
-                    <span className="text-xs text-slate-500 mt-1">{point.month}</span>
                   </div>
                 );
               })}
             </div>
-            <div className="flex justify-between mt-2 text-xs text-slate-500">
-              <span>Min: {minYield.toFixed(1)}%</span>
-              <span>Max: {maxYield.toFixed(1)}%</span>
+            <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>{minYield.toFixed(0)}%</span>
+              <span>{maxYield.toFixed(0)}%</span>
             </div>
           </div>
 
           {/* Denial Breakdown Chart */}
-          <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
-            <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-amber-400" />
-              Denial Breakdown
+          <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
+            <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
+              <AlertTriangle className="w-3 h-3 text-amber-400" />
+              Denials
               {analysis && <span className="text-xs text-slate-500">• {analysis.payer.shortName}</span>}
             </h3>
-            <div className="space-y-2">
-              {denialBreakdown.slice(0, 5).map((d, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400 w-28 truncate">{d.name}</span>
-                  <div className="flex-1 h-4 bg-slate-800 rounded overflow-hidden">
+            <div className="space-y-1">
+              {denialBreakdown.slice(0, 4).map((d, i) => (
+                <div key={i} className="flex items-center gap-1">
+                  <span className="text-[10px] text-slate-400 w-16 truncate">{d.name}</span>
+                  <div className="flex-1 h-2 bg-slate-800 rounded overflow-hidden">
                     <div 
                       className="h-full rounded transition-all"
-                      style={{ 
-                        width: `${(d.rate / maxDenialRate) * 100}%`,
-                        backgroundColor: d.color 
-                      }}
+                      style={{ width: `${(d.rate / maxDenialRate) * 100}%`, backgroundColor: d.color }}
                     />
                   </div>
-                  <span className="text-xs font-semibold w-12 text-right">{d.rate.toFixed(1)}%</span>
+                  <span className="text-[10px] font-semibold w-8 text-right">{d.rate.toFixed(0)}%</span>
                 </div>
               ))}
             </div>
-            {denialBreakdown.length > 0 && (
-              <div className="mt-3 pt-3 border-t border-slate-700/50 text-xs text-slate-500">
-                Total: {fmt(denialBreakdown.reduce((s, d) => s + d.amount, 0))} in denials
-              </div>
-            )}
+            <div className="text-[10px] text-slate-500 mt-1">{fmt(denialBreakdown.reduce((s, d) => s + d.amount, 0))}</div>
           </div>
 
           {/* Payer Summary Card */}
-          {analysis && (
-            <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
-              <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                <Building2 className="w-4 h-4 text-purple-400" />
-                {analysis.payer.name}
+          {analysis ? (
+            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
+              <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
+                <Building2 className="w-3 h-3 text-purple-400" />
+                {analysis.payer.shortName}
               </h3>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-slate-800/50 rounded p-2">
-                  <div className="text-lg font-bold text-emerald-400">{fmt(analysis.payer.annualRevenue)}</div>
-                  <div className="text-xs text-slate-500">Annual Revenue</div>
+              <div className="grid grid-cols-2 gap-1">
+                <div className="bg-slate-800/50 rounded p-1">
+                  <div className="text-sm font-bold text-emerald-400">{fmt(analysis.payer.annualRevenue)}</div>
+                  <div className="text-[10px] text-slate-500">Revenue</div>
                 </div>
-                <div className="bg-slate-800/50 rounded p-2">
-                  <div className={`text-lg font-bold ${analysis.payer.yieldGap < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                <div className="bg-slate-800/50 rounded p-1">
+                  <div className={`text-sm font-bold ${analysis.payer.yieldGap < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
                     {analysis.payer.yieldGap.toFixed(1)}%
                   </div>
-                  <div className="text-xs text-slate-500">Yield Gap</div>
+                  <div className="text-[10px] text-slate-500">Yield Gap</div>
                 </div>
-                <div className="bg-slate-800/50 rounded p-2">
-                  <div className={`text-lg font-bold ${analysis.payer.cashVelocity > analysis.payer.contractedVelocity ? 'text-red-400' : 'text-emerald-400'}`}>
-                    {analysis.payer.cashVelocity} days
+                <div className="bg-slate-800/50 rounded p-1">
+                  <div className={`text-sm font-bold ${analysis.payer.cashVelocity > analysis.payer.contractedVelocity ? 'text-red-400' : 'text-emerald-400'}`}>
+                    {analysis.payer.cashVelocity}d
                   </div>
-                  <div className="text-xs text-slate-500">Cash Velocity</div>
+                  <div className="text-[10px] text-slate-500">Velocity</div>
                 </div>
-                <div className="bg-slate-800/50 rounded p-2">
-                  <div className="text-lg font-bold text-amber-400">{fmt(analysis.yield_analysis.lost_revenue)}</div>
-                  <div className="text-xs text-slate-500">Lost Revenue</div>
+                <div className="bg-slate-800/50 rounded p-1">
+                  <div className="text-sm font-bold text-amber-400">{fmt(analysis.yield_analysis.lost_revenue)}</div>
+                  <div className="text-[10px] text-slate-500">Lost</div>
                 </div>
               </div>
-              <div className="mt-3 flex items-center gap-2">
-                <span className={`px-2 py-1 rounded text-xs font-semibold ${
+              <div className="mt-1 flex items-center gap-1">
+                <span className={`px-1 py-0.5 rounded text-[10px] font-semibold ${
                   analysis.payer.riskTier === 'critical' ? 'bg-red-500/20 text-red-400' :
                   analysis.payer.riskTier === 'high' ? 'bg-amber-500/20 text-amber-400' :
                   'bg-emerald-500/20 text-emerald-400'
                 }`}>
                   {analysis.payer.riskTier.toUpperCase()}
                 </span>
-                <span className="text-xs text-slate-500">Contract expires: {analysis.payer.contractExpiration}</span>
               </div>
+            </div>
+          ) : (
+            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50 flex items-center justify-center text-xs text-slate-500">
+              Select payer for details
             </div>
           )}
 
           {/* Cash Forecast Chart */}
-          {analysis && analysis.cash_forecast && (
-            <div className="bg-slate-900/50 rounded-lg p-4 border border-slate-700/50">
-              <h3 className="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-emerald-400" />
+          {analysis && analysis.cash_forecast ? (
+            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
+              <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
+                <DollarSign className="w-3 h-3 text-emerald-400" />
                 Cash Forecast
               </h3>
-              <div className="h-32 flex items-end gap-1">
+              <div className="h-16 flex items-end gap-0.5">
                 {analysis.cash_forecast.slice(0, 6).map((point, i) => {
                   const maxVal = Math.max(...analysis.cash_forecast.map(p => Math.max(p.projected, p.actual)));
                   const projHeight = (point.projected / maxVal) * 100;
                   const actHeight = (point.actual / maxVal) * 100;
                   return (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
-                      <div className="w-full flex gap-0.5 items-end h-24">
-                        <div 
-                          className="flex-1 bg-cyan-500/50 rounded-t"
-                          style={{ height: `${projHeight}%` }}
-                          title={`Projected: ${fmt(point.projected)}`}
-                        />
-                        <div 
-                          className="flex-1 bg-emerald-500 rounded-t"
-                          style={{ height: `${actHeight}%` }}
-                          title={`Actual: ${fmt(point.actual)}`}
-                        />
-                      </div>
-                      <span className="text-xs text-slate-500">{point.month}</span>
+                    <div key={i} className="flex-1 flex gap-0.5 items-end h-14">
+                      <div className="flex-1 bg-cyan-500/50 rounded-t" style={{ height: `${projHeight}%` }} />
+                      <div className="flex-1 bg-emerald-500 rounded-t" style={{ height: `${actHeight}%` }} />
                     </div>
                   );
                 })}
               </div>
-              <div className="flex gap-4 mt-2 text-xs">
-                <span className="flex items-center gap-1"><span className="w-3 h-3 bg-cyan-500/50 rounded" />Projected</span>
-                <span className="flex items-center gap-1"><span className="w-3 h-3 bg-emerald-500 rounded" />Actual</span>
+              <div className="flex gap-2 mt-1 text-[10px]">
+                <span className="flex items-center gap-0.5"><span className="w-2 h-2 bg-cyan-500/50 rounded" />Proj</span>
+                <span className="flex items-center gap-0.5"><span className="w-2 h-2 bg-emerald-500 rounded" />Act</span>
               </div>
+            </div>
+          ) : (
+            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50 flex items-center justify-center text-xs text-slate-500">
+              Select payer for forecast
             </div>
           )}
         </div>
@@ -537,20 +525,19 @@ function PayerCharts() {
 
 function SummaryTab({ total, onNav, open }: { total: number; onNav: (tab: string) => void; open: (type: string, data: Violation) => void }) {
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
-      <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-xl p-6">
-        <div className="flex justify-between">
-          <div>
-            <div className="flex items-center gap-3 mb-2"><Sparkles className="w-6 h-6 text-emerald-400" /><span className="text-sm text-emerald-400 uppercase">AI-Identified Recovery</span></div>
-            <div className="flex items-baseline gap-3"><span className="text-5xl font-bold">{fmt(total)}</span><span className="text-slate-400">ready to recover</span></div>
-            <div className="flex gap-6 mt-4 text-sm">
-              <span className="flex items-center gap-2"><AlertTriangle className="w-4 h-4 text-red-400" />{VIOLATIONS.length} violations</span>
-              <span className="flex items-center gap-2"><Target className="w-4 h-4 text-cyan-400" />500 appeals</span>
-              <span className="flex items-center gap-2"><Radar className="w-4 h-4 text-purple-400" />{ALERTS.length} alerts</span>
+    <div className="space-y-3 max-w-7xl mx-auto">
+      <div className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 rounded-lg p-3">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-emerald-400" /><span className="text-3xl font-bold">{fmt(total)}</span><span className="text-slate-400 text-sm">recoverable</span></div>
+            <div className="flex gap-4 text-xs">
+              <span className="flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-red-400" />{VIOLATIONS.length} violations</span>
+              <span className="flex items-center gap-1"><Target className="w-3 h-3 text-cyan-400" />500 appeals</span>
+              <span className="flex items-center gap-1"><Radar className="w-3 h-3 text-purple-400" />{ALERTS.length} alerts</span>
             </div>
           </div>
-          <button onClick={() => open('letter', VIOLATIONS[0])} className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 font-semibold rounded-lg flex items-center gap-2 h-fit">
-            <Zap className="w-5 h-5" />Execute Top Action
+          <button onClick={() => open('letter', VIOLATIONS[0])} className="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 font-semibold rounded flex items-center gap-2 text-sm">
+            <Zap className="w-4 h-4" />Execute
           </button>
         </div>
       </div>
@@ -558,57 +545,64 @@ function SummaryTab({ total, onNav, open }: { total: number; onNav: (tab: string
       {/* Dynamic Payer Charts */}
       <PayerCharts />
 
-      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
-        <h2 className="text-lg font-semibold flex items-center gap-2 mb-4"><Zap className="w-5 h-5 text-amber-400" />Priority Actions</h2>
-        <div className="space-y-3">
-          {VIOLATIONS.map((v, i) => (
-            <div key={v.id} className="flex items-center justify-between p-4 bg-slate-900/50 rounded-lg border border-slate-700/50">
-              <div className="flex items-center gap-4">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${i === 0 ? 'bg-emerald-500' : i === 1 ? 'bg-cyan-500' : 'bg-slate-600'}`}>{i + 1}</div>
-                <div>
-                  <div className="font-semibold">{v.title} <span className="text-slate-500">• {v.payer}</span></div>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="text-emerald-400 font-semibold">{fmt(v.principal + v.interest)}</span>
-                    <Confidence v={v.confidence} />
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-slate-800/50 rounded-lg border border-slate-700/50 p-3">
+          <h2 className="text-sm font-semibold flex items-center gap-2 mb-2"><Zap className="w-4 h-4 text-amber-400" />Priority Actions</h2>
+          <div className="space-y-1.5">
+            {VIOLATIONS.map((v, i) => (
+              <div key={v.id} className="flex items-center justify-between p-2 bg-slate-900/50 rounded border border-slate-700/50">
+                <div className="flex items-center gap-2">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${i === 0 ? 'bg-emerald-500' : i === 1 ? 'bg-cyan-500' : 'bg-slate-600'}`}>{i + 1}</div>
+                  <div>
+                    <div className="text-sm font-medium">{v.title} <span className="text-slate-500 text-xs">• {v.payer}</span></div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-emerald-400 text-xs font-semibold">{fmt(v.principal + v.interest)}</span>
+                      <span className="text-[10px] text-slate-500">{(v.confidence * 100).toFixed(0)}%</span>
+                    </div>
                   </div>
                 </div>
+                <div className="flex gap-1">
+                  <button onClick={() => open('violation', v)} className="px-2 py-1 bg-slate-700 rounded text-xs"><Eye className="w-3 h-3" /></button>
+                  <button onClick={() => open('letter', v)} className="px-2 py-1 bg-emerald-500 rounded text-xs flex items-center gap-1"><Send className="w-3 h-3" />Send</button>
+                </div>
               </div>
-              <div className="flex gap-2">
-                <button onClick={() => open('violation', v)} className="px-3 py-2 bg-slate-700 rounded"><Eye className="w-4 h-4" /></button>
-                <button onClick={() => open('letter', v)} className="px-4 py-2 bg-emerald-500 rounded font-medium flex items-center gap-2"><Send className="w-4 h-4" />Send</button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-rows-3 gap-2">
+          <div className="bg-slate-800/50 rounded-lg border border-slate-700/50 p-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Target className="w-4 h-4 text-cyan-400" />
+              <div>
+                <div className="text-sm font-semibold">Appeal Queue</div>
+                <div className="text-xs text-slate-400">500 total • <span className="text-emerald-400">$425K</span> expected</div>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6">
-        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
-          <h3 className="font-semibold flex items-center gap-2 mb-3"><Target className="w-5 h-5 text-cyan-400" />Appeal Queue</h3>
-          <div className="grid grid-cols-2 gap-3 mb-3">
-            <div className="bg-slate-900/50 rounded p-2"><div className="text-xl font-bold">500</div><div className="text-xs text-slate-500">Total</div></div>
-            <div className="bg-slate-900/50 rounded p-2"><div className="text-xl font-bold text-emerald-400">$425K</div><div className="text-xs text-slate-500">Expected</div></div>
+            <button onClick={() => onNav('appeals')} className="px-3 py-1 bg-slate-700 rounded text-xs">View →</button>
           </div>
-          <button onClick={() => onNav('appeals')} className="w-full py-2 bg-slate-700 rounded text-sm">View Queue →</button>
-        </div>
 
-        <div className="bg-slate-800/50 rounded-xl border border-amber-500/30 p-5">
-          <h3 className="font-semibold flex items-center gap-2 mb-3"><Radar className="w-5 h-5 text-amber-400" />Policy Alert</h3>
-          <div className="font-semibold">{ALERTS[0].title}</div>
-          <div className="text-sm text-slate-400">{ALERTS[0].payer} • ~{ALERTS[0].days} days</div>
-          <div className="mt-2 text-amber-400">{fmt(ALERTS[0].impact)} if unprepared</div>
-          <button onClick={() => onNav('radar')} className="w-full mt-3 py-2 bg-amber-500/20 text-amber-400 rounded text-sm">Prepare →</button>
-        </div>
-
-        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
-          <h3 className="font-semibold flex items-center gap-2 mb-3"><Scale className="w-5 h-5 text-purple-400" />Negotiation</h3>
-          <div className="font-semibold">{NEGO.payer}</div>
-          <div className="text-sm text-slate-400">Expires {NEGO.expires}</div>
-          <div className="mt-2 flex justify-between">
-            <div><div className="text-2xl font-bold text-emerald-400">{NEGO.leverage}/100</div><div className="text-xs text-slate-500">Leverage</div></div>
-            <div><div className="text-2xl font-bold text-cyan-400">{fmt(NEGO.opportunity)}</div><div className="text-xs text-slate-500">Opportunity</div></div>
+          <div className="bg-slate-800/50 rounded-lg border border-amber-500/30 p-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Radar className="w-4 h-4 text-amber-400" />
+              <div>
+                <div className="text-sm font-semibold">{ALERTS[0].title}</div>
+                <div className="text-xs text-slate-400">{ALERTS[0].payer} • <span className="text-amber-400">{fmt(ALERTS[0].impact)}</span> at risk</div>
+              </div>
+            </div>
+            <button onClick={() => onNav('radar')} className="px-3 py-1 bg-amber-500/20 text-amber-400 rounded text-xs">Prepare →</button>
           </div>
-          <button onClick={() => onNav('negotiate')} className="w-full mt-3 py-2 bg-slate-700 rounded text-sm">View Playbook →</button>
+
+          <div className="bg-slate-800/50 rounded-lg border border-slate-700/50 p-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Scale className="w-4 h-4 text-purple-400" />
+              <div>
+                <div className="text-sm font-semibold">{NEGO.payer} Negotiation</div>
+                <div className="text-xs text-slate-400">Leverage: <span className="text-emerald-400">{NEGO.leverage}/100</span> • <span className="text-cyan-400">{fmt(NEGO.opportunity)}</span></div>
+              </div>
+            </div>
+            <button onClick={() => onNav('negotiate')} className="px-3 py-1 bg-slate-700 rounded text-xs">Playbook →</button>
+          </div>
         </div>
       </div>
     </div>
