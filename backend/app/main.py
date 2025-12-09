@@ -1199,6 +1199,22 @@ async def get_payer_analysis(payer_id: str):
             "recommendation": "CONSIDER TERMINATION"
         }
     
+    # Generate payer-specific cash forecast based on annual revenue
+    base_monthly = payer["annualRevenue"] / 12
+    months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
+    import random
+    random.seed(hash(payer_id))  # Consistent per payer
+    cash_forecast = []
+    for i, month in enumerate(months):
+        variance = random.uniform(0.85, 1.15)
+        projected = int(base_monthly * variance)
+        actual = int(projected * random.uniform(0.92, 1.08))
+        cash_forecast.append({
+            "month": month,
+            "projected": projected,
+            "actual": actual
+        })
+    
     return {
         "payer": payer,
         "yield_analysis": {
@@ -1216,6 +1232,7 @@ async def get_payer_analysis(payer_id: str):
             "yield_rate_30d": 74.1,
             "yield_rate_60d": 72.8
         },
+        "cash_forecast": cash_forecast,
         "change_points": change_points,
         "patterns": [
             {"name": "Observation Downgrade", "confidence": 96, "impact": 2100000},

@@ -384,20 +384,20 @@ function PayerCharts() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-6">
-          <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
+        <div className="flex items-center justify-center py-4">
+          <Loader2 className="w-5 h-5 animate-spin text-cyan-400" />
           <span className="ml-2 text-slate-400 text-sm">Loading...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {/* Yield Trend Chart */}
-          <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
-            <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-              <ArrowUpRight className="w-3 h-3 text-emerald-400" />
+          <div className="bg-slate-900/50 rounded p-3 border border-slate-700/50">
+            <h3 className="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-1">
+              <ArrowUpRight className="w-4 h-4 text-emerald-400" />
               Yield Trend
-              {analysis && <span className="text-xs text-slate-500">• {analysis.payer.shortName}</span>}
+              {analysis && <span className="text-xs text-slate-500 ml-1">• {analysis.payer.shortName}</span>}
             </h3>
-            <div className="h-16 flex items-end gap-0.5">
+            <div className="h-20 flex items-end gap-1">
               {yieldTrend.map((point, i) => {
                 const height = ((point.yield - minYield + 10) / (maxYield - minYield + 20)) * 100;
                 const isLow = point.yield < 70;
@@ -408,115 +408,107 @@ function PayerCharts() {
                       style={{ height: `${height}%` }}
                       title={`${point.month}: ${point.yield.toFixed(1)}%`}
                     />
+                    <span className="text-[9px] text-slate-500 mt-1">{point.month}</span>
                   </div>
                 );
               })}
             </div>
-            <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+            <div className="flex justify-between text-xs text-slate-500 mt-1">
               <span>{minYield.toFixed(0)}%</span>
               <span>{maxYield.toFixed(0)}%</span>
             </div>
           </div>
 
           {/* Denial Breakdown Chart */}
-          <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
-            <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-              <AlertTriangle className="w-3 h-3 text-amber-400" />
+          <div className="bg-slate-900/50 rounded p-3 border border-slate-700/50">
+            <h3 className="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-1">
+              <AlertTriangle className="w-4 h-4 text-amber-400" />
               Denials
-              {analysis && <span className="text-xs text-slate-500">• {analysis.payer.shortName}</span>}
+              {analysis && <span className="text-xs text-slate-500 ml-1">• {analysis.payer.shortName}</span>}
             </h3>
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               {denialBreakdown.slice(0, 4).map((d, i) => (
-                <div key={i} className="flex items-center gap-1">
-                  <span className="text-[10px] text-slate-400 w-16 truncate">{d.name}</span>
-                  <div className="flex-1 h-2 bg-slate-800 rounded overflow-hidden">
+                <div key={i} className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400 w-20 truncate">{d.name}</span>
+                  <div className="flex-1 h-3 bg-slate-800 rounded overflow-hidden">
                     <div 
                       className="h-full rounded transition-all"
                       style={{ width: `${(d.rate / maxDenialRate) * 100}%`, backgroundColor: d.color }}
                     />
                   </div>
-                  <span className="text-[10px] font-semibold w-8 text-right">{d.rate.toFixed(0)}%</span>
+                  <span className="text-xs font-semibold w-10 text-right">{d.rate.toFixed(0)}%</span>
                 </div>
               ))}
             </div>
-            <div className="text-[10px] text-slate-500 mt-1">{fmt(denialBreakdown.reduce((s, d) => s + d.amount, 0))}</div>
+            <div className="text-xs text-slate-500 mt-2">{fmt(denialBreakdown.reduce((s, d) => s + d.amount, 0))} total</div>
           </div>
 
-          {/* Payer Summary Card */}
-          {analysis ? (
-            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
-              <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <Building2 className="w-3 h-3 text-purple-400" />
-                {analysis.payer.shortName}
-              </h3>
-              <div className="grid grid-cols-2 gap-1">
-                <div className="bg-slate-800/50 rounded p-1">
-                  <div className="text-sm font-bold text-emerald-400">{fmt(analysis.payer.annualRevenue)}</div>
-                  <div className="text-[10px] text-slate-500">Revenue</div>
-                </div>
-                <div className="bg-slate-800/50 rounded p-1">
-                  <div className={`text-sm font-bold ${analysis.payer.yieldGap < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
-                    {analysis.payer.yieldGap.toFixed(1)}%
+          {/* Payer Summary + Cash Forecast Stacked */}
+          <div className="flex flex-col gap-2">
+            {/* Payer Summary Card */}
+            {analysis ? (
+              <div className="bg-slate-900/50 rounded p-3 border border-slate-700/50 flex-1">
+                <h3 className="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-1">
+                  <Building2 className="w-4 h-4 text-purple-400" />
+                  {analysis.payer.shortName}
+                  <span className={`ml-auto px-1.5 py-0.5 rounded text-xs font-semibold ${
+                    analysis.payer.riskTier === 'critical' ? 'bg-red-500/20 text-red-400' :
+                    analysis.payer.riskTier === 'high' ? 'bg-amber-500/20 text-amber-400' :
+                    'bg-emerald-500/20 text-emerald-400'
+                  }`}>
+                    {analysis.payer.riskTier.toUpperCase()}
+                  </span>
+                </h3>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-slate-800/50 rounded p-1.5">
+                    <div className="text-base font-bold text-emerald-400">{fmt(analysis.payer.annualRevenue)}</div>
+                    <div className="text-xs text-slate-500">Revenue</div>
                   </div>
-                  <div className="text-[10px] text-slate-500">Yield Gap</div>
-                </div>
-                <div className="bg-slate-800/50 rounded p-1">
-                  <div className={`text-sm font-bold ${analysis.payer.cashVelocity > analysis.payer.contractedVelocity ? 'text-red-400' : 'text-emerald-400'}`}>
-                    {analysis.payer.cashVelocity}d
-                  </div>
-                  <div className="text-[10px] text-slate-500">Velocity</div>
-                </div>
-                <div className="bg-slate-800/50 rounded p-1">
-                  <div className="text-sm font-bold text-amber-400">{fmt(analysis.yield_analysis.lost_revenue)}</div>
-                  <div className="text-[10px] text-slate-500">Lost</div>
-                </div>
-              </div>
-              <div className="mt-1 flex items-center gap-1">
-                <span className={`px-1 py-0.5 rounded text-[10px] font-semibold ${
-                  analysis.payer.riskTier === 'critical' ? 'bg-red-500/20 text-red-400' :
-                  analysis.payer.riskTier === 'high' ? 'bg-amber-500/20 text-amber-400' :
-                  'bg-emerald-500/20 text-emerald-400'
-                }`}>
-                  {analysis.payer.riskTier.toUpperCase()}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50 flex items-center justify-center text-xs text-slate-500">
-              Select payer for details
-            </div>
-          )}
-
-          {/* Cash Forecast Chart */}
-          {analysis && analysis.cash_forecast ? (
-            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50">
-              <h3 className="text-xs font-semibold text-slate-300 mb-1 flex items-center gap-1">
-                <DollarSign className="w-3 h-3 text-emerald-400" />
-                Cash Forecast
-              </h3>
-              <div className="h-16 flex items-end gap-0.5">
-                {analysis.cash_forecast.slice(0, 6).map((point, i) => {
-                  const maxVal = Math.max(...analysis.cash_forecast.map(p => Math.max(p.projected, p.actual)));
-                  const projHeight = (point.projected / maxVal) * 100;
-                  const actHeight = (point.actual / maxVal) * 100;
-                  return (
-                    <div key={i} className="flex-1 flex gap-0.5 items-end h-14">
-                      <div className="flex-1 bg-cyan-500/50 rounded-t" style={{ height: `${projHeight}%` }} />
-                      <div className="flex-1 bg-emerald-500 rounded-t" style={{ height: `${actHeight}%` }} />
+                  <div className="bg-slate-800/50 rounded p-1.5">
+                    <div className={`text-base font-bold ${analysis.payer.yieldGap < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                      {analysis.payer.yieldGap.toFixed(1)}%
                     </div>
-                  );
-                })}
+                    <div className="text-xs text-slate-500">Yield Gap</div>
+                  </div>
+                </div>
               </div>
-              <div className="flex gap-2 mt-1 text-[10px]">
-                <span className="flex items-center gap-0.5"><span className="w-2 h-2 bg-cyan-500/50 rounded" />Proj</span>
-                <span className="flex items-center gap-0.5"><span className="w-2 h-2 bg-emerald-500 rounded" />Act</span>
+            ) : (
+              <div className="bg-slate-900/50 rounded p-3 border border-slate-700/50 flex-1 flex items-center justify-center text-sm text-slate-500">
+                Select payer for details
               </div>
-            </div>
-          ) : (
-            <div className="bg-slate-900/50 rounded p-2 border border-slate-700/50 flex items-center justify-center text-xs text-slate-500">
-              Select payer for forecast
-            </div>
-          )}
+            )}
+
+            {/* Cash Forecast Chart */}
+            {analysis && analysis.cash_forecast ? (
+              <div className="bg-slate-900/50 rounded p-3 border border-slate-700/50 flex-1">
+                <h3 className="text-sm font-semibold text-slate-300 mb-2 flex items-center gap-1">
+                  <DollarSign className="w-4 h-4 text-emerald-400" />
+                  Cash Forecast
+                </h3>
+                <div className="h-12 flex items-end gap-1">
+                  {analysis.cash_forecast.slice(0, 6).map((point, i) => {
+                    const maxVal = Math.max(...analysis.cash_forecast.map(p => Math.max(p.projected, p.actual)));
+                    const projHeight = (point.projected / maxVal) * 100;
+                    const actHeight = (point.actual / maxVal) * 100;
+                    return (
+                      <div key={i} className="flex-1 flex gap-0.5 items-end h-10">
+                        <div className="flex-1 bg-cyan-500/50 rounded-t" style={{ height: `${projHeight}%` }} />
+                        <div className="flex-1 bg-emerald-500 rounded-t" style={{ height: `${actHeight}%` }} />
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-3 mt-1 text-xs">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 bg-cyan-500/50 rounded" />Proj</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 bg-emerald-500 rounded" />Actual</span>
+                </div>
+              </div>
+            ) : (
+              <div className="bg-slate-900/50 rounded p-3 border border-slate-700/50 flex-1 flex items-center justify-center text-sm text-slate-500">
+                Select payer for forecast
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
