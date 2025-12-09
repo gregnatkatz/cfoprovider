@@ -53,6 +53,46 @@ AZURE_ML_BASE_URL = f"https://management.azure.com/subscriptions/{AZURE_ML_SUBSC
 # Cache for Azure access token
 _azure_token_cache: Dict[str, Any] = {"token": None, "expires_at": 0}
 
+# Azure AI Search Configuration
+AZURE_SEARCH_ENDPOINT = os.getenv("AZURE_SEARCH_ENDPOINT", "https://vectorstore25.search.windows.net")
+AZURE_SEARCH_API_KEY = os.getenv("AZURE_SEARCH_API_KEY", "")
+AZURE_SEARCH_INDEX_NAME = os.getenv("AZURE_SEARCH_INDEX_NAME", "warfarecfo")
+
+def search_azure_ai_search(query: str, payer_id: str = None, top: int = 5) -> List[Dict]:
+    """Search Azure AI Search index for relevant documents."""
+    if not AZURE_SEARCH_API_KEY:
+        return []
+    
+    try:
+        search_url = f"{AZURE_SEARCH_ENDPOINT}/indexes/{AZURE_SEARCH_INDEX_NAME}/docs/search?api-version=2024-07-01"
+        
+        search_body = {
+            "search": query,
+            "top": top,
+            "select": "id,payer_id,payer_name,doc_type,title,content,policy_id,summary"
+        }
+        
+        # Add payer filter if specified
+        if payer_id:
+            search_body["filter"] = f"payer_id eq '{payer_id}'"
+        
+        response = httpx.post(
+            search_url,
+            headers={"api-key": AZURE_SEARCH_API_KEY, "Content-Type": "application/json"},
+            json=search_body,
+            timeout=10.0
+        )
+        
+        if response.status_code == 200:
+            results = response.json()
+            return results.get("value", [])
+        else:
+            print(f"Azure Search error: {response.status_code}")
+            return []
+    except Exception as e:
+        print(f"Azure Search exception: {e}")
+        return []
+
 async def get_azure_access_token() -> str:
     """Get Azure access token using service principal credentials."""
     global _azure_token_cache
@@ -327,8 +367,22 @@ def get_graph_context_for_query(payer_id: str, query: str) -> Dict:
             }
             context["payer_policies"].append(policy_info)
         
-        # 2. Get relevant text chunks
+        # 2. Get relevant text chunks from SQLite
         context["relevant_chunks"] = get_relevant_chunks(payer_id, query, limit=5)
+        
+        # 2b. Also search Azure AI Search for additional context
+        azure_search_results = search_azure_ai_search(query, payer_id, top=5)
+        if azure_search_results:
+            context["azure_search_results"] = [
+                {
+                    "id": doc.get("id"),
+                    "title": doc.get("title"),
+                    "summary": doc.get("summary"),
+                    "doc_type": doc.get("doc_type"),
+                    "content": (doc.get("content") or "")[:500]  # Truncate for context
+                }
+                for doc in azure_search_results
+            ]
         
         # 3. Build graph paths based on query keywords
         query_lower = query.lower()
@@ -442,15 +496,27 @@ def format_graph_context_for_prompt(context: Dict) -> str:
             if path.get('summary'):
                 parts.append(f"  Summary: {path['summary']}")
     
-    # Add relevant text chunks
+    # Add relevant text chunks from SQLite
     if context.get("relevant_chunks"):
-        parts.append("\n=== RELEVANT POLICY TEXT (from RAG) ===")
+        parts.append("\n=== RELEVANT POLICY TEXT (from SQLite RAG) ===")
         for chunk in context["relevant_chunks"][:3]:  # Limit to 3 chunks
             parts.append(f"- Document: {chunk.get('doc_id') or 'Unknown'}")
             parts.append(f"  Title: {chunk.get('title') or 'Unknown'}")
             content = (chunk.get('content') or '')[:500]  # Limit content length
             if content:
                 parts.append(f"  Content: {content}...")
+    
+    # Add Azure AI Search results
+    if context.get("azure_search_results"):
+        parts.append("\n=== AZURE AI SEARCH RESULTS (from warfarecfo index) ===")
+        for doc in context["azure_search_results"][:3]:  # Limit to 3 results
+            parts.append(f"- Document: {doc.get('id') or 'Unknown'}")
+            parts.append(f"  Title: {doc.get('title') or 'Unknown'}")
+            parts.append(f"  Type: {doc.get('doc_type') or 'Unknown'}")
+            if doc.get('summary'):
+                parts.append(f"  Summary: {doc['summary']}")
+            if doc.get('content'):
+                parts.append(f"  Content: {doc['content'][:300]}...")
     
     return "\n".join(parts)
 

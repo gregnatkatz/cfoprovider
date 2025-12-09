@@ -661,34 +661,87 @@ function AppealModal({ data, close }: { data: Appeal; close: () => void }) {
   );
 }
 
-// CHAT PANEL
+// CHAT PANEL - Connected to live Azure OpenAI backend with GraphRAG
+const API_BASE = import.meta.env.VITE_API_URL || 'https://app-gvmsuvtn.fly.dev';
+
 function ChatPanel({ close }: { close: () => void }) {
   const [msgs, setMsgs] = useState<ChatMessage[]>([{ t: 'ai', m: "Welcome to ContosoHealth AI. Found $25.5M recoverable. Top action: $1.24M interest demand for UHC.", a: 'Orchestrator', r: 'ContractAgent -> ValidationAgent' }]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
 
-  const send = () => {
+  const send = async () => {
     if (!input.trim()) return;
-    setMsgs(p => [...p, { t: 'user', m: input }]);
+    const userMsg = input;
+    setMsgs(p => [...p, { t: 'user', m: userMsg }]);
     setInput('');
     setThinking(true);
-    setTimeout(() => {
+    
+    try {
+      // Determine payer_id from the question
+      const q = userMsg.toLowerCase();
+      let payerId = 'uhc'; // default
+      if (q.includes('humana')) payerId = 'humana';
+      else if (q.includes('bcbs') || q.includes('blue')) payerId = 'bcbs';
+      else if (q.includes('aetna')) payerId = 'aetna';
+      else if (q.includes('cigna')) payerId = 'cigna';
+      else if (q.includes('medicare')) payerId = 'medicare';
+      
+      const response = await fetch(`${API_BASE}/api/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: userMsg, payer_id: payerId })
+      });
+      
+      if (!response.ok) throw new Error('API error');
+      
+      const data = await response.json();
+      
+      // Format the structured response into a readable message
+      let message = '';
+      if (data.financial_impact) {
+        message += `**Financial Impact:** ${data.financial_impact.revenue_at_risk} at risk\n`;
+        message += `YTD: ${data.financial_impact.ytd_impact}\n\n`;
+      }
+      if (data.root_cause) {
+        message += `**Root Cause:** ${data.root_cause.primary_cause}\n\n`;
+      }
+      if (data.recommended_actions) {
+        message += `**Actions:**\n`;
+        message += `- Immediate: ${data.recommended_actions.immediate}\n`;
+        message += `- Short-term: ${data.recommended_actions.short_term}\n`;
+      }
+      if (data.contract_implication?.section_reference) {
+        message += `\n**Contract:** ${data.contract_implication.section_reference} - ${data.contract_implication.violation_type}`;
+      }
+      
+      // Determine which agent responded based on query
+      let agent = 'Orchestrator';
+      let routing = 'GraphRAG -> ValidationAgent';
+      if (q.includes('violation') || q.includes('contract')) { agent = 'ContractAgent'; routing = 'GraphRAG -> ContractAgent -> ValidationAgent'; }
+      else if (q.includes('appeal')) { agent = 'ClaimsAgent'; routing = 'ClaimsAgent -> RL Optimizer'; }
+      else if (q.includes('policy') || q.includes('prior auth')) { agent = 'PolicyAgent'; routing = 'NLP -> GraphRAG -> PolicyAgent'; }
+      else if (q.includes('negotiat')) { agent = 'NegotiationAgent'; routing = 'ContractAgent -> GameTheory'; }
+      
+      setMsgs(p => [...p, { t: 'ai', m: message || 'Analysis complete. See structured response.', a: agent, r: routing }]);
+    } catch (err) {
+      // Fallback to mock response if API fails
       let resp: ChatMessage = { t: 'ai', m: '', a: 'Orchestrator', r: '' };
-      const q = input.toLowerCase();
+      const q = userMsg.toLowerCase();
       if (q.includes('uhc') || q.includes('violation')) {
-        resp = { t: 'ai', m: "UHC has 2 violations:\n1. Payment: 38d vs 30d -> $1.24M interest\n2. Criteria: InterQual 2024.2 vs 2023.1 -> $2.1M\n\nBoth letters ready.", a: 'Contract', r: 'GraphRAG -> Validation' };
+        resp = { t: 'ai', m: "UHC has 2 violations:\n1. Payment: 38d vs 30d -> $1.24M interest\n2. Criteria: InterQual 2024.2 vs 2023.1 -> $2.1M\n\nBoth letters ready.", a: 'ContractAgent', r: 'GraphRAG -> Validation' };
       } else if (q.includes('appeal')) {
-        resp = { t: 'ai', m: "500 appeals ranked by EV. Top 50 avg 78% win rate. Bottom 127: write off. +$180K vs FIFO.", a: 'RL', r: 'ClaimsAgent -> RL Optimizer' };
+        resp = { t: 'ai', m: "500 appeals ranked by EV. Top 50 avg 78% win rate. Bottom 127: write off. +$180K vs FIFO.", a: 'ClaimsAgent', r: 'ClaimsAgent -> RL Optimizer' };
       } else if (q.includes('humana') || q.includes('policy')) {
-        resp = { t: 'ai', m: "Humana prior auth expansion in ~30 days (82% conf). Impact: $1.5M. Prepare now.", a: 'Policy', r: 'NLP -> GraphRAG' };
+        resp = { t: 'ai', m: "Humana prior auth expansion in ~30 days (82% conf). Impact: $1.5M. Prepare now.", a: 'PolicyAgent', r: 'NLP -> GraphRAG' };
       } else if (q.includes('negotiat')) {
-        resp = { t: 'ai', m: "UHC expires Jun 2025. Leverage: 78/100. Open +15%, target +12%, walk +8%.", a: 'Negotiation', r: 'ContractAgent -> GameTheory' };
+        resp = { t: 'ai', m: "UHC expires Jun 2025. Leverage: 78/100. Open +15%, target +12%, walk +8%.", a: 'NegotiationAgent', r: 'ContractAgent -> GameTheory' };
       } else {
         resp = { t: 'ai', m: "I can help with:\n- Contract violations & demand letters\n- Appeal optimization\n- Policy predictions\n- Negotiation strategy\n\nWhat would you like?", a: 'Orchestrator', r: '' };
       }
       setMsgs(p => [...p, resp]);
+    } finally {
       setThinking(false);
-    }, 1200);
+    }
   };
 
   return (
