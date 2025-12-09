@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, FileText, Sparkles, Send, X, Loader2, Download, Building2, Zap, Target, Brain, Bot, Radar, Scale, Gavel, CheckCircle, Eye, ArrowUpRight, ArrowDownRight, Users, Copy, BarChart3, Heart } from 'lucide-react';
+import { AlertTriangle, FileText, Sparkles, Send, X, Loader2, Download, Building2, Zap, Target, Brain, Bot, Radar, Scale, Gavel, CheckCircle, Eye, ArrowUpRight, ArrowDownRight, Users, Copy, BarChart3, Heart, DollarSign, Search, Database, ChevronDown, ChevronUp } from 'lucide-react';
 
 // TypeScript interfaces
 interface Violation {
@@ -42,11 +42,31 @@ interface Appeal {
 }
 
 
+interface ThinkingSection {
+  question_analysis: string;
+  relevant_data: string;
+  agent_routing: string;
+  reasoning_steps: string[];
+}
+
+interface ChatResponse {
+  thinking?: ThinkingSection;
+  financial_impact?: { revenue_at_risk: string; ytd_impact: string; trend_or_recovery: string };
+  root_cause?: { primary_cause: string; contributing_factors: string[]; evidence: string };
+  contract_implication?: { section_reference: string; violation_type: string; legal_standing: string } | null;
+  recommended_actions?: { immediate: string; short_term: string; strategic: string };
+  sources?: { data_sources: string[]; documents: string[]; knowledge_graph: string[] };
+  confidence?: number;
+  model?: string;
+  agent_used?: string;
+}
+
 interface ChatMessage {
   t: 'user' | 'ai';
   m: string;
   a?: string;
   r?: string;
+  data?: ChatResponse;
 }
 
 // DATA
@@ -668,6 +688,7 @@ function ChatPanel({ close }: { close: () => void }) {
   const [msgs, setMsgs] = useState<ChatMessage[]>([{ t: 'ai', m: "Welcome to ContosoHealth AI. Found $25.5M recoverable. Top action: $1.24M interest demand for UHC.", a: 'Orchestrator', r: 'ContractAgent -> ValidationAgent' }]);
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
+  const [expandedThinking, setExpandedThinking] = useState<number | null>(null);
 
   const send = async () => {
     if (!input.trim()) return;
@@ -677,9 +698,8 @@ function ChatPanel({ close }: { close: () => void }) {
     setThinking(true);
     
     try {
-      // Determine payer_id from the question
       const q = userMsg.toLowerCase();
-      let payerId = 'uhc'; // default
+      let payerId = 'uhc';
       if (q.includes('humana')) payerId = 'humana';
       else if (q.includes('bcbs') || q.includes('blue')) payerId = 'bcbs';
       else if (q.includes('aetna')) payerId = 'aetna';
@@ -694,73 +714,151 @@ function ChatPanel({ close }: { close: () => void }) {
       
       if (!response.ok) throw new Error('API error');
       
-      const data = await response.json();
+      const data: ChatResponse = await response.json();
+      const agent = data.agent_used || 'Orchestrator';
+      const model = data.model || 'gpt-5';
       
-      // Format the structured response into a readable message
-      let message = '';
-      if (data.financial_impact) {
-        message += `**Financial Impact:** ${data.financial_impact.revenue_at_risk} at risk\n`;
-        message += `YTD: ${data.financial_impact.ytd_impact}\n\n`;
-      }
-      if (data.root_cause) {
-        message += `**Root Cause:** ${data.root_cause.primary_cause}\n\n`;
-      }
-      if (data.recommended_actions) {
-        message += `**Actions:**\n`;
-        message += `- Immediate: ${data.recommended_actions.immediate}\n`;
-        message += `- Short-term: ${data.recommended_actions.short_term}\n`;
-      }
-      if (data.contract_implication?.section_reference) {
-        message += `\n**Contract:** ${data.contract_implication.section_reference} - ${data.contract_implication.violation_type}`;
-      }
-      
-      // Determine which agent responded based on query
-      let agent = 'Orchestrator';
-      let routing = 'GraphRAG -> ValidationAgent';
-      if (q.includes('violation') || q.includes('contract')) { agent = 'ContractAgent'; routing = 'GraphRAG -> ContractAgent -> ValidationAgent'; }
-      else if (q.includes('appeal')) { agent = 'ClaimsAgent'; routing = 'ClaimsAgent -> RL Optimizer'; }
-      else if (q.includes('policy') || q.includes('prior auth')) { agent = 'PolicyAgent'; routing = 'NLP -> GraphRAG -> PolicyAgent'; }
-      else if (q.includes('negotiat')) { agent = 'NegotiationAgent'; routing = 'ContractAgent -> GameTheory'; }
-      
-      setMsgs(p => [...p, { t: 'ai', m: message || 'Analysis complete. See structured response.', a: agent, r: routing }]);
+      setMsgs(p => [...p, { 
+        t: 'ai', 
+        m: '', 
+        a: agent, 
+        r: `${model} | Confidence: ${((data.confidence || 0.9) * 100).toFixed(0)}%`,
+        data 
+      }]);
     } catch (err) {
-      // Fallback to mock response if API fails
-      let resp: ChatMessage = { t: 'ai', m: '', a: 'Orchestrator', r: '' };
-      const q = userMsg.toLowerCase();
-      if (q.includes('uhc') || q.includes('violation')) {
-        resp = { t: 'ai', m: "UHC has 2 violations:\n1. Payment: 38d vs 30d -> $1.24M interest\n2. Criteria: InterQual 2024.2 vs 2023.1 -> $2.1M\n\nBoth letters ready.", a: 'ContractAgent', r: 'GraphRAG -> Validation' };
-      } else if (q.includes('appeal')) {
-        resp = { t: 'ai', m: "500 appeals ranked by EV. Top 50 avg 78% win rate. Bottom 127: write off. +$180K vs FIFO.", a: 'ClaimsAgent', r: 'ClaimsAgent -> RL Optimizer' };
-      } else if (q.includes('humana') || q.includes('policy')) {
-        resp = { t: 'ai', m: "Humana prior auth expansion in ~30 days (82% conf). Impact: $1.5M. Prepare now.", a: 'PolicyAgent', r: 'NLP -> GraphRAG' };
-      } else if (q.includes('negotiat')) {
-        resp = { t: 'ai', m: "UHC expires Jun 2025. Leverage: 78/100. Open +15%, target +12%, walk +8%.", a: 'NegotiationAgent', r: 'ContractAgent -> GameTheory' };
-      } else {
-        resp = { t: 'ai', m: "I can help with:\n- Contract violations & demand letters\n- Appeal optimization\n- Policy predictions\n- Negotiation strategy\n\nWhat would you like?", a: 'Orchestrator', r: '' };
-      }
-      setMsgs(p => [...p, resp]);
+      setMsgs(p => [...p, { t: 'ai', m: "I can help with contract violations, appeal optimization, policy predictions, and negotiation strategy. What would you like to know?", a: 'Orchestrator', r: '' }]);
     } finally {
       setThinking(false);
     }
   };
 
+  const renderStructuredResponse = (data: ChatResponse, idx: number) => (
+    <div className="space-y-3">
+      {data.thinking && (
+        <div className="bg-violet-500/10 border border-violet-500/30 rounded-lg overflow-hidden">
+          <button 
+            onClick={() => setExpandedThinking(expandedThinking === idx ? null : idx)}
+            className="w-full px-3 py-2 flex items-center justify-between text-violet-400 hover:bg-violet-500/10"
+          >
+            <div className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              <span className="text-xs font-semibold uppercase">Chain of Thought</span>
+            </div>
+            {expandedThinking === idx ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+          {expandedThinking === idx && (
+            <div className="px-3 pb-3 text-xs space-y-2">
+              <div><span className="text-violet-400">Analysis:</span> <span className="text-slate-300">{data.thinking.question_analysis}</span></div>
+              <div><span className="text-violet-400">Data:</span> <span className="text-slate-300">{data.thinking.relevant_data}</span></div>
+              <div><span className="text-violet-400">Routing:</span> <span className="text-slate-300">{data.thinking.agent_routing}</span></div>
+              <div className="text-violet-400">Steps:</div>
+              <ul className="list-disc list-inside text-slate-300 space-y-1">
+                {data.thinking.reasoning_steps.map((step, i) => <li key={i}>{step}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+      
+      {data.financial_impact && (
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-emerald-400 mb-2">
+            <DollarSign className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Financial Impact</span>
+          </div>
+          <div className="text-sm space-y-1">
+            <div className="text-white font-semibold">{data.financial_impact.revenue_at_risk} at risk</div>
+            <div className="text-slate-300">{data.financial_impact.ytd_impact}</div>
+            <div className="text-slate-400 text-xs">{data.financial_impact.trend_or_recovery}</div>
+          </div>
+        </div>
+      )}
+      
+      {data.root_cause && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-amber-400 mb-2">
+            <Search className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Root Cause</span>
+          </div>
+          <div className="text-sm space-y-1">
+            <div className="text-white">{data.root_cause.primary_cause}</div>
+            {data.root_cause.contributing_factors.length > 0 && (
+              <ul className="text-slate-300 text-xs list-disc list-inside">
+                {data.root_cause.contributing_factors.map((f, i) => <li key={i}>{f}</li>)}
+              </ul>
+            )}
+            <div className="text-slate-400 text-xs mt-1">Evidence: {data.root_cause.evidence}</div>
+          </div>
+        </div>
+      )}
+      
+      {data.contract_implication && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-red-400 mb-2">
+            <FileText className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Contract Implication</span>
+          </div>
+          <div className="text-sm space-y-1">
+            <div className="text-white font-semibold">{data.contract_implication.section_reference}</div>
+            <div className="text-slate-300">{data.contract_implication.violation_type}</div>
+            <div className="text-red-300 text-xs">{data.contract_implication.legal_standing}</div>
+          </div>
+        </div>
+      )}
+      
+      {data.recommended_actions && (
+        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-cyan-400 mb-2">
+            <Zap className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Recommended Actions</span>
+          </div>
+          <div className="text-sm space-y-2">
+            <div className="flex gap-2"><span className="text-cyan-400 text-xs w-16 shrink-0">Immediate:</span><span className="text-white text-xs">{data.recommended_actions.immediate}</span></div>
+            <div className="flex gap-2"><span className="text-cyan-400 text-xs w-16 shrink-0">Short-term:</span><span className="text-slate-300 text-xs">{data.recommended_actions.short_term}</span></div>
+            <div className="flex gap-2"><span className="text-cyan-400 text-xs w-16 shrink-0">Strategic:</span><span className="text-slate-400 text-xs">{data.recommended_actions.strategic}</span></div>
+          </div>
+        </div>
+      )}
+      
+      {data.sources && (
+        <div className="bg-slate-700/50 border border-slate-600/50 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-slate-400 mb-2">
+            <Database className="w-4 h-4" />
+            <span className="text-xs font-semibold uppercase">Sources</span>
+          </div>
+          <div className="text-xs space-y-1">
+            <div className="text-slate-300">{data.sources.data_sources.join(' | ')}</div>
+            <div className="text-slate-400">{data.sources.documents.join(' | ')}</div>
+            {data.sources.knowledge_graph.length > 0 && (
+              <div className="text-purple-400 text-xs mt-1">GraphRAG: {data.sources.knowledge_graph[0]}</div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
-    <div className="fixed right-0 top-0 bottom-0 w-[400px] bg-slate-900 border-l border-slate-800 flex flex-col z-50">
+    <div className="fixed right-0 top-0 bottom-0 w-[450px] bg-slate-900 border-l border-slate-800 flex flex-col z-50">
       <div className="p-4 border-b border-slate-800 flex justify-between items-center">
-        <div className="flex items-center gap-3"><Brain className="w-5 h-5 text-purple-400" /><div><div className="font-semibold">ContosoHealth AI</div><div className="text-xs text-slate-500">Multi-Agent System</div></div></div>
+        <div className="flex items-center gap-3"><Brain className="w-5 h-5 text-purple-400" /><div><div className="font-semibold">ContosoHealth AI</div><div className="text-xs text-slate-500">GPT-5 Multi-Agent System</div></div></div>
         <button onClick={close} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
       </div>
       <div className="flex-1 overflow-auto p-4 space-y-4">
         {msgs.map((m, i) => (
           <div key={i} className={`flex ${m.t === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${m.t === 'user' ? 'bg-cyan-500 rounded-br-sm' : 'bg-slate-800 rounded-bl-sm'}`}>
-              {m.t === 'ai' && <div className="flex items-center gap-2 mb-2 text-xs text-purple-400"><Brain className="w-3 h-3" />{m.a}</div>}
-              <p className="text-sm whitespace-pre-line">{m.m}</p>
-              {m.r && <div className="mt-2 pt-2 border-t border-slate-700 text-xs text-slate-500">{m.r}</div>}
+            <div className={`max-w-[95%] rounded-2xl px-4 py-3 ${m.t === 'user' ? 'bg-cyan-500 rounded-br-sm' : 'bg-slate-800 rounded-bl-sm'}`}>
+              {m.t === 'ai' && <div className="flex items-center gap-2 mb-2 text-xs text-purple-400"><Brain className="w-3 h-3" />{m.a} <span className="text-slate-500">| {m.r}</span></div>}
+              {m.data ? renderStructuredResponse(m.data, i) : <p className="text-sm whitespace-pre-line">{m.m}</p>}
             </div>
           </div>
         ))}
-        {thinking && <div className="flex items-center gap-2 text-slate-400"><Loader2 className="w-4 h-4 animate-spin" /><span className="text-sm">Processing...</span></div>}
+        {thinking && (
+          <div className="flex items-center gap-2 text-slate-400 bg-slate-800 rounded-lg p-3">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-sm">GPT-5 processing with chain of thought...</span>
+          </div>
+        )}
       </div>
       <div className="p-4 border-t border-slate-800">
         <div className="flex gap-2">

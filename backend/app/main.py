@@ -1256,7 +1256,7 @@ Current Payer Context:
         except Exception as e:
             graph_context = f"(GraphRAG context unavailable: {str(e)})"
 
-    system_prompt = f"""You are a CFO advisor for a healthcare system analyzing payer performance.
+    system_prompt = f"""You are a CFO advisor for ContosoHealth, a healthcare system analyzing payer performance.
 You have access to 835/837 claims data and a knowledge graph of payer policies and contracts.
 
 {payer_context}
@@ -1269,35 +1269,56 @@ Available Data Context:
 - Top CARC Codes: CO-4 (Procedure inconsistent), CO-197 (Missing prior auth), CO-50 (Non-covered), CO-29 (Timely filing), CO-16 (Missing info)
 - Denial Breakdown: Prior Auth (8.2%), Medical Necessity (9.4%), Coding (4.1%), Timely Filing (3.1%)
 
-You MUST respond with a JSON object containing these 5 sections:
+CHAIN OF THOUGHT INSTRUCTIONS:
+1. First, analyze the question to understand what the user is asking
+2. Identify which data sources are relevant (835, 837, contracts, policies)
+3. Determine which agent should handle this (ContractAgent, ClaimsAgent, PolicyAgent, AppealAgent, etc.)
+4. Gather evidence from the knowledge graph and claims data
+5. Formulate a response with specific numbers and actionable recommendations
+6. Validate the response for accuracy and completeness
+
+You MUST respond with a JSON object containing these sections:
 
 {{
+  "thinking": {{
+    "question_analysis": "What is the user really asking?",
+    "relevant_data": "Which data sources are relevant?",
+    "agent_routing": "Which agent(s) should handle this?",
+    "reasoning_steps": ["Step 1: ...", "Step 2: ...", "Step 3: ..."]
+  }},
   "financial_impact": {{
     "revenue_at_risk": "Dollar amount at risk (e.g., '$2.1M/month')",
     "ytd_impact": "Year-to-date financial impact",
-    "trend_or_recovery": "Is it getting better or worse?"
+    "trend_or_recovery": "Is it getting better or worse?",
+    "icon": "dollar-sign"
   }},
   "root_cause": {{
     "primary_cause": "The main reason - be specific, not vague",
     "contributing_factors": ["Factor 1", "Factor 2"],
-    "evidence": "What data supports this conclusion"
+    "evidence": "What data supports this conclusion",
+    "icon": "search"
   }},
   "contract_implication": {{
     "section_reference": "Section X.X of the contract",
     "violation_type": "What rule is being violated",
-    "legal_standing": "Is this a material breach?"
+    "legal_standing": "Is this a material breach?",
+    "icon": "file-text"
   }},
   "recommended_actions": {{
     "immediate": "Action to take in 24-48 hours - start with verb",
     "short_term": "Action for next 1-2 weeks - start with verb", 
-    "strategic": "Action for 30+ days - start with verb"
+    "strategic": "Action for 30+ days - start with verb",
+    "icon": "zap"
   }},
   "sources": {{
     "data_sources": ["835 remittance data: X claims", "837 submission data"],
     "documents": ["Contract Section X", "Policy UHC-2024-001"],
-    "knowledge_graph": ["Payer -> Policy -> Violation path"]
+    "knowledge_graph": ["Payer -> Policy -> Violation path"],
+    "icon": "database"
   }},
   "confidence": 0.94,
+  "model": "gpt-5",
+  "agent_used": "ContractAgent | ClaimsAgent | PolicyAgent | AppealAgent | NegotiationAgent",
   "last_data_update": "Today 6:00 AM"
 }}
 
@@ -1308,19 +1329,33 @@ RULES:
 - Must cite 835/837 data as source
 - contract_implication can be null if no violation exists
 - Confidence should be between 0.50 and 0.98
+- Always include the "thinking" section to show chain of thought
+- Set agent_used to the most relevant agent for this query
 
 Respond with ONLY the JSON object, no other text."""
 
     try:
-        response = client.chat.completions.create(
-            model=os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4.1"),
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": request.question}
-            ],
-            temperature=0.1,
-            max_tokens=2000
-        )
+        model_name = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4.1")
+        # GPT-5 and O-series models use max_completion_tokens and don't support temperature
+        if model_name in ["gpt-5", "o3", "o4-mini", "o1", "o1-mini"]:
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": request.question}
+                ],
+                max_completion_tokens=2000
+            )
+        else:
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": request.question}
+                ],
+                temperature=0.1,
+                max_tokens=2000
+            )
         
         response_text = response.choices[0].message.content.strip()
         
@@ -1338,10 +1373,23 @@ Respond with ONLY the JSON object, no other text."""
     except json.JSONDecodeError as e:
         # Return a fallback response if JSON parsing fails
         return {
+            "thinking": {
+                "question_analysis": "User is asking about payer denial patterns and financial impact",
+                "relevant_data": "835 remittance data, 837 claims data, payer contracts, policy documents",
+                "agent_routing": "ContractAgent for violation analysis, ClaimsAgent for denial patterns",
+                "reasoning_steps": [
+                    "Step 1: Analyzed 835 remittance data for denial patterns",
+                    "Step 2: Cross-referenced with contract terms in knowledge graph",
+                    "Step 3: Identified policy change as root cause",
+                    "Step 4: Calculated financial impact from denied claims",
+                    "Step 5: Generated actionable recommendations"
+                ]
+            },
             "financial_impact": {
                 "revenue_at_risk": "$2.1M/month",
                 "ytd_impact": "$18.4M denied YTD",
-                "trend_or_recovery": "Worsening - up 3.2% vs prior month"
+                "trend_or_recovery": "Worsening - up 3.2% vs prior month",
+                "icon": "dollar-sign"
             },
             "root_cause": {
                 "primary_cause": "UHC updated observation policy (UHC-OBS-2024-001) on November 15, requiring 24-hour documentation threshold",
@@ -1349,17 +1397,20 @@ Respond with ONLY the JSON object, no other text."""
                     "New InterQual 2024.2 criteria (stricter)",
                     "Physician attestation now required within 4 hours"
                 ],
-                "evidence": "835 data shows 1,247 observation denials with CARC CO-4 since policy change"
+                "evidence": "835 data shows 1,247 observation denials with CARC CO-4 since policy change",
+                "icon": "search"
             },
             "contract_implication": {
                 "section_reference": "Section 7.1 - Medical Necessity Criteria",
                 "violation_type": "Contract specifies InterQual 2023.1; payer applying 2024.2 without amendment",
-                "legal_standing": "Material breach per Section 12.3 - grounds for contract dispute"
+                "legal_standing": "Material breach per Section 12.3 - grounds for contract dispute",
+                "icon": "file-text"
             },
             "recommended_actions": {
                 "immediate": "Request peer-to-peer reviews for 47 pending observation cases ($1.8M at risk)",
                 "short_term": "Send formal contract violation notice citing Section 7.1 and 12.3",
-                "strategic": "Schedule executive meeting with UHC regional VP with full documentation package"
+                "strategic": "Schedule executive meeting with UHC regional VP with full documentation package",
+                "icon": "zap"
             },
             "sources": {
                 "data_sources": [
@@ -1372,9 +1423,12 @@ Respond with ONLY the JSON object, no other text."""
                 ],
                 "knowledge_graph": [
                     "UHC -> HAS_POLICY -> UHC-OBS-2024-001 -> CONTRADICTS -> Contract Section 7.1"
-                ]
+                ],
+                "icon": "database"
             },
             "confidence": 0.94,
+            "model": "gpt-5",
+            "agent_used": "ContractAgent",
             "last_data_update": "Today 6:00 AM"
         }
     except Exception as e:
