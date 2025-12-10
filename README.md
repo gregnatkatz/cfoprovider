@@ -1,10 +1,10 @@
-# ContosoHealth CFO Payer Warfare Platform
+# ContosoHealth CFO Payer Response Platform
 
 A comprehensive healthcare revenue cycle management platform that helps providers identify contract violations, optimize appeals, predict policy changes, and negotiate better payer contracts.
 
 ## Overview
 
-The CFO Payer Warfare Platform is designed for healthcare CFOs and revenue cycle teams to maximize revenue recovery from commercial and government payers. The platform combines real-time claims data analysis with AI-powered insights to identify actionable opportunities worth millions in recoverable revenue.
+The CFO Payer Response Platform is designed for healthcare CFOs and revenue cycle teams to maximize revenue recovery from commercial and government payers. The platform combines real-time claims data analysis with AI-powered insights to identify actionable opportunities worth millions in recoverable revenue.
 
 ### Key Capabilities
 
