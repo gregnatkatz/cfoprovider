@@ -170,6 +170,9 @@ const REGS = [
   { id: 2, vio: 'VIO-001', code: 'FL Statute 627.6131', title: 'Prompt Payment', agency: 'Florida OIR', prob: 0.81, penalty: 'Interest + $10K/day' }
 ];
 
+// API Base URL
+const API_BASE = 'https://app-gvmsuvtn.fly.dev';
+
 const AGENTS = [
   { name: 'Orchestrator', status: 'active', tasks: 12 }, { name: 'Contract', status: 'active', tasks: 4 },
   { name: 'Claims', status: 'active', tasks: 8 }, { name: 'Policy', status: 'monitoring', tasks: 2 },
@@ -238,12 +241,13 @@ export default function App() {
               </div>
               <nav className="flex bg-slate-800/50 rounded-lg p-1 border border-slate-700/50">
                 {[
-                  { id: 'summary', label: 'Summary', icon: FileText },
-                  { id: 'forecast', label: 'Forecast', icon: TrendingUp },
-                  { id: 'violations', label: 'Violations', icon: AlertTriangle, badge: VIOLATIONS.length },
-                  { id: 'appeals', label: 'Appeals', icon: Target, badge: '500' },
-                  { id: 'radar', label: 'Radar', icon: Radar, badge: ALERTS.length },
-                  { id: 'negotiate', label: 'Negotiate', icon: Scale }
+                                    { id: 'summary', label: 'Summary', icon: FileText },
+                                    { id: 'forecast', label: 'Forecast', icon: TrendingUp },
+                                    { id: 'agents', label: 'Agents', icon: Brain },
+                                    { id: 'violations', label: 'Violations', icon: AlertTriangle, badge: VIOLATIONS.length },
+                                    { id: 'appeals', label: 'Appeals', icon: Target, badge: '500' },
+                                    { id: 'radar', label: 'Radar', icon: Radar, badge: ALERTS.length },
+                                    { id: 'negotiate', label: 'Negotiate', icon: Scale }
                 ].map(t => (
                   <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium ${tab === t.id ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white'}`}>
                     <t.icon className="w-4 h-4" />{t.label}
@@ -293,12 +297,13 @@ export default function App() {
 
         {/* MAIN */}
         <main className="p-6">
-          {tab === 'summary' && <SummaryTab total={totalRecoverable} onNav={setTab} open={open} />}
-          {tab === 'forecast' && <ForecastTab />}
-          {tab === 'violations' && <ViolationsTab open={open} />}
-          {tab === 'appeals' && <AppealsTab open={open} />}
-          {tab === 'radar' && <RadarTab />}
-          {tab === 'negotiate' && <NegotiateTab />}
+                    {tab === 'summary' && <SummaryTab total={totalRecoverable} onNav={setTab} open={open} />}
+                    {tab === 'forecast' && <ForecastTab />}
+                    {tab === 'agents' && <AgentsTab />}
+                    {tab === 'violations' && <ViolationsTab open={open} />}
+                    {tab === 'appeals' && <AppealsTab open={open} />}
+                    {tab === 'radar' && <RadarTab />}
+                    {tab === 'negotiate' && <NegotiateTab />}
         </main>
       </div>
 
@@ -1074,6 +1079,398 @@ function ForecastTab() {
   );
 }
 
+// AGENTS TAB - Comprehensive view of all AI agents
+function AgentsTab() {
+  const [denialForecast, setDenialForecast] = useState<any>(null);
+  const [cashFlow, setCashFlow] = useState<any>(null);
+  const [forecastAccuracy, setForecastAccuracy] = useState<any>(null);
+  const [dataQuality, setDataQuality] = useState<any>(null);
+  const [assumptions, setAssumptions] = useState<any>(null);
+  const [confidence, setConfidence] = useState<any>(null);
+  const [rootCause, setRootCause] = useState<any>(null);
+  const [nlWhatIf, setNlWhatIf] = useState<any>(null);
+  const [nlQuestion, setNlQuestion] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [activeAgent, setActiveAgent] = useState('denial-forecast');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [forecastRes, cashFlowRes, accuracyRes, qualityRes, assumptionsRes, confidenceRes] = await Promise.all([
+          fetch(`${API_BASE}/api/agents/denial-forecast`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ horizon_days: 90 }) }),
+          fetch(`${API_BASE}/api/agents/cash-flow-impact`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ horizon_months: 3 }) }),
+          fetch(`${API_BASE}/api/agents/forecast-accuracy-validator`),
+          fetch(`${API_BASE}/api/agents/data-quality-validator`),
+          fetch(`${API_BASE}/api/agents/assumption-validator`),
+          fetch(`${API_BASE}/api/agents/confidence-aggregator`)
+        ]);
+        setDenialForecast(await forecastRes.json());
+        setCashFlow(await cashFlowRes.json());
+        setForecastAccuracy(await accuracyRes.json());
+        setDataQuality(await qualityRes.json());
+        setAssumptions(await assumptionsRes.json());
+        setConfidence(await confidenceRes.json());
+      } catch (e) {
+        console.error('Failed to fetch agent data:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const runRootCause = async (pattern: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/agents/root-cause`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ denial_pattern: pattern })
+      });
+      setRootCause(await res.json());
+      setActiveAgent('root-cause');
+    } catch (e) {
+      console.error('Failed to run root cause:', e);
+    }
+  };
+
+  const runNlWhatIf = async () => {
+    if (!nlQuestion.trim()) return;
+    try {
+      const res = await fetch(`${API_BASE}/api/agents/nl-whatif`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: nlQuestion })
+      });
+      setNlWhatIf(await res.json());
+      setActiveAgent('nl-whatif');
+    } catch (e) {
+      console.error('Failed to run NL what-if:', e);
+    }
+  };
+
+  if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
+
+  return (
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center gap-2"><Brain className="w-6 h-6 text-purple-400" />AI Agent Intelligence Center</h2>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-slate-500">System Confidence:</span>
+          <span className={`font-semibold ${confidence?.confidence_tier === 'HIGH' ? 'text-emerald-400' : confidence?.confidence_tier === 'MEDIUM' ? 'text-amber-400' : 'text-red-400'}`}>
+            {(confidence?.adjusted_confidence * 100).toFixed(0)}% ({confidence?.confidence_tier})
+          </span>
+        </div>
+      </div>
+
+      {/* Agent Navigation */}
+      <div className="flex gap-2 flex-wrap">
+        {[
+          { id: 'denial-forecast', label: 'Denial Forecast', icon: TrendingUp },
+          { id: 'cash-flow', label: 'Cash Flow Impact', icon: DollarSign },
+          { id: 'validators', label: 'Validators', icon: CheckCircle },
+          { id: 'root-cause', label: 'Root Cause', icon: Search },
+          { id: 'nl-whatif', label: 'Natural Language What-If', icon: Brain }
+        ].map(a => (
+          <button key={a.id} onClick={() => setActiveAgent(a.id)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${activeAgent === a.id ? 'bg-purple-500/20 border border-purple-500/50 text-purple-300' : 'bg-slate-800/50 border border-slate-700/50 text-slate-400 hover:text-white'}`}>
+            <a.icon className="w-4 h-4" />{a.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Denial Forecast Agent */}
+      {activeAgent === 'denial-forecast' && denialForecast && (
+        <div className="space-y-4">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2"><TrendingUp className="w-5 h-5 text-cyan-400" />Denial Forecast Agent</h3>
+                <p className="text-sm text-slate-500">Model: {denialForecast.model_used}</p>
+              </div>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-red-400">${(denialForecast.point_forecast / 1_000_000).toFixed(1)}M</div>
+                <div className="text-sm text-slate-400">{denialForecast.horizon_days}-day forecast</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-500 text-sm">Lower Bound</div>
+                <div className="text-xl font-bold">${(denialForecast.confidence_interval?.lower / 1_000_000).toFixed(1)}M</div>
+              </div>
+              <div className="bg-red-500/10 rounded-lg p-3 border border-red-500/30">
+                <div className="text-red-400 text-sm">Point Forecast</div>
+                <div className="text-xl font-bold text-red-400">${(denialForecast.point_forecast / 1_000_000).toFixed(1)}M</div>
+              </div>
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-500 text-sm">Upper Bound</div>
+                <div className="text-xl font-bold">${(denialForecast.confidence_interval?.upper / 1_000_000).toFixed(1)}M</div>
+              </div>
+            </div>
+            <div className="bg-cyan-500/10 rounded-lg p-3 border border-cyan-500/30">
+              <p className="text-sm text-cyan-300">{denialForecast.narrative}</p>
+            </div>
+            <div className="mt-4">
+              <h4 className="font-medium mb-2">Key Drivers</h4>
+              <div className="space-y-2">
+                {denialForecast.drivers?.map((d: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center bg-slate-900/50 rounded p-2">
+                    <div>
+                      <span className="font-medium">{d.factor}</span>
+                      <span className={`ml-2 text-xs px-2 py-0.5 rounded ${d.preventable ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}`}>
+                        {d.preventable ? 'Preventable' : 'External'}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-red-400 font-medium">+${(d.impact / 1_000_000).toFixed(1)}M</span>
+                      <span className="text-slate-500 text-sm ml-2">{(d.confidence * 100).toFixed(0)}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cash Flow Impact Agent */}
+      {activeAgent === 'cash-flow' && cashFlow && (
+        <div className="space-y-4">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+            <div className="flex justify-between items-start mb-4">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2"><DollarSign className="w-5 h-5 text-emerald-400" />Cash Flow Impact Agent</h3>
+                <p className="text-sm text-slate-500">Model: {cashFlow.model_used}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-4 gap-4 mb-4">
+              <div className="bg-red-500/10 rounded-lg p-3 border border-red-500/30">
+                <div className="text-red-400 text-sm">Denial Forecast</div>
+                <div className="text-xl font-bold text-red-400">{cashFlow.denial_forecast?.formatted}</div>
+              </div>
+              <div className="bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/30">
+                <div className="text-emerald-400 text-sm">Expected Recovery</div>
+                <div className="text-xl font-bold text-emerald-400">${(cashFlow.cash_flow_projection?.expected_recovery / 1_000_000).toFixed(1)}M</div>
+              </div>
+              <div className="bg-amber-500/10 rounded-lg p-3 border border-amber-500/30">
+                <div className="text-amber-400 text-sm">Pending A/R</div>
+                <div className="text-xl font-bold text-amber-400">${(cashFlow.cash_flow_projection?.pending_ar / 1_000_000).toFixed(1)}M</div>
+              </div>
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-400 text-sm">Expected Write-off</div>
+                <div className="text-xl font-bold">${(cashFlow.cash_flow_projection?.expected_writeoff / 1_000_000).toFixed(1)}M</div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-900/50 rounded-lg p-4">
+                <h4 className="font-medium mb-3">A/R Metrics</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between"><span className="text-slate-400">Current Days A/R</span><span>{cashFlow.ar_metrics?.current_days_ar} days</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Projected Days A/R</span><span className="text-amber-400">{cashFlow.ar_metrics?.projected_days_ar} days</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Target</span><span className="text-emerald-400">{cashFlow.ar_metrics?.target_days_ar} days</span></div>
+                </div>
+              </div>
+              <div className="bg-slate-900/50 rounded-lg p-4">
+                <h4 className="font-medium mb-3">Bad Debt Reserve</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between"><span className="text-slate-400">Current</span><span>${(cashFlow.bad_debt_reserve?.current / 1_000_000).toFixed(1)}M</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Recommended</span><span className="text-amber-400">${(cashFlow.bad_debt_reserve?.recommended / 1_000_000).toFixed(1)}M</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Adjustment Needed</span><span className="text-red-400">+${(cashFlow.bad_debt_reserve?.adjustment_needed / 1_000_000).toFixed(1)}M</span></div>
+                </div>
+              </div>
+            </div>
+            <div className="mt-4 bg-cyan-500/10 rounded-lg p-3 border border-cyan-500/30">
+              <p className="text-sm text-cyan-300">{cashFlow.narrative}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Validators */}
+      {activeAgent === 'validators' && (
+        <div className="grid grid-cols-2 gap-4">
+          {/* Forecast Accuracy Validator */}
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+            <h3 className="font-semibold flex items-center gap-2 mb-4"><CheckCircle className="w-5 h-5 text-emerald-400" />Forecast Accuracy Validator</h3>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-500 text-sm">MAPE</div>
+                <div className="text-2xl font-bold text-emerald-400">{forecastAccuracy?.accuracy_metrics?.mape}%</div>
+              </div>
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-500 text-sm">Directional</div>
+                <div className="text-2xl font-bold">{(forecastAccuracy?.accuracy_metrics?.directional_accuracy * 100).toFixed(0)}%</div>
+              </div>
+            </div>
+            <div className="bg-emerald-500/10 rounded-lg p-3 border border-emerald-500/30">
+              <p className="text-sm text-emerald-300">{forecastAccuracy?.confidence_statement}</p>
+            </div>
+          </div>
+
+          {/* Data Quality Validator */}
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+            <h3 className="font-semibold flex items-center gap-2 mb-4"><Database className="w-5 h-5 text-purple-400" />Data Quality Validator</h3>
+            <div className="grid grid-cols-3 gap-3 mb-4">
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-500 text-sm">Overall</div>
+                <div className="text-2xl font-bold text-purple-400">{(dataQuality?.overall_score * 100).toFixed(0)}%</div>
+              </div>
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-500 text-sm">Completeness</div>
+                <div className="text-xl font-bold">{(dataQuality?.completeness?.score * 100).toFixed(0)}%</div>
+              </div>
+              <div className="bg-slate-900/50 rounded-lg p-3">
+                <div className="text-slate-500 text-sm">Timeliness</div>
+                <div className="text-xl font-bold">{(dataQuality?.timeliness?.score * 100).toFixed(0)}%</div>
+              </div>
+            </div>
+            <div className="text-sm text-slate-400">{dataQuality?.recommendation}</div>
+          </div>
+
+          {/* Assumption Validator */}
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+            <h3 className="font-semibold flex items-center gap-2 mb-4"><AlertTriangle className="w-5 h-5 text-amber-400" />Assumption Validator</h3>
+            <div className="space-y-2">
+              {assumptions?.assumptions?.slice(0, 4).map((a: any, i: number) => (
+                <div key={i} className="flex justify-between items-center bg-slate-900/50 rounded p-2">
+                  <span className="text-sm">{a.assumption}</span>
+                  <span className={`text-sm font-medium ${a.validity_score > 0.85 ? 'text-emerald-400' : a.validity_score > 0.7 ? 'text-amber-400' : 'text-red-400'}`}>
+                    {(a.validity_score * 100).toFixed(0)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 text-sm text-amber-300">{assumptions?.recommendation}</div>
+          </div>
+
+          {/* Confidence Aggregator */}
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+            <h3 className="font-semibold flex items-center gap-2 mb-4"><Target className="w-5 h-5 text-cyan-400" />Confidence Aggregator</h3>
+            <div className="text-center mb-4">
+              <div className={`text-4xl font-bold ${confidence?.confidence_tier === 'HIGH' ? 'text-emerald-400' : confidence?.confidence_tier === 'MEDIUM' ? 'text-amber-400' : 'text-red-400'}`}>
+                {(confidence?.adjusted_confidence * 100).toFixed(0)}%
+              </div>
+              <div className="text-sm text-slate-400">{confidence?.tier_description}</div>
+            </div>
+            <div className="space-y-2">
+              {confidence?.adjustments?.map((a: any, i: number) => (
+                <div key={i} className="flex justify-between items-center text-sm">
+                  <span className="text-slate-400">{a.reason}</span>
+                  <span className={a.adjustment > 0 ? 'text-emerald-400' : 'text-red-400'}>
+                    {a.adjustment > 0 ? '+' : ''}{(a.adjustment * 100).toFixed(0)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Root Cause Agent */}
+      {activeAgent === 'root-cause' && (
+        <div className="space-y-4">
+          <div className="flex gap-3 mb-4">
+            <button onClick={() => runRootCause('prior_auth')} className="px-4 py-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 text-sm">Prior Auth Denials</button>
+            <button onClick={() => runRootCause('medical_necessity')} className="px-4 py-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 text-sm">Medical Necessity</button>
+            <button onClick={() => runRootCause('coding')} className="px-4 py-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 text-sm">Coding Errors</button>
+          </div>
+          {rootCause && (
+            <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <h3 className="font-semibold flex items-center gap-2"><Search className="w-5 h-5 text-amber-400" />Root Cause Analysis</h3>
+                  <p className="text-sm text-slate-500">{rootCause.pattern}</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-emerald-400">${(rootCause.total_preventable / 1_000_000).toFixed(1)}M</div>
+                  <div className="text-sm text-slate-400">Preventable ({(rootCause.prevention_rate * 100).toFixed(0)}%)</div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                {rootCause.root_causes?.map((rc: any, i: number) => (
+                  <div key={i} className="bg-slate-900/50 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="font-medium">{rc.cause}</div>
+                      <div className="text-emerald-400 font-medium">${(rc.estimated_impact / 1_000_000).toFixed(1)}M impact</div>
+                    </div>
+                    <div className="text-sm text-slate-400 mb-2">{rc.evidence}</div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-cyan-400">Intervention: {rc.intervention}</span>
+                      <span className="text-slate-500">Owner: {rc.owner}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 bg-amber-500/10 rounded-lg p-3 border border-amber-500/30">
+                <p className="text-sm text-amber-300">{rootCause.narrative}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Natural Language What-If */}
+      {activeAgent === 'nl-whatif' && (
+        <div className="space-y-4">
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+            <h3 className="font-semibold flex items-center gap-2 mb-4"><Brain className="w-5 h-5 text-purple-400" />Natural Language What-If Engine</h3>
+            <div className="flex gap-3 mb-4">
+              <input
+                type="text"
+                value={nlQuestion}
+                onChange={(e) => setNlQuestion(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && runNlWhatIf()}
+                placeholder="Ask a what-if question... e.g., 'What if Humana changes their PA policy?'"
+                className="flex-1 bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-purple-500"
+              />
+              <button onClick={runNlWhatIf} className="px-4 py-2 bg-purple-500 rounded-lg hover:bg-purple-600 text-sm font-medium">Analyze</button>
+            </div>
+            <div className="flex gap-2 flex-wrap mb-4">
+              {['What if Humana changes their PA policy?', 'What if we add 2 FTEs?', 'What if UHC denials increase 20%?'].map((q, i) => (
+                <button key={i} onClick={() => { setNlQuestion(q); }} className="px-3 py-1 bg-slate-700/50 rounded text-xs hover:bg-slate-700">{q}</button>
+              ))}
+            </div>
+            {nlWhatIf && (
+              <div className="bg-slate-900/50 rounded-lg p-4">
+                <div className="mb-3">
+                  <span className="text-slate-500 text-sm">Interpreted as:</span>
+                  <span className="ml-2 font-medium">{nlWhatIf.interpreted_as}</span>
+                </div>
+                {nlWhatIf.analysis && (
+                  <div className="space-y-3">
+                    {nlWhatIf.analysis.if_no_action && (
+                      <div className="bg-red-500/10 rounded p-3 border border-red-500/30">
+                        <div className="text-red-400 text-sm font-medium">If No Action</div>
+                        <div className="text-xl font-bold text-red-400">${(nlWhatIf.analysis.if_no_action.impact / 1_000_000).toFixed(1)}M impact</div>
+                        <div className="text-sm text-slate-400">{nlWhatIf.analysis.if_no_action.description}</div>
+                      </div>
+                    )}
+                    {nlWhatIf.analysis.if_mitigated && (
+                      <div className="bg-emerald-500/10 rounded p-3 border border-emerald-500/30">
+                        <div className="text-emerald-400 text-sm font-medium">If Mitigated</div>
+                        <div className="text-xl font-bold text-emerald-400">${(nlWhatIf.analysis.if_mitigated.impact / 1_000_000).toFixed(1)}M impact</div>
+                        <div className="text-sm text-slate-400">{nlWhatIf.analysis.if_mitigated.description}</div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {nlWhatIf.follow_up_questions && (
+                  <div className="mt-4">
+                    <div className="text-sm text-slate-500 mb-2">Follow-up questions:</div>
+                    <div className="space-y-1">
+                      {nlWhatIf.follow_up_questions.map((q: string, i: number) => (
+                        <div key={i} className="text-sm text-cyan-400">• {q}</div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // MODALS
 function LetterModal({ data, close }: { data: Violation; close: () => void }) {
   const letter = DEMAND_LETTERS[data.id];
@@ -1176,8 +1573,6 @@ function AppealModal({ data, close }: { data: Appeal; close: () => void }) {
 }
 
 // CHAT PANEL - Connected to live Azure OpenAI backend with GraphRAG
-const API_BASE = import.meta.env.VITE_API_URL || 'https://app-gvmsuvtn.fly.dev';
-
 function ChatPanel({ close }: { close: () => void }) {
   const [msgs, setMsgs] = useState<ChatMessage[]>([{ t: 'ai', m: "Welcome to ContosoHealth AI. Found $25.5M recoverable. Top action: $1.24M interest demand for UHC.", a: 'Orchestrator', r: 'ContractAgent -> ValidationAgent' }]);
   const [input, setInput] = useState('');
