@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AlertTriangle, FileText, Sparkles, Send, X, Loader2, Download, Building2, Zap, Target, Brain, Bot, Radar, Scale, Gavel, CheckCircle, Eye, ArrowUpRight, ArrowDownRight, Users, Copy, BarChart3, Heart, DollarSign, Search, Database, ChevronDown, ChevronUp } from 'lucide-react';
+import { AlertTriangle, FileText, Sparkles, Send, X, Loader2, Download, Building2, Zap, Target, Brain, Bot, Radar, Scale, Gavel, CheckCircle, Eye, ArrowUpRight, ArrowDownRight, Users, Copy, BarChart3, Heart, DollarSign, Search, Database, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react';
 
 // TypeScript interfaces
 interface Violation {
@@ -239,6 +239,7 @@ export default function App() {
               <nav className="flex bg-slate-800/50 rounded-lg p-1 border border-slate-700/50">
                 {[
                   { id: 'summary', label: 'Summary', icon: FileText },
+                  { id: 'forecast', label: 'Forecast', icon: TrendingUp },
                   { id: 'violations', label: 'Violations', icon: AlertTriangle, badge: VIOLATIONS.length },
                   { id: 'appeals', label: 'Appeals', icon: Target, badge: '500' },
                   { id: 'radar', label: 'Radar', icon: Radar, badge: ALERTS.length },
@@ -293,6 +294,7 @@ export default function App() {
         {/* MAIN */}
         <main className="p-6">
           {tab === 'summary' && <SummaryTab total={totalRecoverable} onNav={setTab} open={open} />}
+          {tab === 'forecast' && <ForecastTab />}
           {tab === 'violations' && <ViolationsTab open={open} />}
           {tab === 'appeals' && <AppealsTab open={open} />}
           {tab === 'radar' && <RadarTab />}
@@ -839,6 +841,239 @@ function NegotiateTab() {
   );
 }
 
+// FORECAST TAB
+function ForecastTab() {
+  const [forecast, setForecast] = useState<any>(null);
+  const [serviceLines, setServiceLines] = useState<any>(null);
+  const [whatIfResult, setWhatIfResult] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [forecastRes, serviceLinesRes] = await Promise.all([
+          fetch(`${API_BASE}/api/forecast/summary`),
+          fetch(`${API_BASE}/api/forecast/service-lines`)
+        ]);
+        setForecast(await forecastRes.json());
+        setServiceLines(await serviceLinesRes.json());
+      } catch (e) {
+        console.error('Failed to fetch forecast data:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const runWhatIf = async (scenarioType: string, scenarioId?: string) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/whatif/scenario`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scenario_type: scenarioType, scenario_id: scenarioId })
+      });
+      setWhatIfResult(await res.json());
+    } catch (e) {
+      console.error('Failed to run what-if:', e);
+    }
+  };
+
+  if (loading) return <div className="flex items-center justify-center h-64"><Loader2 className="w-8 h-8 animate-spin text-cyan-400" /></div>;
+
+  return (
+    <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center gap-2"><TrendingUp className="w-6 h-6 text-cyan-400" />Denial Forecast & Prevention</h2>
+        <div className="flex items-center gap-2 text-sm">
+          <span className="text-slate-500">Model Accuracy:</span>
+          <span className="text-emerald-400 font-semibold">{forecast?.model_accuracy?.mape}% MAPE</span>
+          <span className="text-slate-500">|</span>
+          <span className="text-cyan-400">{(forecast?.model_accuracy?.directional_accuracy * 100).toFixed(0)}% directional</span>
+        </div>
+      </div>
+
+      {/* Main Forecast Cards */}
+      <div className="grid grid-cols-4 gap-4">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+          <div className="text-slate-500 text-sm">Current Quarterly</div>
+          <div className="text-3xl font-bold">{forecast?.current?.formatted}</div>
+          <div className="text-sm text-slate-400">{(forecast?.current?.denial_rate * 100).toFixed(1)}% denial rate</div>
+        </div>
+        <div className="bg-red-500/10 rounded-xl border border-red-500/30 p-4">
+          <div className="text-red-400 text-sm">90-Day Forecast</div>
+          <div className="text-3xl font-bold text-red-400">{forecast?.forecast_90_day?.formatted}</div>
+          <div className="text-sm text-red-300">+{forecast?.forecast_90_day?.change_pct}% increase</div>
+        </div>
+        <div className="bg-emerald-500/10 rounded-xl border border-emerald-500/30 p-4">
+          <div className="text-emerald-400 text-sm">Preventable</div>
+          <div className="text-3xl font-bold text-emerald-400">${(forecast?.preventable?.amount / 1_000_000).toFixed(1)}M</div>
+          <div className="text-sm text-emerald-300">{forecast?.preventable?.percentage}% of forecast</div>
+        </div>
+        <div className="bg-purple-500/10 rounded-xl border border-purple-500/30 p-4">
+          <div className="text-purple-400 text-sm">Data Quality</div>
+          <div className="text-3xl font-bold text-purple-400">{(forecast?.validation?.data_quality?.score * 100).toFixed(0)}%</div>
+          <div className="text-sm text-purple-300">High confidence</div>
+        </div>
+      </div>
+
+      {/* Forecast Drivers */}
+      <div className="grid grid-cols-2 gap-6">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+          <h3 className="font-semibold mb-4 flex items-center gap-2"><AlertTriangle className="w-5 h-5 text-amber-400" />Forecast Drivers</h3>
+          <div className="space-y-3">
+            {forecast?.forecast_90_day?.drivers?.map((d: any, i: number) => (
+              <div key={i} className="bg-slate-900/50 rounded-lg p-3 flex justify-between items-center">
+                <div>
+                  <div className="font-medium">{d.name}</div>
+                  <div className="text-xs text-slate-500">Effective: {d.effective_date}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-red-400 font-semibold">+${(d.impact / 1_000_000).toFixed(1)}M</div>
+                  <div className="text-xs text-slate-500">{(d.confidence * 100).toFixed(0)}% confidence</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-slate-800/50 rounded-xl border border-emerald-500/30 p-5">
+          <h3 className="font-semibold mb-4 flex items-center gap-2"><Zap className="w-5 h-5 text-emerald-400" />Top Mitigation Opportunities</h3>
+          <div className="space-y-3">
+            {forecast?.preventable?.top_opportunities?.slice(0, 4).map((o: any, i: number) => (
+              <div key={i} className="bg-emerald-500/10 rounded-lg p-3 flex justify-between items-center">
+                <div>
+                  <div className="font-medium text-sm">{o.action}</div>
+                  <div className="text-xs text-slate-500">{o.time_to_implement}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-emerald-400 font-semibold">-${(o.reduction / 1_000_000).toFixed(1)}M</div>
+                  <div className="text-xs text-emerald-300">{o.roi}x ROI</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Service Line Risk */}
+      <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
+        <h3 className="font-semibold mb-4 flex items-center gap-2"><BarChart3 className="w-5 h-5 text-cyan-400" />Service Line Risk Matrix</h3>
+        <div className="grid grid-cols-5 gap-3">
+          {serviceLines?.service_lines?.map((sl: any, i: number) => (
+            <div key={i} className={`rounded-lg p-3 border ${sl.risk_level === 'high' ? 'bg-red-500/10 border-red-500/30' : sl.risk_level === 'medium' ? 'bg-amber-500/10 border-amber-500/30' : 'bg-emerald-500/10 border-emerald-500/30'}`}>
+              <div className="font-medium">{sl.name}</div>
+              <div className="text-xl font-bold">{sl.formatted}</div>
+              <div className="flex justify-between text-xs mt-1">
+                <span className={sl.risk_level === 'high' ? 'text-red-400' : sl.risk_level === 'medium' ? 'text-amber-400' : 'text-emerald-400'}>{sl.risk_level}</span>
+                <span className={sl.trend === 'increasing' ? 'text-red-400' : 'text-slate-400'}>{sl.trend === 'increasing' ? '↑' : '→'}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* What-If Scenarios */}
+      <div className="bg-purple-500/10 rounded-xl border border-purple-500/30 p-5">
+        <h3 className="font-semibold mb-4 flex items-center gap-2"><Brain className="w-5 h-5 text-purple-400" />What-If Scenarios</h3>
+        <div className="flex gap-3 mb-4">
+          <button onClick={() => runWhatIf('policy', 'humana_pa_2025')} className="px-4 py-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 text-sm">What if Humana tightens PA?</button>
+          <button onClick={() => runWhatIf('policy', 'uhc_med_nec_2025')} className="px-4 py-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 text-sm">What if UHC updates med necessity?</button>
+          <button onClick={() => runWhatIf('staffing', undefined)} className="px-4 py-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 text-sm">What if we add 2 PA staff?</button>
+          <button onClick={() => runWhatIf('planning', undefined)} className="px-4 py-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 text-sm">Show planning scenarios</button>
+        </div>
+        
+        {whatIfResult && (
+          <div className="bg-slate-900/50 rounded-lg p-4 space-y-4">
+            {whatIfResult.scenario_type === 'policy' && (
+              <>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <div className="font-semibold">{whatIfResult.policy?.name}</div>
+                    <div className="text-sm text-slate-500">Effective: {whatIfResult.policy?.effective_date}</div>
+                  </div>
+                  <div className="text-2xl font-bold text-red-400">+${(whatIfResult.baseline_impact / 1_000_000).toFixed(1)}M impact</div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-emerald-500/10 rounded p-3">
+                    <div className="text-emerald-400 text-sm">Best Case</div>
+                    <div className="text-xl font-bold">${(whatIfResult.best_case?.impact / 1_000_000).toFixed(1)}M</div>
+                    <div className="text-xs text-slate-500">{(whatIfResult.best_case?.probability * 100).toFixed(0)}% probability</div>
+                  </div>
+                  <div className="bg-amber-500/10 rounded p-3">
+                    <div className="text-amber-400 text-sm">Likely Case</div>
+                    <div className="text-xl font-bold">${(whatIfResult.likely_case?.impact / 1_000_000).toFixed(1)}M</div>
+                    <div className="text-xs text-slate-500">{(whatIfResult.likely_case?.probability * 100).toFixed(0)}% probability</div>
+                  </div>
+                  <div className="bg-red-500/10 rounded p-3">
+                    <div className="text-red-400 text-sm">Worst Case</div>
+                    <div className="text-xl font-bold">${(whatIfResult.worst_case?.impact / 1_000_000).toFixed(1)}M</div>
+                    <div className="text-xs text-slate-500">{(whatIfResult.worst_case?.probability * 100).toFixed(0)}% probability</div>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold mb-2">Mitigations</div>
+                  <div className="space-y-2">
+                    {whatIfResult.mitigations?.map((m: any, i: number) => (
+                      <div key={i} className="flex justify-between items-center bg-slate-800/50 rounded p-2">
+                        <span className="text-sm">{m.name}</span>
+                        <span className="text-emerald-400 text-sm">-${(m.impact_reduction / 1_000_000).toFixed(1)}M ({m.roi}x ROI)</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+            {whatIfResult.scenario_type === 'staffing' && (
+              <>
+                <div className="font-semibold">Staffing Scenario: Add {whatIfResult.fte_change} FTE to {whatIfResult.team?.replace('_', ' ')}</div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-slate-800/50 rounded p-3">
+                    <div className="text-slate-400 text-sm">Investment</div>
+                    <div className="text-xl font-bold">${(whatIfResult.investment?.total_first_year / 1_000).toFixed(0)}K</div>
+                  </div>
+                  <div className="bg-emerald-500/10 rounded p-3">
+                    <div className="text-emerald-400 text-sm">Denial Reduction</div>
+                    <div className="text-xl font-bold text-emerald-400">${(whatIfResult.financial_impact?.denial_reduction / 1_000_000).toFixed(1)}M</div>
+                  </div>
+                  <div className="bg-cyan-500/10 rounded p-3">
+                    <div className="text-cyan-400 text-sm">ROI</div>
+                    <div className="text-xl font-bold text-cyan-400">{whatIfResult.financial_impact?.roi}</div>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-300">{whatIfResult.narrative}</p>
+              </>
+            )}
+            {whatIfResult.scenario_type === 'planning' && (
+              <>
+                <div className="font-semibold">{whatIfResult.horizon_months}-Month Planning Scenarios</div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-emerald-500/10 rounded p-3">
+                    <div className="text-emerald-400 text-sm">Best Case</div>
+                    <div className="text-xl font-bold">${(whatIfResult.best_case?.denials / 1_000_000).toFixed(0)}M</div>
+                    <div className="text-xs text-slate-500">{(whatIfResult.best_case?.probability * 100).toFixed(0)}% probability</div>
+                  </div>
+                  <div className="bg-amber-500/10 rounded p-3">
+                    <div className="text-amber-400 text-sm">Likely Case</div>
+                    <div className="text-xl font-bold">${(whatIfResult.likely_case?.denials / 1_000_000).toFixed(0)}M</div>
+                    <div className="text-xs text-slate-500">{(whatIfResult.likely_case?.probability * 100).toFixed(0)}% probability</div>
+                  </div>
+                  <div className="bg-red-500/10 rounded p-3">
+                    <div className="text-red-400 text-sm">Worst Case</div>
+                    <div className="text-xl font-bold">${(whatIfResult.worst_case?.denials / 1_000_000).toFixed(0)}M</div>
+                    <div className="text-xs text-slate-500">{(whatIfResult.worst_case?.probability * 100).toFixed(0)}% probability</div>
+                  </div>
+                </div>
+                <p className="text-sm text-cyan-300 bg-cyan-500/10 rounded p-3">{whatIfResult.recommendation}</p>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // MODALS
 function LetterModal({ data, close }: { data: Violation; close: () => void }) {
   const letter = DEMAND_LETTERS[data.id];
@@ -965,7 +1200,7 @@ function ChatPanel({ close }: { close: () => void }) {
       else if (q.includes('cigna')) payerId = 'cigna';
       else if (q.includes('medicare')) payerId = 'medicare';
       
-      const response = await fetch(`${API_BASE}/api/chat`, {
+      const response = await fetch(`${API_BASE}/api/warfare/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: userMsg, payer_id: payerId })
@@ -974,15 +1209,20 @@ function ChatPanel({ close }: { close: () => void }) {
       if (!response.ok) throw new Error('API error');
       
       const data: ChatResponse = await response.json();
-      const agent = data.agent_used || 'Orchestrator';
-      const model = data.model || 'gpt-5';
+      // Handle both old format (agent_used, model) and new format (agent, agents_used, models_used)
+      const agent = data.agent_used || (data as any).agent || ((data as any).agents_used?.[0]) || 'Orchestrator';
+      const model = data.model || ((data as any).models_used?.[0]) || 'gpt-5';
+      const content = (data as any).content || '';
+      
+      // Check if we have structured response fields
+      const hasStructured = !!(data.thinking || data.financial_impact || data.root_cause || data.contract_implication || data.recommended_actions || data.sources);
       
       setMsgs(p => [...p, { 
         t: 'ai', 
-        m: '', 
+        m: content, 
         a: agent, 
         r: `${model} | Confidence: ${((data.confidence || 0.9) * 100).toFixed(0)}%`,
-        data 
+        data: hasStructured ? data : undefined 
       }]);
     } catch (err) {
       setMsgs(p => [...p, { t: 'ai', m: "I can help with contract violations, appeal optimization, policy predictions, and negotiation strategy. What would you like to know?", a: 'Orchestrator', r: '' }]);
