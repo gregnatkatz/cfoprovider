@@ -1,4 +1,4 @@
-# ContosoHealth CFO Payer Response Platform
+# ContosoHealth CFO Platform
 
 **"Healing Through Compassion"**
 
@@ -6,11 +6,23 @@ A comprehensive AI-powered healthcare revenue cycle management platform that hel
 
 ---
 
+## Demo Video
+
+https://github.com/user-attachments/assets/demo_video.mp4
+
+<video src="screenshots/demo_video.mp4" controls width="100%">
+  Your browser does not support the video tag.
+</video>
+
+[Download Demo Video](screenshots/demo_video.mp4)
+
+---
+
 ## Part 1: Executive Summary & Functionality
 
 ### Platform Overview
 
-The CFO Payer Warfare Platform is designed for healthcare CFOs and revenue cycle teams to maximize revenue recovery from commercial and government payers. The platform combines real-time claims data analysis with multi-agent AI orchestration to identify actionable opportunities worth millions in recoverable revenue.
+The CFO Platform is designed for healthcare CFOs and revenue cycle teams to maximize revenue recovery from commercial and government payers. The platform combines real-time claims data analysis with multi-agent AI orchestration to identify actionable opportunities worth millions in recoverable revenue.
 
 ### Key Metrics
 
@@ -332,7 +344,7 @@ The frontend will be available at `http://localhost:5173`
 ### Step 4: Verify Installation
 
 1. Open your browser to `http://localhost:5173`
-2. You should see the ContosoHealth CFO Payer Warfare Platform
+2. You should see the ContosoHealth CFO Platform
 3. The Summary tab should display $25.5M recoverable
 4. Select different payers from the dropdown to see dynamic chart updates
 5. Try the AI Chat by clicking "AI Chat" and asking "What are the UHC violations?"
