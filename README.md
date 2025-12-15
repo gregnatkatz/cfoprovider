@@ -1,9 +1,22 @@
 # ContosoHealth CFO Payer Response Platform
 
-A comprehensive healthcare revenue cycle management platform that helps providers identify contract violations, optimize appeals, predict policy changes, and negotiate better payer contracts.
+**"Healing Through Compassion"**
+
+A comprehensive AI-powered healthcare revenue cycle management platform that helps providers identify contract violations, optimize appeals, predict policy changes, and negotiate better payer contracts. Built for CFOs who need actionable intelligence with full transparency and audit trails.
 
 ## Overview
 
+The CFO Payer Warfare Platform is designed for healthcare CFOs and revenue cycle teams to maximize revenue recovery from commercial and government payers. The platform combines real-time claims data analysis with multi-agent AI orchestration to identify actionable opportunities worth millions in recoverable revenue.
+
+### Key Metrics (Demo Data)
+
+| Metric | Value |
+|--------|-------|
+| Total Recoverable | $25.5M |
+| Active Violations | 3 |
+| Pending Appeals | 500 |
+| Policy Alerts | 2 |
+| AI Prediction Accuracy | 96% |
 The CFO Payer Response Platform is designed for healthcare CFOs and revenue cycle teams to maximize revenue recovery from commercial and government payers. The platform combines real-time claims data analysis with AI-powered insights to identify actionable opportunities worth millions in recoverable revenue.
 
 ### Key Capabilities
@@ -132,14 +145,48 @@ Claims data is stored in SQLite with approximately 72,000 synthetic 835/837 clai
 - Policy documents for RAG
 - Cash forecast projections
 
-### AI Integration
+### AI Agent Architecture
 
-The platform integrates with Azure OpenAI using GPT-5 for:
+The platform uses a multi-agent architecture with specialized agents orchestrated by a central routing system.
 
-- Chat responses with chain-of-thought reasoning
-- Demand letter generation
-- Policy change prediction
-- Negotiation strategy recommendations
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| Contract Agent | o3 | Contract analysis and violation detection |
+| Appeal Agent | o1 | Appeal strategy and win rate prediction |
+| Policy Agent | gpt-4.1 | Policy monitoring and prediction |
+| Negotiation Agent | o3 | Negotiation strategy and leverage analysis |
+| Validation Agent | o4-mini | Cross-agent validation and spot-checks |
+| Reasoning Agent | o1 | Complex calculations and chain-of-thought |
+| Chat Agent | gpt-5-chat | User-facing chat responses |
+
+### 5-Layer Validation Framework
+
+The platform implements a comprehensive validation framework for CFO-grade reliability:
+
+1. **Self-Validation**: Each agent output includes confidence score, sample size, and validation checks
+2. **Cross-Agent Validation**: Consensus rules requiring 2+ agents to agree on high-stakes decisions
+3. **Spot-Check Framework**: 5% random sampling with o4-mini model for independent verification
+4. **Aggregation Validation**: Sum integrity, confidence tier sums, count integrity, historical bounds
+5. **Human-in-the-Loop**: Approval queue for actions exceeding thresholds
+
+**HITL Triggers:**
+- Demand letters: Amount > $10K or confidence < 85%
+- Bulk appeals: Batch size > 50 or total value > $100K
+- Negotiations: Opening ask > 15% or BATNA activation
+- Policy prep: Impact > $500K or timeline < 30 days
+
+### Validation API Endpoints
+
+- `/api/validate/violation` - Cross-agent violation validation
+- `/api/validate/appeal` - Appeal validation
+- `/api/validate/spot-check` - 5% random sampling validation
+- `/api/approval-queue` - Human-in-the-loop approval queue
+- `/api/aggregation/*` - Aggregation validation endpoints
+- `/api/evidence/*` - Evidence package compilation
+- `/api/calculation/*` - Calculation transparency
+- `/api/performance/*` - Model performance metrics
+- `/api/simulate/*` - Simulation endpoints
+- `/api/validation-framework/status` - Framework status overview
 
 A knowledge graph built with NetworkX stores payer policies, contract terms, and regulatory requirements for GraphRAG-enhanced responses.
 

@@ -202,7 +202,8 @@ const AGENTS = [
   { name: 'Claims', status: 'active', tasks: 8 }, { name: 'Policy', status: 'monitoring', tasks: 2 },
   { name: 'Appeal', status: 'active', tasks: 5 }, { name: 'Negotiation', status: 'idle', tasks: 0 },
   { name: 'Regulatory', status: 'active', tasks: 3 }, { name: 'Validation', status: 'active', tasks: 15 },
-  { name: 'Reasoning', status: 'active', tasks: 12 }
+  { name: 'Reasoning', status: 'active', tasks: 12 }, { name: 'SpotCheck', status: 'active', tasks: 8 },
+  { name: 'Aggregation', status: 'active', tasks: 6 }, { name: 'Evidence', status: 'active', tasks: 4 }
 ];
 
 const SYSTEMS = [
@@ -284,7 +285,7 @@ export default function App() {
             </div>
             <div className="flex items-center gap-3">
               <button onClick={() => setAgents(!agents)} className="flex items-center gap-2 px-3 py-2 bg-slate-800 rounded-lg border border-slate-700 hover:border-purple-500/50">
-                <Brain className="w-4 h-4 text-purple-400" /><span className="text-sm">9 Agents</span><span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <Brain className="w-4 h-4 text-purple-400" /><span className="text-sm">12 Agents</span><span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               </button>
               <button onClick={() => setChat(!chat)} className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium ${chat ? 'bg-cyan-500' : 'bg-slate-800 border border-slate-700'}`}>
                 <Bot className="w-4 h-4" />AI Chat
