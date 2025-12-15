@@ -1,4 +1,4 @@
-# ContosoHealth CFO Payer Warfare Platform
+# ContosoHealth CFO Payer Response Platform
 
 **"Healing Through Compassion"**
 
@@ -17,6 +17,7 @@ The CFO Payer Warfare Platform is designed for healthcare CFOs and revenue cycle
 | Pending Appeals | 500 |
 | Policy Alerts | 2 |
 | AI Prediction Accuracy | 96% |
+The CFO Payer Response Platform is designed for healthcare CFOs and revenue cycle teams to maximize revenue recovery from commercial and government payers. The platform combines real-time claims data analysis with AI-powered insights to identify actionable opportunities worth millions in recoverable revenue.
 
 ### Key Capabilities
 
