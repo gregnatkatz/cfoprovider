@@ -396,8 +396,10 @@ function PayerCharts() {
   }, [selectedPayer]);
 
   const maxDenialRate = Math.max(...denialBreakdown.map(d => d.rate), 1);
-  const maxYield = Math.max(...yieldTrend.map(y => y.yield), 100);
-  const minYield = Math.min(...yieldTrend.map(y => y.yield), 0);
+  // Fix: properly calculate min/max from actual data, with sensible defaults
+  const yields = yieldTrend.map(y => y.yield).filter(v => typeof v === 'number' && !Number.isNaN(v));
+  const maxYield = yields.length > 0 ? Math.max(...yields) : 95;
+  const minYield = yields.length > 0 ? Math.min(...yields) : 60;
 
   return (
     <div className="bg-slate-800/50 rounded-lg border border-slate-700/50 p-3">
@@ -405,7 +407,6 @@ function PayerCharts() {
         <h2 className="text-sm font-semibold flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-cyan-400" />
           Payer Analytics
-          <span className="text-xs text-slate-500">(SQLite)</span>
         </h2>
         <select
           value={selectedPayer}
