@@ -1,4 +1,4 @@
-# ContosoHealth CFO Payer Warfare Platform
+# ContosoHealth CFO Payer Response Platform
 
 **"Healing Through Compassion"**
 
