@@ -2720,64 +2720,108 @@ function ModelPerformanceTab() {
 // SIMULATION MODE TAB
 function SimulationModeTab() {
   const [files, setFiles] = useState<File[]>([]);
-  const [analyzing, setAnalyzing] = useState(false);
-  const [analysisStage, setAnalysisStage] = useState<string>('');
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadState, setUploadState] = useState<'idle' | 'uploading' | 'validating' | 'processing' | 'complete'>('idle');
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [results, setResults] = useState<any>(null);
-  const [validationStatus, setValidationStatus] = useState<'idle' | 'validating' | 'valid' | 'error'>('idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Recent simulations
   const recentSimulations = [
-    { id: 'SIM-001', date: 'Dec 10, 2024', files: 47, claims: 52847, found: '$1.2M', status: 'complete' },
-    { id: 'SIM-002', date: 'Nov 28, 2024', files: 32, claims: 38291, found: '$890K', status: 'complete' },
-    { id: 'SIM-003', date: 'Nov 15, 2024', files: 28, claims: 31456, found: '$720K', status: 'complete' },
+    { id: 'SIM-001', date: 'Dec 10, 2024', files: 47, claims: 12400, found: '$2.1M', status: 'complete' },
+    { id: 'SIM-002', date: 'Nov 28, 2024', files: 92, claims: 28900, found: '$4.8M', status: 'complete' },
+    { id: 'SIM-003', date: 'Nov 15, 2024', files: 31, claims: 8200, found: '$1.2M', status: 'complete' },
   ];
+
+  // What you'll get deliverables
+  const deliverables = [
+    { icon: '⚠️', title: 'Violation Detection', time: '2-5 min', desc: 'Payment velocity, criteria changes, and contract breaches' },
+    { icon: '💰', title: 'Recovery Opportunities', time: '3-7 min', desc: 'Prioritized list with expected values and confidence scores' },
+    { icon: '🎯', title: 'Appeal Prioritization', time: '1-3 min', desc: 'RL-optimized ranking for maximum ROI' },
+    { icon: '📄', title: 'Compliance Report', time: '2-4 min', desc: 'Contract-by-contract analysis with evidence' },
+  ];
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    handleFiles(droppedFiles);
+  };
   
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const uploadedFiles = Array.from(e.target.files);
-      setFiles(uploadedFiles);
-      // Simulate file validation
-      setValidationStatus('validating');
-      setTimeout(() => setValidationStatus('valid'), 1500);
+      handleFiles(uploadedFiles);
     }
+  };
+
+  const handleFiles = (newFiles: File[]) => {
+    const validFiles = newFiles.filter(f => 
+      f.name.endsWith('.835') || f.name.endsWith('.txt') || f.name.endsWith('.csv')
+    );
+    setFiles(prev => [...prev, ...validFiles]);
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prev => prev.filter((_, i) => i !== index));
   };
   
   const loadSampleData = () => {
-    // Simulate loading sample data
     setFiles([
-      { name: 'sample_835_jan2024.txt', size: 245000 } as File,
-      { name: 'sample_835_feb2024.txt', size: 312000 } as File,
-      { name: 'sample_835_mar2024.txt', size: 287000 } as File,
+      { name: 'sample_835_UHC_Oct2024.835', size: 2456000 } as File,
+      { name: 'sample_835_Humana_Oct2024.835', size: 1890000 } as File,
+      { name: 'sample_835_BCBS_Oct2024.835', size: 3120000 } as File,
     ]);
-    setValidationStatus('valid');
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
   
-  const runSimulation = () => {
-    setAnalyzing(true);
-    // Simulate multi-stage analysis
-    setAnalysisStage('Validating file format...');
-    setTimeout(() => setAnalysisStage('Parsing 835 segments...'), 1000);
-    setTimeout(() => setAnalysisStage('Extracting claim data...'), 2000);
-    setTimeout(() => setAnalysisStage('Running AI violation detection...'), 3000);
-    setTimeout(() => setAnalysisStage('Calculating recovery opportunities...'), 4000);
-    setTimeout(() => setAnalysisStage('Generating report...'), 5000);
-    setTimeout(() => {
-      setResults({
-        claimsAnalyzed: 72847,
-        violationsFound: 47,
-        missedByManual: 35,
-        recoverable: 2340000,
-        leftOnTable: 1890000,
-        topMissed: [
-          { id: 'CLM-8847', payer: 'UHC', amount: 45000, reason: 'Payment velocity 42 days vs 30 day contract' },
-          { id: 'CLM-7723', payer: 'Humana', amount: 38000, reason: 'Unauthorized criteria change detected' },
-          { id: 'CLM-9912', payer: 'BCBS', amount: 28000, reason: 'Interest accrual not claimed' }
-        ]
+  const startSimulation = () => {
+    setUploadState('uploading');
+    setUploadProgress(0);
+    
+    // Simulate upload progress
+    const uploadInterval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(uploadInterval);
+          setUploadState('validating');
+          setTimeout(() => {
+            setUploadState('processing');
+            setTimeout(() => {
+              setUploadState('complete');
+              setResults({
+                claimsAnalyzed: 12400,
+                violationsFound: 23,
+                missedByManual: 18,
+                recoverable: 2100000,
+                leftOnTable: 1650000,
+                topMissed: [
+                  { id: 'CLM-8847', payer: 'UHC', amount: 45000, reason: 'Payment velocity 42 days vs 30 day contract' },
+                  { id: 'CLM-7723', payer: 'Humana', amount: 38000, reason: 'Unauthorized criteria change detected' },
+                  { id: 'CLM-9912', payer: 'BCBS', amount: 28000, reason: 'Interest accrual not claimed' }
+                ]
+              });
+            }, 3000);
+          }, 2000);
+          return 100;
+        }
+        return prev + 10;
       });
-      setAnalyzing(false);
-      setAnalysisStage('');
-    }, 6000);
+    }, 200);
   };
   
   return (
@@ -2792,143 +2836,224 @@ function SimulationModeTab() {
         {/* HIPAA Compliance Badge */}
         <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
           <CheckCircle className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs text-emerald-400 font-medium">HIPAA Compliant</span>
+          <span className="text-xs text-emerald-400 font-medium">HIPAA Compliant • SOC 2 Type II</span>
         </div>
       </div>
       
-      {!results ? (
-        <div className="space-y-6">
-          {/* File Format Specs */}
-          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
-            <div className="flex items-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-400">Accepted:</span>
-                <span className="text-white">.835, .txt, .csv</span>
+      <div className="grid grid-cols-3 gap-6">
+        {/* Left Column - 2/3 width */}
+        <div className="col-span-2 space-y-6">
+          {/* Upload Zone - only show when idle */}
+          {uploadState === 'idle' && !results && (
+            <>
+              <div 
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all ${
+                  isDragging ? 'border-amber-500 bg-amber-500/5' : 'border-slate-600 hover:border-amber-500/50'
+                }`}
+              >
+                <input 
+                  ref={fileInputRef}
+                  type="file" 
+                  multiple 
+                  accept=".835,.txt,.csv"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <Upload className="w-16 h-16 text-slate-500 mx-auto mb-4" />
+                <div className="text-xl font-semibold mb-2">Upload 835 Remittance Files</div>
+                <div className="text-slate-400 mb-4">Drag and drop or click to select files</div>
+                
+                {/* File format specs */}
+                <div className="flex justify-center gap-3 mb-4">
+                  {['.835', '.txt', '.csv'].map(f => (
+                    <span key={f} className="text-xs px-3 py-1 bg-slate-800 rounded text-slate-400">{f}</span>
+                  ))}
+                </div>
+                
+                <div className="text-sm text-slate-500">Recommended: 90 days of 835 files for comprehensive analysis</div>
+                <div className="text-xs text-slate-600 mt-2">Max file size: 500MB • AES-256 encryption in transit and at rest</div>
               </div>
-              <div className="flex items-center gap-2">
-                <Database className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-400">Max size:</span>
-                <span className="text-white">500MB</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Gavel className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-400">Encryption:</span>
-                <span className="text-white">AES-256 in transit & at rest</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Upload Area */}
-          <div 
-            onClick={() => fileInputRef.current?.click()}
-            className="border-2 border-dashed border-slate-600 rounded-2xl p-12 text-center hover:border-amber-500/50 cursor-pointer transition-all"
-          >
-            <input 
-              ref={fileInputRef}
-              type="file" 
-              multiple 
-              accept=".835,.txt,.csv,.edi"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-            <Upload className="w-16 h-16 text-slate-500 mx-auto mb-4" />
-            <div className="text-xl font-semibold mb-2">Upload 835 Remittance Files</div>
-            <div className="text-slate-400 mb-4">Drag and drop or click to select files</div>
-            <div className="text-sm text-slate-500">Recommended: 90 days of 835 files for comprehensive analysis</div>
-          </div>
+              {/* Try Sample Data Button */}
+              {files.length === 0 && (
+                <div className="text-center">
+                  <button 
+                    onClick={loadSampleData}
+                    className="px-6 py-3 bg-purple-500/20 border border-purple-500/30 hover:bg-purple-500/30 rounded-xl text-purple-400 font-medium flex items-center gap-2 mx-auto"
+                  >
+                    <Database className="w-5 h-5" />
+                    Try with Sample Data
+                  </button>
+                  <div className="text-xs text-slate-500 mt-2">Explore the platform without uploading real data</div>
+                </div>
+              )}
+            </>
+          )}
 
-          {/* Try Sample Data Button */}
-          <div className="text-center">
-            <button 
-              onClick={loadSampleData}
-              className="px-6 py-3 bg-purple-500/20 border border-purple-500/30 hover:bg-purple-500/30 rounded-xl text-purple-400 font-medium flex items-center gap-2 mx-auto"
-            >
-              <Sparkles className="w-5 h-5" />
-              Try with Sample Data
-            </button>
-            <div className="text-xs text-slate-500 mt-2">Explore the platform without uploading real data</div>
-          </div>
-          
-          {/* File Validation Status */}
-          {validationStatus === 'validating' && (
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-3">
-              <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
-              <span className="text-amber-400">Validating file format...</span>
+          {/* Upload Progress States */}
+          {uploadState !== 'idle' && uploadState !== 'complete' && (
+            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-12 text-center">
+              {uploadState === 'uploading' && (
+                <>
+                  <div className="text-5xl mb-4">📤</div>
+                  <div className="text-xl font-semibold mb-4">Uploading Files...</div>
+                  <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden mb-2">
+                    <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${uploadProgress}%` }} />
+                  </div>
+                  <div className="text-sm text-slate-400">{uploadProgress}% complete</div>
+                </>
+              )}
+              {uploadState === 'validating' && (
+                <>
+                  <div className="text-5xl mb-4">🔍</div>
+                  <div className="text-xl font-semibold mb-2">Validating File Format...</div>
+                  <div className="text-sm text-slate-400">Checking 835 structure and data integrity</div>
+                </>
+              )}
+              {uploadState === 'processing' && (
+                <>
+                  <div className="text-5xl mb-4">⚙️</div>
+                  <div className="text-xl font-semibold mb-2">Processing Claims...</div>
+                  <div className="text-sm text-slate-400 mb-4">AI agents analyzing patterns and violations</div>
+                  <div className="flex justify-center gap-2">
+                    {['ContractAgent', 'ValidationAgent', 'AppealAgent'].map((agent, i) => (
+                      <span key={agent} className="text-xs px-2 py-1 bg-slate-900 rounded text-purple-400">
+                        {agent} {i === 1 ? '●' : '○'}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
-          {files.length > 0 && validationStatus === 'valid' && (
-            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" />
-                  {files.length} files validated
-                </h3>
-                <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">Ready for analysis</span>
+          {/* Complete State */}
+          {uploadState === 'complete' && results && (
+            <div className="space-y-6">
+              <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-8 text-center">
+                <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
+                <div className="text-2xl font-bold text-emerald-400 mb-2">Analysis Complete!</div>
+                <div className="text-slate-400 mb-6">Found potential recovery opportunities</div>
+                
+                <div className="grid grid-cols-3 gap-4 mb-6">
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <div className="text-xs text-slate-500 mb-1">Claims Analyzed</div>
+                    <div className="text-2xl font-bold">{results.claimsAnalyzed.toLocaleString()}</div>
+                  </div>
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <div className="text-xs text-slate-500 mb-1">Violations Found</div>
+                    <div className="text-2xl font-bold text-red-400">{results.violationsFound}</div>
+                  </div>
+                  <div className="bg-slate-900/50 rounded-lg p-4">
+                    <div className="text-xs text-slate-500 mb-1">Recoverable</div>
+                    <div className="text-2xl font-bold text-emerald-400">{fmt(results.recoverable)}</div>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2 max-h-40 overflow-y-auto">
-                {files.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2 text-sm text-slate-400">
-                    <FileText className="w-4 h-4" />
-                    {f.name}
-                    <span className="text-slate-600">({(f.size / 1024).toFixed(1)} KB)</span>
-                    <CheckCircle className="w-3 h-3 text-emerald-400 ml-auto" />
+
+              {/* You Left Money on the Table */}
+              <div className="bg-gradient-to-r from-red-500/20 to-amber-500/20 border border-red-500/30 rounded-xl p-6 text-center">
+                <div className="text-slate-400 mb-2">You Left Money on the Table</div>
+                <div className="text-5xl font-bold text-red-400">{fmt(results.leftOnTable)}</div>
+              </div>
+              
+              {/* Top Claims You Missed */}
+              <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-5">
+                <h3 className="font-semibold mb-4 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-purple-400" />
+                  Top Claims You Missed
+                </h3>
+                <div className="space-y-3">
+                  {results.topMissed.map((claim: any, i: number) => (
+                    <div key={i} className="bg-slate-900/50 rounded-lg p-4 flex justify-between items-center">
+                      <div>
+                        <div className="font-semibold">{claim.id} • {claim.payer}</div>
+                        <div className="text-sm text-slate-400">{claim.reason}</div>
+                      </div>
+                      <div className="text-2xl font-bold text-red-400">{fmt(claim.amount)}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex gap-4">
+                <button onClick={() => { setFiles([]); setResults(null); setUploadState('idle'); }} className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold">
+                  Upload New Files
+                </button>
+                <button className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl font-semibold flex items-center gap-2">
+                  <Download className="w-5 h-5" />
+                  Export Full Report
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* File List */}
+          {files.length > 0 && uploadState === 'idle' && !results && (
+            <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-4">
+                <span className="font-semibold">{files.length} files selected</span>
+                <button onClick={() => setFiles([])} className="text-xs text-slate-500 hover:text-slate-300">
+                  Clear all
+                </button>
+              </div>
+              <div className="max-h-48 overflow-y-auto space-y-2">
+                {files.map((file, i) => (
+                  <div key={i} className="flex items-center justify-between p-2 bg-slate-900/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <FileText className="w-4 h-4 text-slate-400" />
+                      <div>
+                        <div className="text-sm">{file.name}</div>
+                        <div className="text-xs text-slate-500">{formatFileSize(file.size)}</div>
+                      </div>
+                    </div>
+                    <button onClick={() => removeFile(i)} className="text-slate-500 hover:text-red-400">
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
                 ))}
               </div>
+              
               <button 
-                onClick={runSimulation}
-                disabled={analyzing}
-                className="mt-4 px-6 py-3 bg-amber-500 hover:bg-amber-600 rounded-xl font-semibold flex items-center gap-2 disabled:opacity-50"
+                onClick={startSimulation}
+                className="mt-4 w-full px-6 py-3 bg-amber-500 hover:bg-amber-600 rounded-xl font-semibold flex items-center justify-center gap-2"
               >
-                {analyzing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-                {analyzing ? 'Analyzing...' : 'Run AI Analysis'}
+                <Sparkles className="w-5 h-5" />
+                Start Simulation
               </button>
             </div>
           )}
+        </div>
 
-          {/* What You'll Get Preview */}
-          <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-5">
+        {/* Right Column - 1/3 width */}
+        <div className="space-y-4">
+          {/* What You'll Get */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <Eye className="w-5 h-5 text-cyan-400" />
               What You'll Get
             </h3>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { icon: '🔍', title: 'Violation Detection', time: 'Est. 2-5 min', desc: 'Contract compliance analysis' },
-                { icon: '💰', title: 'Recovery Opportunities', time: 'Included', desc: 'Dollar amounts with evidence' },
-                { icon: '📊', title: 'Appeal Prioritization', time: 'Included', desc: 'AI-ranked by win probability' },
-                { icon: '📋', title: 'Compliance Report', time: 'Included', desc: 'Exportable audit trail' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
-                  <span className="text-2xl">{item.icon}</span>
-                  <div>
-                    <div className="font-medium text-sm">{item.title}</div>
+            <div className="space-y-4">
+              {deliverables.map((item, i) => (
+                <div key={i} className="flex gap-3">
+                  <span className="text-xl">{item.icon}</span>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-medium">{item.title}</span>
+                      <span className="text-xs text-slate-500 flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> {item.time}
+                      </span>
+                    </div>
                     <div className="text-xs text-slate-500">{item.desc}</div>
-                    <div className="text-xs text-cyan-400 mt-1">{item.time}</div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          
-          {/* Analysis Progress */}
-          {analyzing && (
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-6">
-              <div className="flex items-center gap-4 mb-4">
-                <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
-                <div>
-                  <div className="text-lg font-semibold">AI Analyzing Your Claims...</div>
-                  <div className="text-sm text-purple-400">{analysisStage}</div>
-                </div>
-              </div>
-              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                <div className="h-full bg-purple-500 rounded-full animate-pulse" style={{ width: '60%' }} />
-              </div>
-              <div className="text-xs text-slate-500 mt-2">This may take a few minutes depending on file size</div>
-            </div>
-          )}
 
           {/* Recent Simulations */}
           <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
@@ -2938,77 +3063,39 @@ function SimulationModeTab() {
             </h3>
             <div className="space-y-2">
               {recentSimulations.map((sim, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg hover:bg-slate-900/70 cursor-pointer">
-                  <div className="flex items-center gap-4">
-                    <span className="text-xs text-slate-500 font-mono">{sim.id}</span>
-                    <span className="text-sm">{sim.date}</span>
-                    <span className="text-xs text-slate-500">{sim.files} files • {sim.claims.toLocaleString()} claims</span>
+                <div key={i} className="p-3 bg-slate-900/50 rounded-lg border border-slate-700/50 cursor-pointer hover:bg-slate-900/70">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium">{sim.date}</span>
+                    <span className="text-sm font-semibold text-emerald-400">{sim.found}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-emerald-400 font-semibold">{sim.found}</span>
-                    <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">View</span>
+                  <div className="flex gap-4 text-xs text-slate-500 mb-2">
+                    <span>{sim.files} files</span>
+                    <span>{sim.claims.toLocaleString()} claims</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button className="text-xs px-2 py-1 bg-slate-800 rounded text-slate-400 hover:text-white">Re-run</button>
+                    <button className="text-xs px-2 py-1 bg-slate-800 rounded text-slate-400 hover:text-white">View Results</button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {/* Results Summary */}
-          <div className="bg-gradient-to-r from-red-500/20 to-amber-500/20 border border-red-500/30 rounded-2xl p-8">
-            <div className="text-center mb-6">
-              <div className="text-slate-400 mb-2">You Left Money on the Table</div>
-              <div className="text-6xl font-bold text-red-400">{fmt(results.leftOnTable)}</div>
-              <div className="text-slate-400 mt-2">Based on {results.claimsAnalyzed.toLocaleString()} claims analyzed</div>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-slate-900/50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-amber-400">{results.violationsFound}</div>
-                <div className="text-sm text-slate-400">Violations Found</div>
-              </div>
-              <div className="bg-slate-900/50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-red-400">{results.missedByManual}</div>
-                <div className="text-sm text-slate-400">Missed by Manual Review</div>
-              </div>
-              <div className="bg-slate-900/50 rounded-xl p-4 text-center">
-                <div className="text-3xl font-bold text-emerald-400">{fmt(results.recoverable)}</div>
-                <div className="text-sm text-slate-400">Total Recoverable</div>
-              </div>
-            </div>
-          </div>
-          
-          {/* What AI Found That Humans Missed */}
-          <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-5">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-400" />
-              Top Claims You Missed
-            </h3>
-            <div className="space-y-3">
-              {results.topMissed.map((claim: any, i: number) => (
-                <div key={i} className="bg-slate-900/50 rounded-lg p-4 flex justify-between items-center">
-                  <div>
-                    <div className="font-semibold">{claim.id} • {claim.payer}</div>
-                    <div className="text-sm text-slate-400">{claim.reason}</div>
-                  </div>
-                  <div className="text-2xl font-bold text-red-400">{fmt(claim.amount)}</div>
+
+          {/* Data Security Note */}
+          <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <Gavel className="w-4 h-4 text-emerald-400 mt-0.5" />
+              <div>
+                <div className="text-sm font-medium text-emerald-400 mb-1">Your Data is Secure</div>
+                <div className="text-xs text-slate-400 leading-relaxed">
+                  Files are encrypted in transit (TLS 1.3) and at rest (AES-256). 
+                  PHI is processed in a HIPAA-compliant environment and automatically purged after analysis.
                 </div>
-              ))}
+              </div>
             </div>
           </div>
-          
-          <div className="flex gap-4">
-            <button onClick={() => { setFiles([]); setResults(null); setValidationStatus('idle'); }} className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold">
-              Upload New Files
-            </button>
-            <button className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl font-semibold flex items-center gap-2">
-              <Download className="w-5 h-5" />
-              Export Full Report
-            </button>
-          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
