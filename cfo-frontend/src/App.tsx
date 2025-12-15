@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { AlertTriangle, FileText, Sparkles, Send, X, Loader2, Download, Building2, Zap, Target, Brain, Bot, Radar, Scale, Gavel, CheckCircle, Eye, ArrowUpRight, ArrowDownRight, Users, Copy, BarChart3, Heart, DollarSign, Search, Database, ChevronDown, ChevronUp, TrendingUp, Upload, Activity, Layers } from 'lucide-react';
+import { AlertTriangle, FileText, Sparkles, Send, X, Loader2, Download, Building2, Zap, Target, Brain, Bot, Radar, Scale, Gavel, CheckCircle, Eye, ArrowUpRight, ArrowDownRight, Users, Copy, BarChart3, Heart, DollarSign, Search, Database, ChevronDown, ChevronUp, TrendingUp, Upload, Activity, Layers, Clock } from 'lucide-react';
 
 // TypeScript interfaces
 interface Violation {
@@ -264,18 +264,17 @@ export default function App() {
                 </div>
               </div>
               <nav className="flex bg-slate-800/50 rounded-lg p-1 border border-slate-700/50">
-                {[
-                                    { id: 'summary', label: 'Summary', icon: FileText },
-                                    { id: 'executive', label: 'Executive', icon: Layers },
-                                    { id: 'forecast', label: 'Forecast', icon: TrendingUp },
-                                    { id: 'agents', label: 'Agents', icon: Brain },
-                                    { id: 'violations', label: 'Violations', icon: AlertTriangle, badge: VIOLATIONS.length },
-                                    { id: 'appeals', label: 'Appeals', icon: Target, badge: '500' },
-                                    { id: 'radar', label: 'Radar', icon: Radar, badge: ALERTS.length },
-                                    { id: 'negotiate', label: 'Negotiate', icon: Scale },
-                                    { id: 'performance', label: 'Performance', icon: Activity },
-                                    { id: 'simulate', label: 'Simulate', icon: Upload }
-                ].map(t => (
+                                {[
+                                                    { id: 'summary', label: 'Summary', icon: FileText },
+                                                    { id: 'forecast', label: 'Forecast', icon: TrendingUp },
+                                                    { id: 'agents', label: 'Agents', icon: Brain },
+                                                    { id: 'violations', label: 'Violations', icon: AlertTriangle, badge: VIOLATIONS.length },
+                                                    { id: 'appeals', label: 'Appeals', icon: Target, badge: '500' },
+                                                    { id: 'radar', label: 'Radar', icon: Radar, badge: ALERTS.length },
+                                                    { id: 'negotiate', label: 'Negotiate', icon: Scale },
+                                                    { id: 'performance', label: 'Performance', icon: Activity },
+                                                    { id: 'simulate', label: 'Simulate', icon: Upload }
+                                ].map(t => (
                   <button key={t.id} onClick={() => setTab(t.id)} className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium ${tab === t.id ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white'}`}>
                     <t.icon className="w-4 h-4" />{t.label}
                     {t.badge && <span className="px-1.5 py-0.5 text-xs bg-red-500 rounded-full">{t.badge}</span>}
@@ -325,7 +324,6 @@ export default function App() {
         {/* MAIN */}
         <main className="p-6">
                     {tab === 'summary' && <SummaryTab total={totalRecoverable} onNav={setTab} open={open} />}
-                    {tab === 'executive' && <ExecutiveDashboard />}
                     {tab === 'forecast' && <ForecastTab />}
                     {tab === 'agents' && <AgentsTab />}
                     {tab === 'violations' && <ViolationsTab open={open} />}
@@ -722,18 +720,48 @@ function SummaryTab({ total, onNav, open }: { total: number; onNav: (tab: string
 
 // VIOLATIONS TAB
 function ViolationsTab({ open }: { open: (type: string, data: Violation) => void }) {
+  const [showCalcModal, setShowCalcModal] = useState<string | null>(null);
+  const [showEvidenceModal, setShowEvidenceModal] = useState<string | null>(null);
+  
+  // Calculate expiring claims (urgency)
+  const expiringClaims = 847; // Claims expiring in 30 days
+  const totalRecoverable = VIOLATIONS.reduce((s, v) => s + v.principal + v.interest, 0);
+  
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold">Contract Violations</h2>
+      {/* Header with Export */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Contract Violations</h2>
+          <p className="text-sm text-slate-400 mt-1">Total Recoverable: <span className="text-emerald-400 font-semibold">{fmt(totalRecoverable)}</span></p>
+        </div>
+        <div className="flex gap-3">
+          <span className="flex items-center gap-2 px-3 py-1.5 bg-red-500/20 text-red-400 rounded-lg text-sm">
+            <AlertTriangle className="w-4 h-4" />
+            {expiringClaims} claims expire in 30 days
+          </span>
+          <button className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg flex items-center gap-2 text-sm">
+            <Download className="w-4 h-4" />Export Violation Report
+          </button>
+        </div>
+      </div>
+
       {VIOLATIONS.map(v => (
         <div key={v.id} className="bg-slate-800/50 rounded-xl border border-slate-700/50 overflow-hidden">
           <div className={`p-5 ${v.type === 'payment_velocity' ? 'bg-amber-500/5' : 'bg-red-500/5'}`}>
             <div className="flex justify-between">
               <div>
-                <div className="flex items-center gap-3 mb-2"><Badge type={v.type === 'payment_velocity' ? 'warning' : 'critical'}>{v.type.replace('_', ' ')}</Badge><span className="text-slate-400">{v.payer}</span></div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Badge type={v.type === 'payment_velocity' ? 'warning' : 'critical'}>{v.type.replace('_', ' ')}</Badge>
+                  <span className="text-slate-400">{v.payer}</span>
+                  <span className="text-xs text-slate-500">Last reviewed: <span className="text-amber-400">Never</span></span>
+                </div>
                 <h3 className="text-xl font-bold">{v.title}</h3>
               </div>
-              <div className="text-right"><div className="text-3xl font-bold text-emerald-400">{fmt(v.principal + v.interest)}</div></div>
+              <div className="text-right">
+                <div className="text-3xl font-bold text-emerald-400">{fmt(v.principal + v.interest)}</div>
+                <div className="text-xs text-slate-500 mt-1">Statute expires: <span className="text-red-400">30 days</span></div>
+              </div>
             </div>
           </div>
           <div className="p-5 grid grid-cols-2 gap-6">
@@ -752,19 +780,46 @@ function ViolationsTab({ open }: { open: (type: string, data: Violation) => void
                 <div><div className="text-xs text-slate-500">Claims</div><div className="font-semibold">{v.claims.toLocaleString()}</div></div>
                 <div><div className="text-xs text-slate-500">Gap</div><div className="text-amber-400 font-semibold">{v.gap}</div></div>
               </div>
-              {v.interest > 0 && <div className="mt-3 text-xl font-bold text-amber-400">Interest: {fmt(v.interest)}</div>}
+              {v.interest > 0 && (
+                <div className="mt-3">
+                  <div className="text-xl font-bold text-amber-400">Interest: {fmt(v.interest)}</div>
+                  <button 
+                    onClick={() => setShowCalcModal(v.id)}
+                    className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 mt-1"
+                  >
+                    <Database className="w-3 h-3" />View calculation
+                  </button>
+                </div>
+              )}
             </div>
           </div>
           <div className="px-5 pb-5 flex justify-between">
-            <div className="flex gap-2">{v.agents.map(a => <AgentBadge key={a} name={a.replace('Agent', '')} />)}<Confidence v={v.confidence} /></div>
+            <div className="flex items-center gap-3">
+              {v.agents.map(a => <AgentBadge key={a} name={a.replace('Agent', '')} />)}
+              <div className="flex items-center gap-2 px-2 py-1 bg-slate-900/50 rounded">
+                <div className="w-16 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${v.confidence * 100}%` }}></div>
+                </div>
+                <span className="text-xs text-emerald-400">{(v.confidence * 100).toFixed(0)}%</span>
+                <span className="text-xs text-slate-500">(n={v.claims.toLocaleString()})</span>
+              </div>
+            </div>
             <div className="flex gap-2">
-              <button onClick={() => open('violation', v)} className="px-4 py-2 bg-slate-700 rounded flex items-center gap-2"><Eye className="w-4 h-4" />Evidence</button>
-              <button onClick={() => open('letter', v)} className="px-5 py-2 bg-emerald-500 rounded font-medium flex items-center gap-2"><Send className="w-4 h-4" />Send Letter</button>
+              <button 
+                onClick={() => setShowEvidenceModal(v.id)} 
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded flex items-center gap-2 text-sm"
+              >
+                <Eye className="w-4 h-4" />Evidence ({Math.floor(v.claims * 0.058)} claims, 3 excerpts)
+              </button>
+              <button onClick={() => open('letter', v)} className="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 rounded font-medium flex items-center gap-2">
+                <Send className="w-4 h-4" />Send Letter
+              </button>
             </div>
           </div>
         </div>
       ))}
 
+      {/* Regulatory Violations */}
       <div className="bg-slate-800/50 rounded-xl border border-red-500/30 p-5">
         <h3 className="text-lg font-semibold flex items-center gap-2 mb-4"><Gavel className="w-5 h-5 text-red-400" />Regulatory Violations</h3>
         {REGS.map(r => (
@@ -780,6 +835,96 @@ function ViolationsTab({ open }: { open: (type: string, data: Violation) => void
           </div>
         ))}
       </div>
+
+      {/* Interest Calculation Modal */}
+      {showCalcModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 rounded-xl max-w-md w-full border border-slate-700 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-amber-400" />Interest Calculation
+              </h3>
+              <button onClick={() => setShowCalcModal(null)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="bg-slate-800/50 rounded-lg p-4 font-mono text-sm space-y-2">
+              <div className="text-slate-400">Interest: <span className="text-amber-400">{fmt(VIOLATIONS.find(v => v.id === showCalcModal)?.interest || 0)}</span></div>
+              <div className="border-l-2 border-slate-600 pl-3 space-y-1 text-slate-400">
+                <div>├── {VIOLATIONS.find(v => v.id === showCalcModal)?.claims.toLocaleString()} claims × 8 days avg delay</div>
+                <div>├── 12% annual rate (per {VIOLATIONS.find(v => v.id === showCalcModal)?.section})</div>
+                <div>└── Principal: {fmt(VIOLATIONS.find(v => v.id === showCalcModal)?.principal || 0)}</div>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+              Verified by ContractAgent, ValidationAgent
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Evidence Modal */}
+      {showEvidenceModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 rounded-xl max-w-2xl w-full border border-slate-700 p-6 max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Eye className="w-5 h-5 text-cyan-400" />Evidence Package
+              </h3>
+              <button onClick={() => setShowEvidenceModal(null)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm font-semibold text-slate-400 mb-2">Contract Excerpts (3)</h4>
+                <div className="bg-slate-800/50 rounded-lg p-3 space-y-2 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-cyan-400 font-mono text-xs">§4.2</span>
+                    <span className="text-slate-300 italic">"Payment shall be remitted within 30 calendar days..."</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-cyan-400 font-mono text-xs">§4.3</span>
+                    <span className="text-slate-300 italic">"Interest shall accrue at 12% per annum..."</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-cyan-400 font-mono text-xs">§7.1</span>
+                    <span className="text-slate-300 italic">"Provider may demand payment with interest..."</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-sm font-semibold text-slate-400 mb-2">Sample Claims (5 of {VIOLATIONS.find(v => v.id === showEvidenceModal)?.claims.toLocaleString()})</h4>
+                <div className="bg-slate-800/50 rounded-lg overflow-hidden">
+                  <table className="w-full text-sm">
+                    <thead className="bg-slate-700/50">
+                      <tr>
+                        <th className="px-3 py-2 text-left text-xs text-slate-400">Claim ID</th>
+                        <th className="px-3 py-2 text-left text-xs text-slate-400">Amount</th>
+                        <th className="px-3 py-2 text-left text-xs text-slate-400">Days Late</th>
+                        <th className="px-3 py-2 text-left text-xs text-slate-400">Interest</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[1,2,3,4,5].map(i => (
+                        <tr key={i} className="border-t border-slate-700/50">
+                          <td className="px-3 py-2 font-mono text-cyan-400">CLM-2024-{88700 + i}</td>
+                          <td className="px-3 py-2">${(2500 + i * 300).toLocaleString()}</td>
+                          <td className="px-3 py-2 text-red-400">{5 + i * 2}d</td>
+                          <td className="px-3 py-2 text-amber-400">${(25 + i * 8).toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            
+            <button className="w-full mt-4 px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg font-medium flex items-center justify-center gap-2">
+              <Download className="w-4 h-4" />Export Full Evidence Package
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -933,49 +1078,183 @@ function AppealsTab({ open }: { open: (type: string, data: Appeal) => void }) {
 
 // RADAR TAB
 function RadarTab() {
+  const [showImpactModal, setShowImpactModal] = useState<number | null>(null);
+  const [prepProgress, setPrepProgress] = useState<Record<number, boolean[]>>({});
+  
+  // Initialize prep progress for each alert
+  const togglePrep = (alertId: number, idx: number) => {
+    setPrepProgress(prev => {
+      const current = prev[alertId] || [false, false, false];
+      const updated = [...current];
+      updated[idx] = !updated[idx];
+      return { ...prev, [alertId]: updated };
+    });
+  };
+  
+  const getPrepCount = (alertId: number) => {
+    const progress = prepProgress[alertId] || [];
+    return progress.filter(Boolean).length;
+  };
+  
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold">Policy Change Radar</h2>
+      {/* Header with Export and Prediction Accuracy */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">Policy Change Radar</h2>
+          <p className="text-sm text-slate-400 mt-1">AI-powered policy change predictions</p>
+        </div>
+        <div className="flex gap-3 items-center">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm">
+            <Target className="w-4 h-4" />
+            Prediction Accuracy: 78% (7/9 correct in 2024)
+          </div>
+          <button className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg flex items-center gap-2 text-sm">
+            <Download className="w-4 h-4" />Export Radar Report
+          </button>
+        </div>
+      </div>
+
+      {/* How AI Predicts */}
       <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
         <h3 className="font-semibold mb-4 flex items-center gap-2"><Brain className="w-5 h-5 text-purple-400" />How AI Predicts</h3>
         <div className="grid grid-cols-4 gap-4">
-          {[{ i: FileText, t: 'Earnings Calls' }, { i: Users, t: 'Competitors' }, { i: Building2, t: 'Bulletins' }, { i: Scale, t: 'Regulatory' }].map((x, i) => (
-            <div key={i} className="bg-slate-900/50 rounded p-4 border border-slate-700/50"><x.i className="w-8 h-8 text-cyan-400 mb-2" /><div className="font-semibold">{x.t}</div></div>
+          {[
+            { i: FileText, t: 'Earnings Calls', d: 'Quarterly transcripts analyzed' },
+            { i: Users, t: 'Competitors', d: 'Policy changes at other payers' },
+            { i: Building2, t: 'Bulletins', d: 'Provider bulletins & updates' },
+            { i: Scale, t: 'Regulatory', d: 'CMS & state regulations' }
+          ].map((x, i) => (
+            <div key={i} className="bg-slate-900/50 rounded p-4 border border-slate-700/50 hover:border-cyan-500/50 cursor-pointer transition-colors">
+              <x.i className="w-8 h-8 text-cyan-400 mb-2" />
+              <div className="font-semibold">{x.t}</div>
+              <div className="text-xs text-slate-500 mt-1">{x.d}</div>
+            </div>
           ))}
         </div>
       </div>
 
-      {ALERTS.map(a => (
-        <div key={a.id} className={`bg-slate-800/50 rounded-xl border-2 ${a.severity === 'critical' ? 'border-red-500/50' : 'border-amber-500/50'} overflow-hidden`}>
-          <div className={`p-5 ${a.severity === 'critical' ? 'bg-red-500/5' : 'bg-amber-500/5'}`}>
-            <div className="flex justify-between">
-              <div><Badge type={a.severity}>{a.severity}</Badge> <span className="text-slate-400 ml-2">{a.payer}</span><h3 className="text-xl font-bold mt-2">{a.title}</h3></div>
-              <div className="text-right"><div className="text-3xl font-bold">~{a.days} days</div><div className="text-slate-500">{pct(a.conf)} confidence</div></div>
+      {/* Alert Cards */}
+      {ALERTS.map(a => {
+        const prepCount = getPrepCount(a.id);
+        const prepPercent = Math.round((prepCount / a.actions.length) * 100);
+        
+        return (
+          <div key={a.id} className={`bg-slate-800/50 rounded-xl border-2 ${a.severity === 'critical' ? 'border-red-500/50' : 'border-amber-500/50'} overflow-hidden`}>
+            <div className={`p-5 ${a.severity === 'critical' ? 'bg-red-500/5' : 'bg-amber-500/5'}`}>
+              <div className="flex justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <Badge type={a.severity}>{a.severity}</Badge>
+                    <span className="text-slate-400">{a.payer}</span>
+                  </div>
+                  <h3 className="text-xl font-bold mt-2">{a.title}</h3>
+                </div>
+                <div className="text-right">
+                  <div className="text-3xl font-bold">~{a.days} days</div>
+                  <div className="text-xs text-slate-500">({a.days - 10}-{a.days + 10} days at 90% CI)</div>
+                  <div className="text-slate-500 mt-1">{pct(a.conf)} confidence <span className="text-xs">(based on {a.signals.length} signals)</span></div>
+                </div>
+              </div>
+              <div className={`mt-4 p-3 rounded flex justify-between items-center ${a.severity === 'critical' ? 'bg-red-500/10' : 'bg-amber-500/10'}`}>
+                <span className={a.severity === 'critical' ? 'text-red-400' : 'text-amber-400'}>
+                  Impact: {fmt(a.impact)} if unprepared
+                </span>
+                <button 
+                  onClick={() => setShowImpactModal(a.id)}
+                  className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+                >
+                  <Database className="w-3 h-3" />View calculation
+                </button>
+              </div>
             </div>
-            <div className={`mt-4 p-3 rounded ${a.severity === 'critical' ? 'bg-red-500/10 text-red-400' : 'bg-amber-500/10 text-amber-400'}`}>Impact: {fmt(a.impact)} if unprepared</div>
+            <div className="p-5 grid grid-cols-2 gap-6">
+              <div>
+                <h4 className="text-xs text-slate-500 uppercase mb-2">Signals ({a.signals.length})</h4>
+                {a.signals.map((s, i) => (
+                  <div key={i} className="bg-slate-900/50 rounded p-3 border border-slate-700/50 mb-2">
+                    <div className="flex justify-between items-start">
+                      <div className="text-cyan-400 text-sm font-medium">{s.src}</div>
+                      <div className="flex gap-1">
+                        <button className="text-xs text-slate-500 hover:text-cyan-400 px-2 py-0.5 bg-slate-800 rounded">View Source</button>
+                      </div>
+                    </div>
+                    <p className="text-sm italic mt-1">"{s.txt}"</p>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="text-xs text-slate-500 uppercase">Preparation</h4>
+                  <span className="text-xs text-slate-400">{prepCount}/{a.actions.length} complete ({prepPercent}%)</span>
+                </div>
+                <div className="w-full h-1.5 bg-slate-700 rounded-full mb-3 overflow-hidden">
+                  <div 
+                    className="h-full bg-emerald-500 rounded-full transition-all duration-300" 
+                    style={{ width: `${prepPercent}%` }}
+                  ></div>
+                </div>
+                {a.actions.map((act, i) => {
+                  const isComplete = prepProgress[a.id]?.[i] || false;
+                  return (
+                    <div 
+                      key={i} 
+                      onClick={() => togglePrep(a.id, i)}
+                      className={`flex items-center gap-2 rounded p-3 border mb-2 cursor-pointer transition-colors ${
+                        isComplete 
+                          ? 'bg-emerald-500/10 border-emerald-500/30' 
+                          : 'bg-slate-900/50 border-slate-700/50 hover:border-slate-600'
+                      }`}
+                    >
+                      <div className={`w-5 h-5 rounded border flex items-center justify-center ${
+                        isComplete ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600'
+                      }`}>
+                        {isComplete && <CheckCircle className="w-4 h-4 text-white" />}
+                      </div>
+                      <span className={`text-sm ${isComplete ? 'line-through text-slate-500' : ''}`}>{act}</span>
+                    </div>
+                  );
+                })}
+                <button className={`mt-2 w-full py-3 font-semibold rounded transition-colors ${
+                  prepPercent === 100 
+                    ? 'bg-emerald-500 hover:bg-emerald-600' 
+                    : 'bg-amber-500 hover:bg-amber-600'
+                }`}>
+                  {prepPercent === 100 ? 'Preparation Complete' : 'Start Preparation'}
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="p-5 grid grid-cols-2 gap-6">
-            <div>
-              <h4 className="text-xs text-slate-500 uppercase mb-2">Signals</h4>
-              {a.signals.map((s, i) => (
-                <div key={i} className="bg-slate-900/50 rounded p-3 border border-slate-700/50 mb-2">
-                  <div className="text-cyan-400 text-sm font-medium">{s.src}</div>
-                  <p className="text-sm italic">{s.txt}</p>
-                </div>
-              ))}
+        );
+      })}
+
+      {/* Impact Calculation Modal */}
+      {showImpactModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 rounded-xl max-w-md w-full border border-slate-700 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <DollarSign className="w-5 h-5 text-amber-400" />Impact Calculation
+              </h3>
+              <button onClick={() => setShowImpactModal(null)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
-            <div>
-              <h4 className="text-xs text-slate-500 uppercase mb-2">Preparation</h4>
-              {a.actions.map((act, i) => (
-                <div key={i} className="flex items-center gap-2 bg-slate-900/50 rounded p-3 border border-slate-700/50 mb-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" /><span className="text-sm">{act}</span>
-                </div>
-              ))}
-              <button className="mt-2 w-full py-3 bg-amber-500 font-semibold rounded">Start Preparation</button>
+            <div className="bg-slate-800/50 rounded-lg p-4 font-mono text-sm space-y-2">
+              <div className="text-slate-400">Impact: <span className="text-amber-400">{fmt(ALERTS.find(a => a.id === showImpactModal)?.impact || 0)}</span></div>
+              <div className="border-l-2 border-slate-600 pl-3 space-y-1 text-slate-400">
+                <div>├── Imaging claims/month: 450</div>
+                <div>├── Avg claim value: $2,800</div>
+                <div>├── Expected denial increase: 15% → 25%</div>
+                <div>├── Monthly impact: $126K</div>
+                <div>└── 12-month projection: $1.5M</div>
+              </div>
+            </div>
+            <div className="mt-4 flex items-center gap-2 text-xs text-slate-500">
+              <CheckCircle className="w-4 h-4 text-emerald-400" />
+              Based on historical claim volume and denial patterns
             </div>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 }
@@ -983,54 +1262,289 @@ function RadarTab() {
 // NEGOTIATE TAB
 function NegotiateTab() {
   const n = NEGO;
+  const [showLeverageModal, setShowLeverageModal] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showBATNAModal, setShowBATNAModal] = useState(false);
+
+  // Enhanced rate data with annual impact
+  const rateComparison = [
+    { svc: 'Cardiac DRG', yours: 42000, market: 51000, gap: -0.18, volume: 450, impact: 4050000 },
+    { svc: 'Joint Replace', yours: 35000, market: 44000, gap: -0.20, volume: 380, impact: 3420000 },
+    { svc: 'Observation', yours: 1800, market: 2100, gap: -0.14, volume: 2800, impact: 840000 },
+    { svc: 'ED Level 5', yours: 680, market: 780, gap: -0.13, volume: 8200, impact: 820000 }
+  ];
+  const totalRateOpportunity = rateComparison.reduce((sum, r) => sum + r.impact, 0);
+
+  // Historical negotiations
+  const history = [
+    { year: 2024, asked: 12, achieved: 8, pct: 67 },
+    { year: 2023, asked: 10, achieved: 7, pct: 70 },
+    { year: 2022, asked: 8, achieved: 6, pct: 75 }
+  ];
+  const avgAchievement = Math.round(history.reduce((sum, h) => sum + h.pct, 0) / history.length);
+
+  // Playbook with confidence
+  const playbook = {
+    opening: { value: 15, confidence: 92 },
+    target: { value: 12, confidence: 85 },
+    walkAway: { value: 8, confidence: 100 },
+    batna: { action: 'Terminate, redirect to Humana MA', cost: 2.4, time: '90 days', risk: 'Medium' }
+  };
+
+  // Talking points with priority
+  const talkingPoints = [
+    { text: 'Payment velocity violations totaling $3.34M demonstrate contract non-compliance', priority: 'high' },
+    { text: 'Market rates show 15-20% below P50 across major service lines', priority: 'high' },
+    { text: 'Volume commitment of 12,400 annual encounters provides significant value', priority: 'medium' },
+    { text: 'Alternative payer (Humana MA) actively recruiting in Orlando market', priority: 'medium' }
+  ];
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold">Negotiation Intelligence</h2>
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4"><div className="text-slate-500">Payer</div><div className="text-xl font-bold">{n.payer}</div></div>
-        <div className="bg-slate-800/50 rounded-xl border border-amber-500/30 p-4"><div className="text-amber-400">Expires</div><div className="text-xl font-bold">{n.expires}</div><div className="text-sm text-slate-500">{n.daysLeft} days</div></div>
-        <div className="bg-emerald-500/10 rounded-xl border border-emerald-500/30 p-4"><div className="text-emerald-400">Leverage</div><div className="text-3xl font-bold text-emerald-400">{n.leverage}/100</div></div>
-        <div className="bg-cyan-500/10 rounded-xl border border-cyan-500/30 p-4"><div className="text-cyan-400">Opportunity</div><div className="text-3xl font-bold text-cyan-400">{fmt(n.opportunity)}</div></div>
+      {/* Header with Export and History */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Negotiation Intelligence</h2>
+        <div className="flex gap-3">
+          <button onClick={() => setShowHistoryModal(true)} className="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg flex items-center gap-2 text-sm">
+            <Clock className="w-4 h-4" />Past Negotiations
+          </button>
+          <button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg flex items-center gap-2 text-sm font-medium">
+            <Download className="w-4 h-4" />Export Negotiation Brief
+          </button>
+        </div>
       </div>
 
+      {/* Top Stats */}
+      <div className="grid grid-cols-4 gap-4">
+        <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+          <div className="text-slate-500 text-sm">Payer</div>
+          <div className="text-2xl font-bold">{n.payer}</div>
+        </div>
+        <div className="bg-slate-800/50 rounded-xl border border-amber-500/30 p-4">
+          <div className="text-amber-400 text-sm">Expires</div>
+          <div className="text-2xl font-bold text-amber-400">{n.expires}</div>
+          <div className="text-sm text-slate-500">{n.daysLeft} days</div>
+        </div>
+        <div className="bg-emerald-500/10 rounded-xl border border-emerald-500/30 p-4 cursor-pointer hover:border-emerald-400" onClick={() => setShowLeverageModal(true)}>
+          <div className="flex justify-between items-center">
+            <div className="text-emerald-400 text-sm">Leverage</div>
+            <Database className="w-4 h-4 text-slate-500" />
+          </div>
+          <div className="text-3xl font-bold text-emerald-400">{n.leverage}/100</div>
+          <div className="text-xs text-slate-500">Click for breakdown</div>
+        </div>
+        <div className="bg-cyan-500/10 rounded-xl border border-cyan-500/30 p-4">
+          <div className="text-cyan-400 text-sm">Opportunity</div>
+          <div className="text-3xl font-bold text-cyan-400">{fmt(n.opportunity)}</div>
+        </div>
+      </div>
+
+      {/* Leverage Comparison */}
       <div className="grid grid-cols-2 gap-6">
         <div className="bg-slate-800/50 rounded-xl border border-emerald-500/30 p-5">
           <h3 className="font-semibold mb-4 flex items-center gap-2"><ArrowUpRight className="w-5 h-5 text-emerald-400" />Your Leverage</h3>
           {n.yourLeverage.map((l, i) => (
-            <div key={i} className="bg-emerald-500/10 rounded p-3 flex justify-between mb-2"><span>{l.f}</span><span className="text-emerald-400 font-semibold">{l.v}</span></div>
+            <div key={i} className="bg-emerald-500/10 rounded p-3 flex justify-between mb-2">
+              <span>{l.f}</span>
+              <span className={`font-semibold ${l.s === 'strong' ? 'text-emerald-400' : 'text-slate-300'}`}>{l.v}</span>
+            </div>
           ))}
         </div>
         <div className="bg-slate-800/50 rounded-xl border border-red-500/30 p-5">
           <h3 className="font-semibold mb-4 flex items-center gap-2"><ArrowDownRight className="w-5 h-5 text-red-400" />Their Leverage</h3>
           {n.theirLeverage.map((l, i) => (
-            <div key={i} className="bg-red-500/10 rounded p-3 flex justify-between mb-2"><span>{l.f}</span><span className="text-red-400 font-semibold">{l.v}</span></div>
+            <div key={i} className="bg-red-500/10 rounded p-3 flex justify-between mb-2">
+              <span>{l.f}</span>
+              <span className={`font-semibold ${l.s === 'moderate' ? 'text-amber-400' : 'text-red-400'}`}>{l.v}</span>
+            </div>
           ))}
         </div>
       </div>
 
+      {/* Rate Comparison with Dollar Impact */}
       <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-5">
-        <h3 className="font-semibold mb-4 flex items-center gap-2"><BarChart3 className="w-5 h-5 text-cyan-400" />Rate Comparison</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold flex items-center gap-2"><BarChart3 className="w-5 h-5 text-cyan-400" />Rate Comparison</h3>
+          <div className="text-sm">Total Gap Opportunity: <span className="text-cyan-400 font-semibold">{fmt(totalRateOpportunity)}/year</span></div>
+        </div>
         <table className="w-full">
-          <thead><tr className="text-xs text-slate-500 uppercase">{['Service', 'Your Rate', 'Market P50', 'Gap'].map(h => <th key={h} className="pb-3 text-left">{h}</th>)}</tr></thead>
+          <thead><tr className="text-xs text-slate-500 uppercase">{['Service', 'Your Rate', 'Market P50', 'Gap', 'Annual Impact'].map(h => <th key={h} className="pb-3 text-left">{h}</th>)}</tr></thead>
           <tbody className="divide-y divide-slate-700/50">
-            {n.rates.map((r, i) => (
-              <tr key={i}><td className="py-3">{r.svc}</td><td className="py-3 font-mono">{fmt(r.yours)}</td><td className="py-3 font-mono text-cyan-400">{fmt(r.market)}</td><td className="py-3 font-semibold text-red-400">{pct(r.gap)}</td></tr>
+            {rateComparison.map((r, i) => (
+              <tr key={i}>
+                <td className="py-3">{r.svc}</td>
+                <td className="py-3 font-mono">{fmt(r.yours)}</td>
+                <td className="py-3 font-mono text-cyan-400">{fmt(r.market)}</td>
+                <td className="py-3 font-semibold text-red-400">{pct(r.gap)}</td>
+                <td className="py-3 font-semibold text-emerald-400">+{fmt(r.impact)}</td>
+              </tr>
             ))}
           </tbody>
         </table>
+        <div className="mt-3 text-xs text-slate-500 flex items-center gap-1">
+          <Database className="w-3 h-3" />Market P50 rates from FAIR Health and CMS fee schedules (Q4 2024)
+        </div>
       </div>
 
+      {/* AI Playbook with Confidence */}
       <div className="bg-purple-500/10 rounded-xl border border-purple-500/30 p-5">
-        <h3 className="font-semibold mb-4 flex items-center gap-2"><Brain className="w-5 h-5 text-purple-400" />AI Playbook</h3>
+        <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <Brain className="w-5 h-5 text-purple-400" />AI Playbook
+          <span className="text-xs text-slate-500 ml-2">Based on leverage score, market data, and historical outcomes</span>
+        </h3>
         <div className="grid grid-cols-4 gap-4 mb-4">
-          <div className="bg-slate-900/50 rounded p-4"><div className="text-slate-500">Opening</div><div className="text-3xl font-bold text-emerald-400">+{pct(n.strategy.open)}</div></div>
-          <div className="bg-slate-900/50 rounded p-4"><div className="text-slate-500">Target</div><div className="text-3xl font-bold text-cyan-400">+{pct(n.strategy.target)}</div></div>
-          <div className="bg-slate-900/50 rounded p-4"><div className="text-slate-500">Walk-Away</div><div className="text-3xl font-bold text-amber-400">+{pct(n.strategy.walk)}</div></div>
-          <div className="bg-slate-900/50 rounded p-4"><div className="text-slate-500">BATNA</div><div className="text-sm">{n.strategy.batna}</div></div>
+          <div className="bg-slate-900/50 rounded p-4">
+            <div className="text-slate-500 text-sm">Opening</div>
+            <div className="text-3xl font-bold text-emerald-400">+{playbook.opening.value}%</div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-12 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${playbook.opening.confidence}%` }}></div>
+              </div>
+              <span className="text-xs text-emerald-400">{playbook.opening.confidence}%</span>
+            </div>
+          </div>
+          <div className="bg-slate-900/50 rounded p-4">
+            <div className="text-slate-500 text-sm">Target</div>
+            <div className="text-3xl font-bold text-cyan-400">+{playbook.target.value}%</div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-12 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-full bg-cyan-500 rounded-full" style={{ width: `${playbook.target.confidence}%` }}></div>
+              </div>
+              <span className="text-xs text-cyan-400">{playbook.target.confidence}%</span>
+            </div>
+          </div>
+          <div className="bg-slate-900/50 rounded p-4">
+            <div className="text-slate-500 text-sm">Walk-Away</div>
+            <div className="text-3xl font-bold text-amber-400">+{playbook.walkAway.value}%</div>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="w-12 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-full bg-amber-500 rounded-full" style={{ width: `${playbook.walkAway.confidence}%` }}></div>
+              </div>
+              <span className="text-xs text-amber-400">{playbook.walkAway.confidence}%</span>
+            </div>
+          </div>
+          <div className="bg-slate-900/50 rounded p-4 cursor-pointer hover:bg-slate-800/50 border border-transparent hover:border-red-500/30" onClick={() => setShowBATNAModal(true)}>
+            <div className="flex justify-between items-center">
+              <div className="text-slate-500 text-sm">BATNA</div>
+              <Database className="w-3 h-3 text-slate-500" />
+            </div>
+            <div className="text-sm text-red-400 font-medium mt-1">{playbook.batna.action}</div>
+            <div className="text-xs text-slate-500 mt-2">Click for risk analysis</div>
+          </div>
         </div>
-        <h4 className="text-xs text-slate-500 uppercase mb-2">Talking Points</h4>
-        <ul className="space-y-1">{n.points.map((p, i) => <li key={i} className="flex items-center gap-2 text-sm"><CheckCircle className="w-4 h-4 text-emerald-400" />{p}</li>)}</ul>
+
+        {/* Talking Points */}
+        <h4 className="text-xs text-slate-500 uppercase mb-3">Talking Points</h4>
+        <div className="space-y-2">
+          {talkingPoints.map((p, i) => (
+            <div key={i} className={`flex items-start gap-3 p-3 rounded-lg bg-slate-900/50 border-l-3 ${p.priority === 'high' ? 'border-l-cyan-500' : 'border-l-slate-600'}`}>
+              <span className={`text-xs px-2 py-0.5 rounded ${p.priority === 'high' ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-700 text-slate-400'}`}>{p.priority}</span>
+              <span className="text-sm">{p.text}</span>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* Leverage Breakdown Modal */}
+      {showLeverageModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 rounded-xl max-w-md w-full border border-slate-700 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Leverage Score Breakdown</h3>
+              <button onClick={() => setShowLeverageModal(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="text-center mb-4">
+              <div className="text-5xl font-bold text-emerald-400">{n.leverage}/100</div>
+              <div className="text-sm text-slate-500 mt-1">Strong negotiating position</div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
+                <span>Active Violations</span>
+                <div className="text-right">
+                  <div className="text-emerald-400 font-semibold">+40 pts</div>
+                  <div className="text-xs text-slate-500">$3.34M leverage</div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
+                <span>Volume Commitment</span>
+                <div className="text-right">
+                  <div className="text-emerald-400 font-semibold">+25 pts</div>
+                  <div className="text-xs text-slate-500">12,400/yr</div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center p-3 bg-slate-800/50 rounded-lg">
+                <span>Market Position</span>
+                <div className="text-right">
+                  <div className="text-emerald-400 font-semibold">+13 pts</div>
+                  <div className="text-xs text-slate-500">#2 Orlando</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* History Modal */}
+      {showHistoryModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 rounded-xl max-w-md w-full border border-slate-700 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Past Negotiations with {n.payer}</h3>
+              <button onClick={() => setShowHistoryModal(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="text-center mb-4 p-3 bg-slate-800/50 rounded-lg">
+              <div className="text-sm text-slate-500">Average Achievement</div>
+              <div className="text-3xl font-bold text-cyan-400">{avgAchievement}%</div>
+              <div className="text-xs text-slate-500">of ask over 3 years</div>
+            </div>
+            <table className="w-full text-sm">
+              <thead><tr className="text-slate-500"><th className="pb-2 text-left">Year</th><th className="pb-2 text-right">Asked</th><th className="pb-2 text-right">Achieved</th><th className="pb-2 text-right">%</th></tr></thead>
+              <tbody className="divide-y divide-slate-700/50">
+                {history.map((h, i) => (
+                  <tr key={i}>
+                    <td className="py-2">{h.year}</td>
+                    <td className="py-2 text-right">+{h.asked}%</td>
+                    <td className="py-2 text-right text-emerald-400">+{h.achieved}%</td>
+                    <td className="py-2 text-right text-cyan-400">{h.pct}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* BATNA Modal */}
+      {showBATNAModal && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 rounded-xl max-w-md w-full border border-slate-700 p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">BATNA Risk Analysis</h3>
+              <button onClick={() => setShowBATNAModal(false)} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg mb-4">
+              <div className="text-red-400 font-semibold">{playbook.batna.action}</div>
+            </div>
+            <div className="space-y-3">
+              <div className="flex justify-between p-3 bg-slate-800/50 rounded-lg">
+                <span className="text-slate-400">Transition Cost</span>
+                <span className="font-semibold text-amber-400">${playbook.batna.cost}M</span>
+              </div>
+              <div className="flex justify-between p-3 bg-slate-800/50 rounded-lg">
+                <span className="text-slate-400">Time to Transition</span>
+                <span className="font-semibold">{playbook.batna.time}</span>
+              </div>
+              <div className="flex justify-between p-3 bg-slate-800/50 rounded-lg">
+                <span className="text-slate-400">Risk Level</span>
+                <span className="font-semibold text-amber-400">{playbook.batna.risk}</span>
+              </div>
+            </div>
+            <div className="mt-4 text-xs text-slate-500">
+              Use BATNA as leverage, not as first option. Transition costs and patient disruption should be weighed carefully.
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1660,8 +2174,9 @@ function AgentsTab() {
   );
 }
 
-// EXECUTIVE DASHBOARD - 3-Level Drill-Down
-function ExecutiveDashboard() {
+// EXECUTIVE DASHBOARD - 3-Level Drill-Down (kept for reference, removed from nav)
+// @ts-ignore - Kept for future use
+function _ExecutiveDashboard() {
   const [drillLevel, setDrillLevel] = useState<1 | 2 | 3>(1);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedClaim, setSelectedClaim] = useState<string | null>(null);
@@ -1819,73 +2334,208 @@ function ExecutiveDashboard() {
 
 // MODEL PERFORMANCE TAB
 function ModelPerformanceTab() {
+  const [showCostModal, setShowCostModal] = useState(false);
+  const [showMonthDetail, setShowMonthDetail] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState('6months');
+
+  // Overall stats with confidence interval
+  const stats = {
+    accuracy: 96,
+    accuracyCI: [94.1, 97.9],
+    totalPredictions: 8412,
+    totalRecovery: 6.5,
+    costToRecover: 138,
+    netROI: 47,
+    trend: 'up',
+    trendDelta: 2.3,
+  };
+
+  // Cost breakdown
+  const costBreakdown = {
+    staffTime: { amount: 98000, hours: 247, rate: 397 },
+    legalReview: { amount: 25000 },
+    systemTools: { amount: 15000 },
+    costPerDollar: 0.021,
+  };
+
+  // Benchmark comparison
+  const benchmarks = {
+    ai: 96,
+    industry: 78,
+    manual: 62,
+  };
+
+  // Monthly data with claims count
   const monthlyData = [
-    { month: 'Jul 2024', predicted: 1200000, actual: 1150000, accuracy: 0.96 },
-    { month: 'Aug 2024', predicted: 1350000, actual: 1280000, accuracy: 0.95 },
-    { month: 'Sep 2024', predicted: 1180000, actual: 1220000, accuracy: 0.97 },
-    { month: 'Oct 2024', predicted: 1420000, actual: 1380000, accuracy: 0.97 },
-    { month: 'Nov 2024', predicted: 1550000, actual: 1490000, accuracy: 0.96 },
-    { month: 'Dec 2024', predicted: 1680000, actual: null, accuracy: null }
+    { month: 'Jul 2024', predicted: 1.2, actual: 1.15, variance: -50000, accuracy: 96, claims: 1247 },
+    { month: 'Aug 2024', predicted: 1.4, actual: 1.33, variance: -70000, accuracy: 95, claims: 1456 },
+    { month: 'Sep 2024', predicted: 1.2, actual: 1.24, variance: 40000, accuracy: 97, claims: 1189 },
+    { month: 'Oct 2024', predicted: 1.4, actual: 1.36, variance: -40000, accuracy: 97, claims: 1523 },
+    { month: 'Nov 2024', predicted: 1.6, actual: 1.54, variance: -60000, accuracy: 96, claims: 1634 },
+    { month: 'Dec 2024', predicted: 1.7, actual: null, variance: null, accuracy: null, claims: null, pending: true },
   ];
-  
+
+  // Accuracy by CARC with status
   const carcAccuracy = [
-    { carc: 'CO-16', predicted: 0.78, actual: 0.76, accuracy: 0.97 },
-    { carc: 'CO-197', predicted: 0.68, actual: 0.71, accuracy: 0.96 },
-    { carc: 'OA-23', predicted: 0.52, actual: 0.49, accuracy: 0.94 },
-    { carc: 'CO-97', predicted: 0.45, actual: 0.43, accuracy: 0.96 },
-    { carc: 'CO-4', predicted: 0.22, actual: 0.24, accuracy: 0.92 },
-    { carc: 'PR-1', predicted: 0.08, actual: 0.07, accuracy: 0.88 }
+    { code: 'CO-16', predicted: 78, actual: 76, accuracy: 97, claims: 2134, status: 'good' },
+    { code: 'CO-197', predicted: 68, actual: 71, accuracy: 96, claims: 1892, status: 'good' },
+    { code: 'OA-23', predicted: 52, actual: 49, accuracy: 94, claims: 1456, status: 'good' },
+    { code: 'CO-97', predicted: 45, actual: 43, accuracy: 96, claims: 987, status: 'good' },
+    { code: 'CO-4', predicted: 22, actual: 24, accuracy: 92, claims: 654, status: 'warning' },
+    { code: 'PR-1', predicted: 8, actual: 7, accuracy: 88, claims: 423, status: 'alert' },
   ];
-  
+
+  // Accuracy by Payer
   const payerAccuracy = [
-    { payer: 'UHC', predicted: 0.72, actual: 0.69, accuracy: 0.96, claims: 4247 },
-    { payer: 'Humana', predicted: 0.68, actual: 0.70, accuracy: 0.97, claims: 2891 },
-    { payer: 'BCBS', predicted: 0.75, actual: 0.73, accuracy: 0.97, claims: 1823 },
-    { payer: 'Medicare', predicted: 0.82, actual: 0.85, accuracy: 0.96, claims: 3456 },
-    { payer: 'Aetna', predicted: 0.65, actual: 0.62, accuracy: 0.95, claims: 1234 },
-    { payer: 'Cigna', predicted: 0.70, actual: 0.68, accuracy: 0.97, claims: 987 }
+    { payer: 'UHC', claims: 4247, accuracy: 96 },
+    { payer: 'Humana', claims: 2891, accuracy: 97 },
+    { payer: 'BCBS', claims: 1823, accuracy: 97 },
+    { payer: 'Medicare', claims: 3456, accuracy: 96 },
+    { payer: 'Aetna', claims: 1234, accuracy: 95 },
+    { payer: 'Cigna', claims: 987, accuracy: 97 },
   ];
-  
-  const overallAccuracy = 0.96;
-  const totalRecovery = 6520000;
-  const costToRecover = 138000;
-  const roi = totalRecovery / costToRecover;
-  
+
+  // Trend data for mini chart
+  const trendData = [94, 95, 96, 96, 97, 96];
+
+  const getAccuracyColor = (accuracy: number) => {
+    if (accuracy >= 95) return 'text-emerald-400';
+    if (accuracy >= 90) return 'text-cyan-400';
+    if (accuracy >= 85) return 'text-amber-400';
+    return 'text-red-400';
+  };
+
+  const getAccuracyBg = (accuracy: number) => {
+    if (accuracy >= 95) return 'bg-emerald-500';
+    if (accuracy >= 90) return 'bg-cyan-500';
+    if (accuracy >= 85) return 'bg-amber-500';
+    return 'bg-red-500';
+  };
+
+  const getStatusBadge = (status: string) => {
+    if (status === 'good') return { color: 'bg-emerald-500/20 text-emerald-400', text: 'Good' };
+    if (status === 'warning') return { color: 'bg-amber-500/20 text-amber-400', text: 'Review' };
+    return { color: 'bg-red-500/20 text-red-400', text: 'Alert' };
+  };
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold flex items-center gap-3">
-        <Activity className="w-7 h-7 text-cyan-400" />
-        Model Performance
-        <span className="text-sm font-normal text-slate-500">Backtesting & Validation</span>
-      </h2>
-      
-      {/* Summary Cards */}
-      <div className="grid grid-cols-4 gap-4">
-        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5">
-          <div className="text-slate-400 text-sm">Overall Accuracy</div>
-          <div className="text-4xl font-bold text-emerald-400">{pct(overallAccuracy)}</div>
-          <div className="text-xs text-slate-500">Last 6 months</div>
-        </div>
-        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-5">
-          <div className="text-slate-400 text-sm">Total Recovery</div>
-          <div className="text-4xl font-bold text-cyan-400">{fmt(totalRecovery)}</div>
-          <div className="text-xs text-slate-500">YTD actual</div>
-        </div>
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5">
-          <div className="text-slate-400 text-sm">Cost to Recover</div>
-          <div className="text-4xl font-bold text-amber-400">{fmt(costToRecover)}</div>
-          <div className="text-xs text-slate-500">Staff time + tools</div>
-        </div>
-        <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-5">
-          <div className="text-slate-400 text-sm">Net ROI</div>
-          <div className="text-4xl font-bold text-purple-400">{roi.toFixed(0)}:1</div>
-          <div className="text-xs text-slate-500">{fmt(totalRecovery)} / {fmt(costToRecover)}</div>
+      {/* Header with date filter and export */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold flex items-center gap-3">
+          <Activity className="w-7 h-7 text-cyan-400" />
+          Model Performance
+          <span className="text-sm font-normal text-slate-500">Backtesting & Validation</span>
+        </h2>
+        <div className="flex gap-3">
+          <select 
+            value={dateRange} 
+            onChange={(e) => setDateRange(e.target.value)}
+            className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm"
+          >
+            <option value="3months">Last 3 months</option>
+            <option value="6months">Last 6 months</option>
+            <option value="12months">Last 12 months</option>
+            <option value="ytd">Year to date</option>
+          </select>
+          <button className="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm hover:bg-slate-700">
+            <Download className="w-4 h-4" /> Export Performance Report
+          </button>
         </div>
       </div>
       
-      {/* Predicted vs Actual by Month */}
+      {/* Summary Cards - ENHANCED */}
+      <div className="grid grid-cols-4 gap-4">
+        {/* Overall Accuracy with CI and Trend */}
+        <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-5">
+          <div className="flex justify-between items-start">
+            <div>
+              <div className="text-purple-400 text-sm">Overall Accuracy</div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-bold text-purple-400">{stats.accuracy}%</span>
+                <span className="text-xs text-slate-500">±2%</span>
+              </div>
+              <div className="text-xs text-slate-500">Last 6 months</div>
+            </div>
+            {/* Trend indicator */}
+            <div className="flex items-center gap-1 px-2 py-1 bg-emerald-500/10 rounded text-xs text-emerald-400">
+              <TrendingUp className="w-3 h-3" /> +{stats.trendDelta}%
+            </div>
+          </div>
+          {/* Mini trend chart */}
+          <div className="flex items-end gap-1 mt-3 h-6">
+            {trendData.map((val, i) => (
+              <div 
+                key={i} 
+                className={`flex-1 rounded-sm ${i === trendData.length - 1 ? 'bg-purple-400' : 'bg-purple-400/40'}`}
+                style={{ height: `${(val - 90) * 4}px` }}
+              />
+            ))}
+          </div>
+          <div className="text-[10px] text-slate-600 mt-1">95% CI: {stats.accuracyCI[0]}% - {stats.accuracyCI[1]}%</div>
+        </div>
+
+        {/* Total Recovery */}
+        <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-5">
+          <div className="text-cyan-400 text-sm">Total Recovery</div>
+          <div className="text-4xl font-bold text-cyan-400">${stats.totalRecovery}M</div>
+          <div className="text-xs text-slate-500">YTD actual</div>
+        </div>
+
+        {/* Cost to Recover - Clickable */}
+        <div 
+          className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-5 cursor-pointer hover:bg-amber-500/20 transition-colors"
+          onClick={() => setShowCostModal(true)}
+        >
+          <div className="flex justify-between items-center">
+            <div className="text-amber-400 text-sm">Cost to Recover</div>
+            <Eye className="w-4 h-4 text-slate-500" />
+          </div>
+          <div className="text-4xl font-bold text-amber-400">${stats.costToRecover}K</div>
+          <div className="text-xs text-slate-500">Staff time + tools</div>
+          <div className="text-[10px] text-slate-600 mt-1">Click for breakdown</div>
+        </div>
+
+        {/* Net ROI */}
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-5">
+          <div className="text-emerald-400 text-sm">Net ROI</div>
+          <div className="text-4xl font-bold text-emerald-400">{stats.netROI}:1</div>
+          <div className="text-xs text-slate-500">${stats.totalRecovery}M / ${stats.costToRecover}K</div>
+        </div>
+      </div>
+
+      {/* Benchmark Comparison - NEW */}
       <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-        <h3 className="font-semibold mb-4 flex items-center gap-2"><BarChart3 className="w-5 h-5 text-cyan-400" />Predicted vs Actual Recovery by Month</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-cyan-400" /> Accuracy Benchmark
+          </h3>
+          <span className="text-sm text-emerald-400 font-medium">+{benchmarks.ai - benchmarks.industry}% vs industry average</span>
+        </div>
+        <div className="grid grid-cols-3 gap-6">
+          {[
+            { label: 'ContosoHealth AI', value: benchmarks.ai, color: 'bg-purple-500', highlight: true },
+            { label: 'Industry Average', value: benchmarks.industry, color: 'bg-slate-500', highlight: false },
+            { label: 'Manual Process', value: benchmarks.manual, color: 'bg-slate-600', highlight: false },
+          ].map((item, i) => (
+            <div key={i}>
+              <div className="flex justify-between mb-2">
+                <span className={`text-sm ${item.highlight ? 'text-white' : 'text-slate-400'}`}>{item.label}</span>
+                <span className={`text-sm font-semibold ${item.highlight ? 'text-purple-400' : 'text-slate-400'}`}>{item.value}%</span>
+              </div>
+              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div className={`h-full ${item.color} rounded-full`} style={{ width: `${item.value}%` }} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      {/* Predicted vs Actual by Month - ENHANCED */}
+      <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+        <h3 className="font-semibold mb-4 flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-cyan-400" /> Predicted vs Actual Recovery by Month
+        </h3>
         <table className="w-full">
           <thead>
             <tr className="text-xs text-slate-500 uppercase">
@@ -1894,64 +2544,175 @@ function ModelPerformanceTab() {
               <th className="pb-3 text-right">Actual</th>
               <th className="pb-3 text-right">Variance</th>
               <th className="pb-3 text-right">Accuracy</th>
+              <th className="pb-3 text-right">Claims</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50">
             {monthlyData.map((m, i) => (
-              <tr key={i}>
+              <tr 
+                key={i} 
+                className={`cursor-pointer hover:bg-slate-700/30 ${showMonthDetail === m.month ? 'bg-cyan-500/10' : ''}`}
+                onClick={() => !m.pending && setShowMonthDetail(showMonthDetail === m.month ? null : m.month)}
+              >
                 <td className="py-3">{m.month}</td>
-                <td className="py-3 text-right font-mono">{fmt(m.predicted)}</td>
-                <td className="py-3 text-right font-mono">{m.actual ? fmt(m.actual) : <span className="text-slate-500">Pending</span>}</td>
-                <td className="py-3 text-right font-mono">{m.actual ? <span className={m.actual >= m.predicted ? 'text-emerald-400' : 'text-red-400'}>{m.actual >= m.predicted ? '+' : ''}{fmt(m.actual - m.predicted)}</span> : '-'}</td>
-                <td className="py-3 text-right">{m.accuracy ? <span className="text-emerald-400">{pct(m.accuracy)}</span> : '-'}</td>
+                <td className="py-3 text-right font-mono">${m.predicted}M</td>
+                <td className="py-3 text-right font-mono">
+                  {m.pending ? <span className="text-slate-500">Pending</span> : `$${m.actual}M`}
+                </td>
+                <td className="py-3 text-right font-mono">
+                  {m.variance === null ? '-' : (
+                    <span className={m.variance >= 0 ? 'text-emerald-400' : 'text-red-400'}>
+                      {m.variance >= 0 ? '+' : ''}${Math.abs(m.variance / 1000).toFixed(0)}K
+                    </span>
+                  )}
+                </td>
+                <td className="py-3 text-right">
+                  {m.accuracy ? <span className={getAccuracyColor(m.accuracy)}>{m.accuracy}%</span> : '-'}
+                </td>
+                <td className="py-3 text-right text-slate-500">
+                  {m.claims ? m.claims.toLocaleString() : '-'}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className="mt-3 text-xs text-slate-500 flex items-center gap-2">
+          <Eye className="w-3 h-3" /> Click any row to view detailed prediction breakdown
+        </div>
       </div>
       
-      {/* Accuracy by CARC Code */}
+      {/* Accuracy by CARC Code and Payer */}
       <div className="grid grid-cols-2 gap-6">
+        {/* CARC Accuracy with Status Badges */}
         <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="font-semibold mb-4 flex items-center gap-2"><Target className="w-5 h-5 text-emerald-400" />Accuracy by CARC Code</h3>
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Target className="w-5 h-5 text-emerald-400" /> Accuracy by CARC Code
+          </h3>
           <div className="space-y-3">
-            {carcAccuracy.map((c, i) => (
-              <div key={i} className="flex items-center justify-between">
-                <div>
-                  <span className="font-mono text-sm">{c.carc}</span>
-                  <span className="text-xs text-slate-500 ml-2">Pred: {pct(c.predicted)} | Act: {pct(c.actual)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500" style={{ width: `${c.accuracy * 100}%` }} />
+            {carcAccuracy.map((c, i) => {
+              const status = getStatusBadge(c.status);
+              return (
+                <div key={i}>
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-sm font-semibold">{c.code}</span>
+                      <span className="text-xs text-slate-500">Pred: {c.predicted}% | Act: {c.actual}%</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {c.status !== 'good' && (
+                        <span className={`text-[10px] px-2 py-0.5 rounded ${status.color}`}>{status.text}</span>
+                      )}
+                      <span className={`text-sm font-semibold ${getAccuracyColor(c.accuracy)}`}>{c.accuracy}%</span>
+                    </div>
                   </div>
-                  <span className="text-sm text-emerald-400 w-12 text-right">{pct(c.accuracy)}</span>
+                  <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                    <div className={`h-full ${getAccuracyBg(c.accuracy)} rounded-full`} style={{ width: `${c.accuracy}%` }} />
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+          {/* Low accuracy alert */}
+          <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
+            <div className="flex items-center gap-2 text-xs text-amber-400">
+              <AlertTriangle className="w-4 h-4" /> PR-1 (88%) below 90% threshold - recommend manual review
+            </div>
           </div>
         </div>
         
+        {/* Payer Accuracy */}
         <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-          <h3 className="font-semibold mb-4 flex items-center gap-2"><Building2 className="w-5 h-5 text-cyan-400" />Accuracy by Payer</h3>
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-cyan-400" /> Accuracy by Payer
+          </h3>
           <div className="space-y-3">
             {payerAccuracy.map((p, i) => (
-              <div key={i} className="flex items-center justify-between">
-                <div>
-                  <span className="font-semibold text-sm">{p.payer}</span>
-                  <span className="text-xs text-slate-500 ml-2">{p.claims.toLocaleString()} claims</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-2 bg-slate-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-cyan-500" style={{ width: `${p.accuracy * 100}%` }} />
+              <div key={i}>
+                <div className="flex justify-between items-center mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm">{p.payer}</span>
+                    <span className="text-xs text-slate-500">{p.claims.toLocaleString()} claims</span>
                   </div>
-                  <span className="text-sm text-cyan-400 w-12 text-right">{pct(p.accuracy)}</span>
+                  <span className={`text-sm font-semibold ${getAccuracyColor(p.accuracy)}`}>{p.accuracy}%</span>
+                </div>
+                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                  <div className="h-full bg-cyan-500 rounded-full" style={{ width: `${p.accuracy}%` }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      {/* Source attribution */}
+      <div className="text-xs text-slate-500 flex items-center gap-2">
+        <Database className="w-3 h-3" /> Model performance calculated from {stats.totalPredictions.toLocaleString()} predictions across {payerAccuracy.reduce((sum, p) => sum + p.claims, 0).toLocaleString()} claims. Last updated: Dec 15, 2024.
+      </div>
+
+      {/* Cost Breakdown Modal */}
+      {showCostModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 w-[500px] max-h-[80vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Cost to Recover Breakdown</h3>
+              <button onClick={() => setShowCostModal(false)} className="text-slate-400 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="bg-slate-900 rounded-lg p-4 mb-4">
+              <div className="text-3xl font-bold text-amber-400 mb-4">${stats.costToRecover}K Total</div>
+              
+              <div className="border-l-2 border-slate-700 pl-4 space-y-4">
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-slate-400">Staff Time</span>
+                    <span className="font-semibold">${(costBreakdown.staffTime.amount / 1000).toFixed(0)}K</span>
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    {costBreakdown.staffTime.hours} hours @ ${costBreakdown.staffTime.rate}/hr (blended rate)
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-slate-400">Legal Review</span>
+                    <span className="font-semibold">${(costBreakdown.legalReview.amount / 1000).toFixed(0)}K</span>
+                  </div>
+                  <div className="text-xs text-slate-500">Contract review and demand letter preparation</div>
+                </div>
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-slate-400">System/Tools</span>
+                    <span className="font-semibold">${(costBreakdown.systemTools.amount / 1000).toFixed(0)}K</span>
+                  </div>
+                  <div className="text-xs text-slate-500">Platform licensing and data processing</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-3 mb-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-emerald-400">Cost per $1 recovered:</span>
+                <span className="text-xl font-bold text-emerald-400">${costBreakdown.costPerDollar.toFixed(3)}</span>
+              </div>
+              <div className="text-xs text-slate-500 mt-1">
+                Industry benchmark: $0.15-0.25 per dollar recovered
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs text-slate-500 mb-4">
+              <CheckCircle className="w-4 h-4 text-emerald-400" /> Cost efficiency 10x better than industry average
+            </div>
+            
+            <button 
+              onClick={() => setShowCostModal(false)} 
+              className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 rounded-lg text-sm font-medium"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1960,18 +2721,47 @@ function ModelPerformanceTab() {
 function SimulationModeTab() {
   const [files, setFiles] = useState<File[]>([]);
   const [analyzing, setAnalyzing] = useState(false);
+  const [analysisStage, setAnalysisStage] = useState<string>('');
   const [results, setResults] = useState<any>(null);
+  const [validationStatus, setValidationStatus] = useState<'idle' | 'validating' | 'valid' | 'error'>('idle');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Recent simulations
+  const recentSimulations = [
+    { id: 'SIM-001', date: 'Dec 10, 2024', files: 47, claims: 52847, found: '$1.2M', status: 'complete' },
+    { id: 'SIM-002', date: 'Nov 28, 2024', files: 32, claims: 38291, found: '$890K', status: 'complete' },
+    { id: 'SIM-003', date: 'Nov 15, 2024', files: 28, claims: 31456, found: '$720K', status: 'complete' },
+  ];
   
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFiles(Array.from(e.target.files));
+      const uploadedFiles = Array.from(e.target.files);
+      setFiles(uploadedFiles);
+      // Simulate file validation
+      setValidationStatus('validating');
+      setTimeout(() => setValidationStatus('valid'), 1500);
     }
+  };
+  
+  const loadSampleData = () => {
+    // Simulate loading sample data
+    setFiles([
+      { name: 'sample_835_jan2024.txt', size: 245000 } as File,
+      { name: 'sample_835_feb2024.txt', size: 312000 } as File,
+      { name: 'sample_835_mar2024.txt', size: 287000 } as File,
+    ]);
+    setValidationStatus('valid');
   };
   
   const runSimulation = () => {
     setAnalyzing(true);
-    // Simulate analysis
+    // Simulate multi-stage analysis
+    setAnalysisStage('Validating file format...');
+    setTimeout(() => setAnalysisStage('Parsing 835 segments...'), 1000);
+    setTimeout(() => setAnalysisStage('Extracting claim data...'), 2000);
+    setTimeout(() => setAnalysisStage('Running AI violation detection...'), 3000);
+    setTimeout(() => setAnalysisStage('Calculating recovery opportunities...'), 4000);
+    setTimeout(() => setAnalysisStage('Generating report...'), 5000);
     setTimeout(() => {
       setResults({
         claimsAnalyzed: 72847,
@@ -1986,19 +2776,49 @@ function SimulationModeTab() {
         ]
       });
       setAnalyzing(false);
-    }, 3000);
+      setAnalysisStage('');
+    }, 6000);
   };
   
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
-      <h2 className="text-2xl font-bold flex items-center gap-3">
-        <Upload className="w-7 h-7 text-amber-400" />
-        Simulation Mode
-        <span className="text-sm font-normal text-slate-500">Upload your 835 files to see what you're missing</span>
-      </h2>
+      {/* Header with HIPAA badge */}
+      <div className="flex justify-between items-start">
+        <h2 className="text-2xl font-bold flex items-center gap-3">
+          <Upload className="w-7 h-7 text-amber-400" />
+          Simulation Mode
+          <span className="text-sm font-normal text-slate-500">Upload your 835 files to see what you're missing</span>
+        </h2>
+        {/* HIPAA Compliance Badge */}
+        <div className="flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+          <CheckCircle className="w-4 h-4 text-emerald-400" />
+          <span className="text-xs text-emerald-400 font-medium">HIPAA Compliant</span>
+        </div>
+      </div>
       
       {!results ? (
         <div className="space-y-6">
+          {/* File Format Specs */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-4">
+            <div className="flex items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-slate-400" />
+                <span className="text-slate-400">Accepted:</span>
+                <span className="text-white">.835, .txt, .csv</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Database className="w-4 h-4 text-slate-400" />
+                <span className="text-slate-400">Max size:</span>
+                <span className="text-white">500MB</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Gavel className="w-4 h-4 text-slate-400" />
+                <span className="text-slate-400">Encryption:</span>
+                <span className="text-white">AES-256 in transit & at rest</span>
+              </div>
+            </div>
+          </div>
+
           {/* Upload Area */}
           <div 
             onClick={() => fileInputRef.current?.click()}
@@ -2008,7 +2828,7 @@ function SimulationModeTab() {
               ref={fileInputRef}
               type="file" 
               multiple 
-              accept=".835,.txt,.edi"
+              accept=".835,.txt,.csv,.edi"
               onChange={handleFileUpload}
               className="hidden"
             />
@@ -2017,16 +2837,43 @@ function SimulationModeTab() {
             <div className="text-slate-400 mb-4">Drag and drop or click to select files</div>
             <div className="text-sm text-slate-500">Recommended: 90 days of 835 files for comprehensive analysis</div>
           </div>
+
+          {/* Try Sample Data Button */}
+          <div className="text-center">
+            <button 
+              onClick={loadSampleData}
+              className="px-6 py-3 bg-purple-500/20 border border-purple-500/30 hover:bg-purple-500/30 rounded-xl text-purple-400 font-medium flex items-center gap-2 mx-auto"
+            >
+              <Sparkles className="w-5 h-5" />
+              Try with Sample Data
+            </button>
+            <div className="text-xs text-slate-500 mt-2">Explore the platform without uploading real data</div>
+          </div>
           
-          {files.length > 0 && (
+          {/* File Validation Status */}
+          {validationStatus === 'validating' && (
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center gap-3">
+              <Loader2 className="w-5 h-5 text-amber-400 animate-spin" />
+              <span className="text-amber-400">Validating file format...</span>
+            </div>
+          )}
+
+          {files.length > 0 && validationStatus === 'valid' && (
             <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
-              <h3 className="font-semibold mb-3">{files.length} files selected</h3>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-emerald-400" />
+                  {files.length} files validated
+                </h3>
+                <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">Ready for analysis</span>
+              </div>
               <div className="space-y-2 max-h-40 overflow-y-auto">
                 {files.map((f, i) => (
                   <div key={i} className="flex items-center gap-2 text-sm text-slate-400">
                     <FileText className="w-4 h-4" />
                     {f.name}
                     <span className="text-slate-600">({(f.size / 1024).toFixed(1)} KB)</span>
+                    <CheckCircle className="w-3 h-3 text-emerald-400 ml-auto" />
                   </div>
                 ))}
               </div>
@@ -2040,14 +2887,71 @@ function SimulationModeTab() {
               </button>
             </div>
           )}
+
+          {/* What You'll Get Preview */}
+          <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-5">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <Eye className="w-5 h-5 text-cyan-400" />
+              What You'll Get
+            </h3>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { icon: '🔍', title: 'Violation Detection', time: 'Est. 2-5 min', desc: 'Contract compliance analysis' },
+                { icon: '💰', title: 'Recovery Opportunities', time: 'Included', desc: 'Dollar amounts with evidence' },
+                { icon: '📊', title: 'Appeal Prioritization', time: 'Included', desc: 'AI-ranked by win probability' },
+                { icon: '📋', title: 'Compliance Report', time: 'Included', desc: 'Exportable audit trail' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 bg-slate-900/50 rounded-lg">
+                  <span className="text-2xl">{item.icon}</span>
+                  <div>
+                    <div className="font-medium text-sm">{item.title}</div>
+                    <div className="text-xs text-slate-500">{item.desc}</div>
+                    <div className="text-xs text-cyan-400 mt-1">{item.time}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
           
+          {/* Analysis Progress */}
           {analyzing && (
-            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-6 text-center">
-              <Loader2 className="w-12 h-12 text-purple-400 mx-auto mb-4 animate-spin" />
-              <div className="text-xl font-semibold mb-2">AI Analyzing Your Claims...</div>
-              <div className="text-slate-400">Scanning for contract violations, missed appeals, and underpayments</div>
+            <div className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-6">
+              <div className="flex items-center gap-4 mb-4">
+                <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
+                <div>
+                  <div className="text-lg font-semibold">AI Analyzing Your Claims...</div>
+                  <div className="text-sm text-purple-400">{analysisStage}</div>
+                </div>
+              </div>
+              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-full bg-purple-500 rounded-full animate-pulse" style={{ width: '60%' }} />
+              </div>
+              <div className="text-xs text-slate-500 mt-2">This may take a few minutes depending on file size</div>
             </div>
           )}
+
+          {/* Recent Simulations */}
+          <div className="bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-slate-400" />
+              Recent Simulations
+            </h3>
+            <div className="space-y-2">
+              {recentSimulations.map((sim, i) => (
+                <div key={i} className="flex items-center justify-between p-3 bg-slate-900/50 rounded-lg hover:bg-slate-900/70 cursor-pointer">
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs text-slate-500 font-mono">{sim.id}</span>
+                    <span className="text-sm">{sim.date}</span>
+                    <span className="text-xs text-slate-500">{sim.files} files • {sim.claims.toLocaleString()} claims</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-emerald-400 font-semibold">{sim.found}</span>
+                    <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">View</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
         <div className="space-y-6">
@@ -2095,7 +2999,7 @@ function SimulationModeTab() {
           </div>
           
           <div className="flex gap-4">
-            <button onClick={() => { setFiles([]); setResults(null); }} className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold">
+            <button onClick={() => { setFiles([]); setResults(null); setValidationStatus('idle'); }} className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl font-semibold">
               Upload New Files
             </button>
             <button className="px-6 py-3 bg-emerald-500 hover:bg-emerald-600 rounded-xl font-semibold flex items-center gap-2">
